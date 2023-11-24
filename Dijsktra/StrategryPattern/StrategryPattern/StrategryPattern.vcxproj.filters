@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers sources\Heros">
+      <UniqueIdentifier>{b7482f1b-8152-44e9-8c52-061398b4d06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Heros">
+      <UniqueIdentifier>{df869d1d-e004-4ae8-8e89-3ebcc703fb9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Heros\Warrior">
+      <UniqueIdentifier>{ccd975a3-d412-4329-ae78-15bc8924b732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Heros\Magician">
+      <UniqueIdentifier>{90f22b2b-7dea-456a-96b7-e907dda6c11c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Heros\Thief">
+      <UniqueIdentifier>{6f6c9935-b70c-47c4-9a60-990109c2e0ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Heros\Magician">
+      <UniqueIdentifier>{41add7f8-893c-479d-866c-8e8bb0cf5995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Heros\Warrior">
+      <UniqueIdentifier>{9b7bd66f-137e-4b51-8c12-f1275393762e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Heros\Thief">
+      <UniqueIdentifier>{cc24f40e-4d6d-486e-bae8-10a74946392e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Math">
+      <UniqueIdentifier>{626cf761-d391-4f2d-a2cd-f912dca30fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Math">
+      <UniqueIdentifier>{87132d43-af24-40c1-82b2-1067f036fba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Engine">
+      <UniqueIdentifier>{c44e8c8b-f56e-4593-9c50-9bfedf67a589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Engine">
+      <UniqueIdentifier>{12ea5cd0-51f8-4c51-8995-0b58c72c2fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Engine\Component">
+      <UniqueIdentifier>{95774d8a-c5e2-4b51-8843-b0b789985ad1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Engine\Component">
+      <UniqueIdentifier>{d3e51a5b-faf1-46c2-bc16-d89791e58854}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Heros\Heros.cpp">
+      <Filter>Fichiers sources\Heros</Filter>
+    </ClCompile>
+    <ClCompile Include="Heros\Warrior\Warrior.cpp">
+      <Filter>Fichiers sources\Heros\Warrior</Filter>
+    </ClCompile>
+    <ClCompile Include="Heros\Thief\Thief.cpp">
+      <Filter>Fichiers sources\Heros\Thief</Filter>
+    </ClCompile>
+    <ClCompile Include="Heros\Magician\Magician.cpp">
+      <Filter>Fichiers sources\Heros\Magician</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Dijkstra.cpp">
+      <Filter>Fichiers sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\WayPoint.cpp">
+      <Filter>Fichiers sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\PathfindingAlgorithm.cpp">
+      <Filter>Fichiers sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Component.cpp">
+      <Filter>Fichiers sources\Engine\Component</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Heros\Heros.h">
+      <Filter>Fichiers d%27en-tête\Heros</Filter>
+    </ClInclude>
+    <ClInclude Include="Heros\Warrior\Warrior.h">
+      <Filter>Fichiers d%27en-tête\Heros\Warrior</Filter>
+    </ClInclude>
+    <ClInclude Include="Heros\Thief\Thief.h">
+      <Filter>Fichiers d%27en-tête\Heros\Thief</Filter>
+    </ClInclude>
+    <ClInclude Include="Heros\Magician\Magician.h">
+      <Filter>Fichiers d%27en-tête\Heros\Magician</Filter>
+    </ClInclude>
+    <ClInclude Include="Heros\TypeHero.h">
+      <Filter>Fichiers d%27en-tête\Heros</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Dijkstra.h">
+      <Filter>Fichiers d%27en-tête\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\WayPoint.h">
+      <Filter>Fichiers d%27en-tête\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.hxx">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\PathfindingAlgorithm.h">
+      <Filter>Fichiers d%27en-tête\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Component\Component.h">
+      <Filter>Fichiers d%27en-tête\Engine\Component</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
