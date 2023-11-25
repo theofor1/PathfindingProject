@@ -1,4 +1,5 @@
 #include "BoxCollider.h"
+#include <iostream>
 
 BoxCollider::BoxCollider(GameObject& gameObject) : ICollider(gameObject)
 {

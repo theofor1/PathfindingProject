@@ -22,14 +22,12 @@ public:
 	virtual void Draw(sf::RenderWindow& window) const;
 
 protected:
+	Renderer *CRenderer;
+
 	void CoverBoxColliderToSprite(sf::Texture &texture, Sprite &sprite);
 
 	float SpeedMove = 100;
 
-	Transform* CTransform;
-	Renderer* CRenderer;
 	BoxCollider* CBoxCollider;
-
-
 };
 

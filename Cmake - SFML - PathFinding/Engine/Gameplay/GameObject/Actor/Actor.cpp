@@ -3,7 +3,6 @@
 #include <Component/Renderer/Renderer.h>
 #include <Component/Transform/Transform.h>
 #include <Engine/Render/Drawable/Sprite/Sprite.h>
-// #include <Math/Vector/Vector.h>
 
 Actor::Actor(std::string Name) : GameObject(Name)
 {
@@ -19,6 +18,7 @@ void Actor::Start()
 
 void Actor::Update(float DeltaTime)
 {
+	CTransform->Update(DeltaTime);
 	GameObject::Update(DeltaTime);
 }
 

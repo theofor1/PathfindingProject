@@ -2,11 +2,15 @@
 
 #include <Component/IComponent.h>
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <vector>
 
 class IDrawable;
 class Transform;
+
+namespace sf
+{
+	class RenderWindow;
+}
 
 class Renderer : public IComponent
 {

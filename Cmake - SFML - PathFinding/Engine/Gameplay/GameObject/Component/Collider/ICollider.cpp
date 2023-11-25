@@ -2,7 +2,7 @@
 #include <GameObject/GameObject.h>
 #include <Component/Transform/Transform.h>
 
-ICollider::ICollider(GameObject& gameObject) : IComponent(gameObject)
+ICollider::ICollider(GameObject &gameObject) : IComponent(gameObject)
 {
 }
 
@@ -76,7 +76,6 @@ sf::FloatRect ICollider::GetRect() const
 	return m_RenderRect;
 }
 
-
 void ICollider::Start()
 {
 }
@@ -97,7 +96,9 @@ std::string ICollider::GetComponentName() const
 
 void ICollider::UpdateRectPosition()
 {
-	sf::Vector2f newPos = GetGameObject().GetComponent<Transform>()->GetWorldPosition() + LocalPosition;
+	// sf::Vector2f Offset(-m_RenderRect.width / 2, -m_RenderRect.height / 2);
+
+	sf::Vector2f newPos = GetGameObject().GetComponent<Transform>()->GetWorldPosition();
 
 	m_RenderRect.left = newPos.x;
 	m_RenderRect.top = newPos.y;
@@ -105,8 +106,7 @@ void ICollider::UpdateRectPosition()
 	m_debugRectangle.setPosition(newPos);
 }
 
-
-// Private 
+// Private
 
 sf::Vector2f ICollider::GetVectorMoveToCancelCollision(sf::FloatRect OtherRect)
 {

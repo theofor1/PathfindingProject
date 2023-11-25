@@ -1,7 +1,7 @@
 #include "Transform.h"
 #include <Engine/Gameplay/GameObject/GameObject.h>
 
-Transform::Transform(GameObject& gameObject) : IComponent(gameObject)
+Transform::Transform(GameObject &gameObject) : IComponent(gameObject)
 {
 	HasUpdateFunction = false;
 
@@ -12,9 +12,10 @@ Transform::Transform(GameObject& gameObject) : IComponent(gameObject)
 }
 
 void Transform::Start()
-{}
+{
+}
 
-void Transform::Update(float DeltaTime)
+void Transform::Update(float fDeltaTime)
 {
 	if (WorldPosition != PreviousWorldPosition)
 	{
@@ -24,9 +25,10 @@ void Transform::Update(float DeltaTime)
 }
 
 void Transform::Destroy()
-{}
+{
+}
 
-const sf::Transform& Transform::GetTransform()
+const sf::Transform &Transform::GetTransform()
 {
 	return WorldTransform;
 }
@@ -34,7 +36,12 @@ const sf::Transform& Transform::GetTransform()
 void Transform::SetWorldPosition(sf::Vector2f NewPosition)
 {
 	PreviousWorldPosition = WorldPosition;
-	WorldPosition = NewPosition;
+	WorldPosition = NewPosition + OffsetPosition;
+}
+
+void Transform::SetOffsetPosition(sf::Vector2f NewOffsetPosition)
+{
+	OffsetPosition = NewOffsetPosition;
 }
 
 void Transform::AddWorldPosition(sf::Vector2f UpPosition)
@@ -54,7 +61,12 @@ void Transform::SetScale(sf::Vector2f newScale)
 
 sf::Vector2f Transform::GetWorldPosition() const
 {
-	return WorldPosition;
+	return WorldPosition + OffsetPosition;
+}
+
+sf::Vector2f Transform::GetOffsetPosition() const
+{
+	return OffsetPosition;
 }
 
 float Transform::GetRotation() const
@@ -79,5 +91,3 @@ void Transform::UpdateTransform()
 	WorldTransform.rotate(Rotation);
 	WorldTransform.scale(Scale);
 }
-
-

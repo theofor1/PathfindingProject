@@ -22,7 +22,7 @@ private:
 	sf::Vector2f CurrentDirection = sf::Vector2f(0, 0);
 
 	virtual sf::Vector2f GetDirection() const;
-	virtual sf::Vector2i GetMouseLocation() const;
+	virtual sf::Vector2f GetMouseLocation() const;
 
 	virtual void MoveDown();
 	virtual void MoveUp();

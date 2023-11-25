@@ -13,6 +13,10 @@ public:
 	sf::RenderWindow& GetWindow();
 
 	int fpsMax = 60;
+	
+	int Width = 1920;
+	int Height = 1080;
+	std::string Title = "Path Finder";
 
 	#pragma region Singleton
 

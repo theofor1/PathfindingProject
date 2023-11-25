@@ -24,7 +24,7 @@ public:
 
 	const sf::Transform& GetWorldTransform() const;
 	const std::string GetName() const;
-	void SetWorldTransform(const sf::Transform& transform);
+	void SetWorldTransform(const sf::Transform& transform,  const sf::Vector2f Offset = sf::Vector2f(0, 0));
 
 	void Draw(sf::RenderWindow& window) const;
 

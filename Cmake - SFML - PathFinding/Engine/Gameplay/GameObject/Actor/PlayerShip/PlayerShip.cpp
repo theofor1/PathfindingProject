@@ -4,10 +4,8 @@
 #include <Component/Transform/Transform.h>
 #include <Engine/Render/Drawable/Sprite/Sprite.h>
 #include <System/Input/InputManager.h>
-#include <Engine/GameManager/IGameManager.h>
 #include <Engine/Render/Ressource/TextureManager.h>
 #include <Engine/Render/Window.h>
-#include <Engine/Scene/Level/Level01.h>
 #include <Engine/Math/Vector/Vector.h>
 
 #include <iostream>
@@ -16,17 +14,17 @@ PlayerShip::PlayerShip(std::string Name) : Actor(Name)
 {
 	SpeedMove = 300;
 
-	InputManager::Instance()->Bind(InputAction::Up, [this]()
-								   { MoveUp(); });
-	InputManager::Instance()->Bind(InputAction::Down, [this]()
-								   { MoveDown(); });
-	InputManager::Instance()->Bind(InputAction::Left, [this]()
-								   { MoveLeft(); });
-	InputManager::Instance()->Bind(InputAction::Right, [this]()
-								   { MoveRight(); });
+	// InputManager::Instance()->Bind(InputAction::Up, [this]()
+	// 							   { MoveUp(); });
+	// InputManager::Instance()->Bind(InputAction::Down, [this]()
+	// 							   { MoveDown(); });
+	// InputManager::Instance()->Bind(InputAction::Left, [this]()
+	// 							   { MoveLeft(); });
+	// InputManager::Instance()->Bind(InputAction::Right, [this]()
+	// 							   { MoveRight(); });
 
-	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
-								   { SetCurrentDirectionByMouseLocation(); });
+	// InputManager::Instance()->Bind(InputAction::MouseL, [this]()
+	// 							   { SetCurrentDirectionByMouseLocation(); });
 }
 
 PlayerShip::~PlayerShip()
@@ -37,12 +35,12 @@ void PlayerShip::Start()
 {
 	Actor::Start();
 
-	Ship = CRenderer->AddNewDrawable<Sprite>("Ship", sf::Vector2f(0, 0), 0, sf::Vector2f(0.3f, 0.3f));
-	Ship->SetTexture("PlayerShip");
+	Ship = CRenderer->AddNewDrawable<Sprite>("Ship", sf::Vector2f(0, 0), 0, sf::Vector2f(0.1f, 0.1f));
+	// Ship->SetTexture("PlayerShip");
 
-	CoverBoxColliderToSprite(TextureManager::Instance()->textures["PlayerShip"], *Ship);
+	// CoverBoxColliderToSprite(TextureManager::Instance()->textures["PlayerShip"], *Ship);
 
-	CTransform->SetWorldPosition(sf::Vector2f(200, 500));
+	CBoxCollider->SetColliderSize(sf::Vector2f(50, 50));
 }
 
 void PlayerShip::Update(float DeltaTime)
@@ -80,8 +78,7 @@ sf::Vector2f PlayerShip::GetDirection() const
 
 void PlayerShip::SetCurrentDirectionByMouseLocation()
 {
-	sf::Vector2i MouseLocation = GetMouseLocation();
-	sf::Vector2f EndLocation = sf::Vector2f(MouseLocation.x, MouseLocation.y);
+	sf::Vector2f EndLocation = GetMouseLocation();
 	sf::Vector2f StartLocation = CTransform->GetWorldPosition();
 
 	float Distance = Vector::GetDistance(StartLocation, EndLocation);
@@ -93,10 +90,11 @@ void PlayerShip::SetCurrentDirectionByMouseLocation()
 	CurrentDirection = Vector::GetDirection(StartLocation, EndLocation);
 }
 
-sf::Vector2i PlayerShip::GetMouseLocation() const
+sf::Vector2f PlayerShip::GetMouseLocation() const
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
-	return MouseLocation;
+	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
+	return WorldMouseLocation;
 }
 
 void PlayerShip::MoveDown()

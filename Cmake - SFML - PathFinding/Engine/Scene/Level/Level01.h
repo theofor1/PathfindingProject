@@ -2,6 +2,10 @@
 
 #include <Engine/Scene/IScene.h>
 
+class Graph;
+class PlayerShip;
+class Cell;
+
 class Level01 : public IScene
 {
 public:
@@ -11,8 +15,13 @@ public:
 	void Update(float DeltaTime) override;
 	void Destroy() override;
 
+protected:
+	Graph *graph;
+	PlayerShip *ship;
+
+	Cell* TargetCell;
+
+	void OnGraphCellOnClick();
 
 private:
-
 };
-

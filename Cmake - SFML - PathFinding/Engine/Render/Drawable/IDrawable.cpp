@@ -71,10 +71,10 @@ const std::string IDrawable::GetName() const
 	return Name;
 }
 
-void IDrawable::SetWorldTransform(const sf::Transform& transform)
+void IDrawable::SetWorldTransform(const sf::Transform& transform, const sf::Vector2f Offset)
 {
 	WorldTransform = transform;
-	WorldTransform.translate(LocalPosition);
+	WorldTransform.translate(LocalPosition + Offset);
 	WorldTransform.rotate(LocalRotation);
 	WorldTransform.scale(LocalScale);
 }
