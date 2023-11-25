@@ -8,6 +8,7 @@
 #include <Engine/Render/Ressource/TextureManager.h>
 #include <Engine/Render/Window.h>
 #include <Engine/Scene/Level/Level01.h>
+#include <Engine/Math/Vector/Vector.h>
 
 #include <iostream>
 
@@ -23,6 +24,9 @@ PlayerShip::PlayerShip(std::string Name) : Actor(Name)
 								   { MoveLeft(); });
 	InputManager::Instance()->Bind(InputAction::Right, [this]()
 								   { MoveRight(); });
+
+	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
+								   { SetCurrentDirectionByMouseLocation(); });
 }
 
 PlayerShip::~PlayerShip()
@@ -45,9 +49,8 @@ void PlayerShip::Update(float DeltaTime)
 {
 	Actor::Update(DeltaTime);
 
-	sf::Vector2f Move = GetDirection() * Speed * DeltaTime;
+	sf::Vector2f Move = GetDirection() * SpeedMove * DeltaTime;
 	CTransform->AddWorldPosition(Move);
-
 	CurrentDirection = sf::Vector2f(0, 0);
 }
 
@@ -61,9 +64,8 @@ Sprite *PlayerShip::GetSpriteShip() const
 	return Ship;
 }
 
-
 //////////////////////////////////////////////////
-// PROTECTED 
+// PROTECTED
 
 sf::Vector2f PlayerShip::GetDirection() const
 {
@@ -76,6 +78,26 @@ sf::Vector2f PlayerShip::GetDirection() const
 	return Direction;
 }
 
+void PlayerShip::SetCurrentDirectionByMouseLocation()
+{
+	sf::Vector2i MouseLocation = GetMouseLocation();
+	sf::Vector2f EndLocation = sf::Vector2f(MouseLocation.x, MouseLocation.y);
+	sf::Vector2f StartLocation = CTransform->GetWorldPosition();
+
+	float Distance = Vector::GetDistance(StartLocation, EndLocation);
+	float Tolerance = 3;
+
+	if (Distance <= Tolerance)
+		return;
+
+	CurrentDirection = Vector::GetDirection(StartLocation, EndLocation);
+}
+
+sf::Vector2i PlayerShip::GetMouseLocation() const
+{
+	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
+	return MouseLocation;
+}
 
 void PlayerShip::MoveDown()
 {

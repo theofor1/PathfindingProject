@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <string>
 #include <map>
 #include <functional>
@@ -11,13 +12,8 @@ enum class InputAction
 	Right,
 	Up,
 	Down,
-	Fire,
-};
-
-enum class InputAxis
-{
-	Vertical,
-	Horizontal
+	MouseL,
+	MouseR,
 };
 
 class InputManager
@@ -57,7 +53,15 @@ public:
 
 private:
 	void InitInputBinds();
+	void InitMouseButtonBinds();
+
+	void UpdateInputAction();
+	void UpdateMouseInputAction();
 
 	std::map<InputAction, sf::Keyboard::Key> InputBinds;
+	std::map<InputAction, sf::Mouse::Button> MouseBinds;
+
+
 	std::map<InputAction, std::vector<Callback>> InputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> MouseInputActionCallbacks;
 };

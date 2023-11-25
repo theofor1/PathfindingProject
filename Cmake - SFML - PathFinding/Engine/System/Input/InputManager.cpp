@@ -6,16 +6,30 @@ InputManager *InputManager::instance = nullptr;
 InputManager::InputManager()
 {
 	InitInputBinds();
-
-	for (const auto &pair : InputBinds)
-	{
-		InputAction IA = pair.first;
-		InputActionCallbacks[IA] = std::vector<Callback>();
-	}
-
+	InitMouseButtonBinds();
 }
 
 void InputManager::Update()
+{
+	UpdateInputAction();
+	UpdateMouseInputAction();
+}
+
+void InputManager::Bind(InputAction IA, const Callback &callback)
+{
+	if (IA == InputAction::MouseL || IA == InputAction::MouseR)
+	{
+		MouseInputActionCallbacks[IA].push_back(callback);
+	}
+	else
+	{
+		InputActionCallbacks[IA].push_back(callback);
+	}
+}
+
+// Private
+
+void InputManager::UpdateInputAction()
 {
 	for (const auto &pair : InputBinds)
 	{
@@ -32,9 +46,21 @@ void InputManager::Update()
 	}
 }
 
-void InputManager::Bind(InputAction IA, const Callback &callback)
+void InputManager::UpdateMouseInputAction()
 {
-	InputActionCallbacks[IA].push_back(callback);
+	for (const auto &pair : MouseBinds)
+	{
+		InputAction IA = pair.first;
+		sf::Mouse::Button button = pair.second;
+
+		if (sf::Mouse::isButtonPressed(button))
+		{
+			for (const auto &callback : MouseInputActionCallbacks[IA])
+			{
+				callback();
+			}
+		}
+	}
 }
 
 void InputManager::InitInputBinds()
@@ -43,4 +69,22 @@ void InputManager::InitInputBinds()
 	InputBinds[InputAction::Down] = sf::Keyboard::S;
 	InputBinds[InputAction::Left] = sf::Keyboard::Q;
 	InputBinds[InputAction::Right] = sf::Keyboard::D;
+
+	for (const auto &pair : InputBinds)
+	{
+		InputAction IA = pair.first;
+		InputActionCallbacks[IA] = std::vector<Callback>();
+	}
+}
+
+void InputManager::InitMouseButtonBinds()
+{
+	MouseBinds[InputAction::MouseL] = sf::Mouse::Left;
+	MouseBinds[InputAction::MouseR] = sf::Mouse::Right;
+
+	for (const auto &pair : MouseBinds)
+	{
+		InputAction IA = pair.first;
+		MouseInputActionCallbacks[IA] = std::vector<Callback>();
+	}
 }

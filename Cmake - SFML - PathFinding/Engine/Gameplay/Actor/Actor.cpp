@@ -33,17 +33,6 @@ void Actor::Draw(sf::RenderWindow& window) const
 	window.draw(CBoxCollider->m_debugRectangle);
 }
 
-void Actor::SetVelocity(sf::Vector2f _v)
-{
-	Velocity = _v;
-}
-
-void Actor::PerformMovement(float DeltaTime)
-{
-	// Vector::Normalized(Velocity);
-	CTransform->AddWorldPosition(Velocity * SpeedMove * DeltaTime);
-}
-
 void Actor::CoverBoxColliderToSprite(sf::Texture &texture, Sprite &sprite)
 {
 	CBoxCollider->SetColliderSize(sf::Vector2f(texture.getSize().x * sprite.GetLocalScale().x, texture.getSize().y * sprite.GetLocalScale().y));

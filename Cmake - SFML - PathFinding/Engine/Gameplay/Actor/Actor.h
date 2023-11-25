@@ -22,12 +22,9 @@ public:
 	virtual void Draw(sf::RenderWindow& window) const;
 
 protected:
-	void SetVelocity(sf::Vector2f _v);
-	void PerformMovement(float DeltaTime);
 	void CoverBoxColliderToSprite(sf::Texture &texture, Sprite &sprite);
 
 	float SpeedMove = 100;
-	sf::Vector2f Velocity;
 
 	Transform* CTransform;
 	Renderer* CRenderer;
