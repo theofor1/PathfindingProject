@@ -1,23 +1,21 @@
+# MonProjetCMake/App/CMakeLists.txt
+
 project(App)
 
 # Ajoutez tous les fichiers source spécifiques à votre application
 file(GLOB APP_SOURCES
-    src/main.cpp
+    src/*.cpp
 )
 
 add_executable(App ${APP_SOURCES})
 
-# Incluez le répertoire Toto
-# target_include_directories(App PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Toto)
-# target_include_directories(App PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Engine)
+# Incluez le répertoire d'en-tête de Engine comme un répertoire d'inclusion système
+target_include_directories(App PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>  # Chemin absolu vers le répertoire d'en-tête
+)
 
-# Incluez le répertoire Toto comme un répertoire d'inclusion système
-target_include_directories(App SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Toto)
-
-
-# Lien avec la bibliothèque Toto
-target_link_libraries(App PRIVATE Toto)
-# target_link_libraries(App PRIVATE Engine)
+# Lien avec la bibliothèque Engine
+target_link_libraries(App PRIVATE Engine)
 
 ########################################################################################################################
 # SFML
