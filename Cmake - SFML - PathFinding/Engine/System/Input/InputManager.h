@@ -3,6 +3,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
 #include <map>
+#include <functional>
 
 enum class InputAction
 {
@@ -19,25 +20,20 @@ enum class InputAxis
 	Horizontal
 };
 
-
 class InputManager
 {
 public:
+	using Callback = std::function<void()>;
 
 	InputManager();
 
 	void Update();
 
-	void InputPressed(const sf::Keyboard::Key& key, const InputAction Action);
-	void InputReleased(const sf::Keyboard::Key& key, const InputAction Action);
-
-	float GetAxis(InputAxis Axis);
-	bool GetAction(InputAction _Action);
-	bool GetActionDown(InputAction _Action); // Once time while pressed
+	void Bind(InputAction IA, const Callback& callback);
 
 #pragma region Singleton
 
-	static InputManager* Instance()
+	static InputManager *Instance()
 	{
 		if (!instance)
 		{
@@ -56,30 +52,12 @@ public:
 		}
 	}
 
-	static InputManager* instance;
+	static InputManager *instance;
 #pragma endregion
 
 private:
 	void InitInputBinds();
 
-	std::map<sf::Keyboard::Key, InputAction> InputBinds;
-
-	struct fInput {
-		float Movement = 0;
-		bool IsOnMovement();
-		void SetMovement(float _movement);
-		void AddMovement(float Up);
-		void ResetMovement();
-	};
-	
-	struct bInput {
-		bool IsOnAction = false;
-		bool WaitRelease = false;
-	};
-
-	fInput AxisVertical;
-	fInput AxisHorizontal;
-
-	bInput Fire;
+	std::map<InputAction, sf::Keyboard::Key> InputBinds;
+	std::map<InputAction, std::vector<Callback>> InputActionCallbacks;
 };
-

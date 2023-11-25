@@ -1,32 +1,35 @@
-// #pragma once
+#pragma once
 
-// #include <Actor/Actor.h>
+#include <Actor/Actor.h>
 
-// #include "PlayerLaser.h"
+class PlayerShip : public Actor
+{
+public:
+	PlayerShip(std::string Name = "");
+	~PlayerShip();
 
-// class PlayerShip : public Actor
-// {
-// public:
-// 	PlayerShip(std::string Name = "");
-// 	~PlayerShip();
+	virtual void Start() override;
+	virtual void Update(float DeltaTime) override;
+	virtual void Destroy() override;
 
-// 	virtual void Start() override;
-// 	virtual void Update(float FDeltaTime) override;
-// 	virtual void Destroy() override;
+	Sprite *GetSpriteShip() const;
 
-// 	void UpdateForce();
+protected:
 
-// 	Sprite *GetSpriteShip() const;
+private:
+	Sprite *Ship;
 
-// protected:
-// 	void MotorVelocity();
-// 	void LimitPosition();
+	sf::Vector2f CurrentDirection = sf::Vector2f(0, 0);
+	float Speed = 300;
 
-// 	void SpawnLaser();
+	virtual sf::Vector2f GetDirection() const;
 
-// private:
-// 	Sprite *Ship;
+	virtual void MoveDown();
+	virtual void MoveUp();
+	virtual void MoveLeft();
+	virtual void MoveRight();
 
-// 	sf::Vector2f Force = sf::Vector2f(4, 30);
-// 	float Speed = 1;
-// };
+
+
+
+};

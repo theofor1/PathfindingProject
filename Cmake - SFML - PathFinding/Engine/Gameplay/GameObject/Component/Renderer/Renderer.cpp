@@ -10,13 +10,13 @@ void Renderer::Start()
 {
 }
 
-void Renderer::Update(float FDeltaTime)
+void Renderer::Update(float DeltaTime)
 {
 	for (auto & Drawable : Drawables)
 	{
 		// Set Drawable transform with parent transform
 		Drawable->SetWorldTransform(GetGameObject().GetComponent<Transform>()->GetTransform());
-		Drawable->Update(FDeltaTime);
+		Drawable->Update(DeltaTime);
 	}
 }
 

@@ -19,9 +19,9 @@ void BoxCollider::Start()
 	ICollider::Start();
 }
 
-void BoxCollider::Update(float fDeltaTime)
+void BoxCollider::Update(float DeltaTime)
 {
-	ICollider::Update(fDeltaTime);
+	ICollider::Update(DeltaTime);
 }
 
 void BoxCollider::Destroy()

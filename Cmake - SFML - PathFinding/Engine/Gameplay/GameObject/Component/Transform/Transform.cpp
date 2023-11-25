@@ -14,7 +14,7 @@ Transform::Transform(GameObject& gameObject) : IComponent(gameObject)
 void Transform::Start()
 {}
 
-void Transform::Update(float fDeltaTime)
+void Transform::Update(float DeltaTime)
 {
 	if (WorldPosition != PreviousWorldPosition)
 	{

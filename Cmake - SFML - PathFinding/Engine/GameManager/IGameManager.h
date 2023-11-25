@@ -1,13 +1,7 @@
 #pragma once
 
-//#include <SFML/Graphics.hpp>
-//#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include "IScene.h"
 
-//#include <InputMgr.h>
-//#include "IScene.h"
-//#include "MyLevel.h"
-#include <Engine/Scene/IScene.h>
 
 class IGameManager
 {
@@ -16,9 +10,9 @@ public:
 
 	void RunGame();
 
-	void AddLevel(IScene NewScene);
+	void AddLevel(IScene* NewScene);
 
-	IScene& GetActiveScene();
+	IScene* GetActiveScene();
 
 	#pragma region Singleton
 
@@ -45,11 +39,11 @@ public:
 	#pragma endregion
 
 private:
-	std::vector<IScene> Scenes;
+	std::vector<IScene*> Scenes;
 	int indexActiveScene = 0;
 
 	void StartActiveScene();
-	void UpdateActiveScene(float fDeltaTime);
+	void UpdateActiveScene(float DeltaTime);
 	void DrawActiveScene(sf::RenderWindow& window) const;
 };
 

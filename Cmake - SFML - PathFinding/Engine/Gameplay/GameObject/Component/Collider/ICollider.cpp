@@ -81,7 +81,7 @@ void ICollider::Start()
 {
 }
 
-void ICollider::Update(float fDeltaTime)
+void ICollider::Update(float DeltaTime)
 {
 	UpdateRectPosition();
 }

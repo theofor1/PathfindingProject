@@ -20,7 +20,7 @@ public:
 
 	virtual void Start() = 0;
 
-	virtual void Update(float FDeltaTime) = 0;
+	virtual void Update(float DeltaTime) = 0;
 
 	virtual void Destroy() = 0;
 

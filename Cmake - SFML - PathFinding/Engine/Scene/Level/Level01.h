@@ -1,19 +1,18 @@
-// #pragma once
+#pragma once
 
-// #include <Engine/Scene/IScene.h>
+#include <Engine/Scene/IScene.h>
 
-// class Level01 : public IScene
-// {
-// public:
-// 	Level01();
+class Level01 : public IScene
+{
+public:
+	Level01();
 
-// 	virtual void Start() override;
-// 	virtual void Update(float fDeltaTime) override;
-// 	virtual void Destroy() override;
+	void Start() override;
+	void Update(float DeltaTime) override;
+	void Destroy() override;
 
 
-// private:
-// 	int GetTotalCountPlayerLaser() const;
+private:
 
-// };
+};
 

@@ -14,10 +14,10 @@ void GameObject::Start()
 		c->Start();
 }
 
-void GameObject::Update(float fDeltaTime)
+void GameObject::Update(float DeltaTime)
 {
 	for (IComponent* c : Components)
-		c->Update(fDeltaTime);
+		c->Update(DeltaTime);
 }
 
 void GameObject::Destroy()

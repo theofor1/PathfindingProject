@@ -19,7 +19,7 @@ public:
 	ICollider(GameObject& gameObject);
 
 	virtual void Start();
-	virtual void Update(float fDeltaTime);
+	virtual void Update(float DeltaTime);
 	virtual void Destroy();
 	virtual std::string GetComponentName() const;
 

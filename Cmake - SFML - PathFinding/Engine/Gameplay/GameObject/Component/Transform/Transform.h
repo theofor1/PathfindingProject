@@ -9,7 +9,7 @@ public:
 	Transform(GameObject& gameObject);
 
 	virtual void Start() override;
-	virtual void Update(float FDeltaTime) override;
+	virtual void Update(float DeltaTime) override;
 	virtual void Destroy() override;
 
 	const sf::Transform& GetTransform();

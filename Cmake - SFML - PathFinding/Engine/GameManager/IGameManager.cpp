@@ -1,39 +1,38 @@
 #include "IGameManager.h"
-// #include <map>
-#include <Engine/Render/Window.h>
-#include <iostream>
-// #include <Level/Level01.h>
 #include <System/Input/InputManager.h>
-#include <Actor/Actor.h>
-// #include <Actor/PlayerShip/PlayerShip.h>
-#include <Engine/Scene/IScene.h>
+#include <Engine/Render/Window.h>
 
+
+//#include <Engine/Scene/IScene.h>
+
+#include <Level/Level01.h>
+#include <iostream>
 
 IGameManager* IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    // AddLevel(Level01());
+    AddLevel(new Level01());
 }
 
 void IGameManager::RunGame()
 {
-    // if (Scenes.size() == 0)
-    // {
-    //     std::cout << "None Scene";
-    //     exit(EXIT_FAILURE);
-    // }
+    if (Scenes.size() == 0)
+    {
+        std::cout << "None Scene";
+        exit(EXIT_FAILURE);
+    }
 
-    // StartActiveScene();
+    StartActiveScene();
 
-    // sf::Clock clock;
-    // clock.restart();
-   
+    sf::Clock clock;
+    clock.restart();
+
     while (Window::Instance()->GetWindow().isOpen())
     {
-    //     int deltaTimeMS = clock.getElapsedTime().asMilliseconds();
-    //     float FDeltaTimeS = (float)deltaTimeMS / 1000.f;
-    //     clock.restart();
+        int deltaTimeMS = clock.getElapsedTime().asMilliseconds();
+        float DeltaTime = (float)deltaTimeMS / 1000.f;
+        clock.restart();
 
         sf::Event event;
 
@@ -45,58 +44,39 @@ void IGameManager::RunGame()
             }
         }
 
-    //     // InputManager::Instance()->Update();
+        InputManager::Instance()->Update();
 
-    //     // UpdateActiveScene(FDeltaTimeS);
+        UpdateActiveScene(DeltaTime);
 
-    //     // Window::Instance()->GetWindow().clear();
+        Window::Instance()->GetWindow().clear();
 
-    //     // DrawActiveScene(Window::Instance()->GetWindow());
+        DrawActiveScene(Window::Instance()->GetWindow());
 
-    //     //
-    //     // GameObject* g = Scenes[indexActiveScene].GetGameObjects()[0];
-
-    //     // if (static_cast<Actor*>(g))
-    //     // {
-    //     //     Actor* a = static_cast<Actor*>(g);
-
-    //     //     if (static_cast<PlayerShip*>(a))
-    //     //     {
-    //     //         PlayerShip* ps = static_cast<PlayerShip*>(a);
-    //     //         //ps->curve.Draw(Window::Instance()->GetWindow());
-    //     //     }
-    //     // }
-    //     //
-
-    //     Window::Instance()->GetWindow().display();
+        Window::Instance()->GetWindow().display();
     }
 }
 
-void IGameManager::AddLevel(IScene NewScene)
+void IGameManager::AddLevel(IScene* NewScene)
 {
     Scenes.push_back(NewScene);
 }
 
-IScene& IGameManager::GetActiveScene()
+IScene* IGameManager::GetActiveScene()
 {
     return Scenes[indexActiveScene];
 }
 
 void IGameManager::StartActiveScene()
 {
-    // Scenes[indexActiveScene].Start();
+    Scenes[indexActiveScene]->Start();
 }
 
-void IGameManager::UpdateActiveScene(float fDeltaTime)
+void IGameManager::UpdateActiveScene(float DeltaTime)
 {
-    // Scenes[indexActiveScene].Update(fDeltaTime);
-    // Scenes[indexActiveScene].OnCollision();
+    Scenes[indexActiveScene]->Update(DeltaTime);
 }
 
 void IGameManager::DrawActiveScene(sf::RenderWindow& window) const
 {
-    // Scenes[indexActiveScene].Draw(window);
+    Scenes[indexActiveScene]->Draw(window);
 }
-
-
-

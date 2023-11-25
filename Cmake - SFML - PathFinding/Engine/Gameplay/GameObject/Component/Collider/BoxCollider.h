@@ -12,7 +12,7 @@ public:
 	BoxCollider(GameObject& gameObject);
 
 	virtual void Start() override;
-	virtual void Update(float fDeltaTime) override;
+	virtual void Update(float DeltaTime) override;
 	virtual void Destroy() override;
 
 	void SetColliderSize(sf::Vector2f size);
