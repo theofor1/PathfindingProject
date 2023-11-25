@@ -1,0 +1,29 @@
+# Ignore les fichiers générés par CMake
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/CMakeScripts/
+/CMakeTmp/
+
+# Ignore les fichiers générés par Visual Studio 
+/.vscode/
+/.vs/
+/*.suo
+/*.user
+/*.userosscache
+/*.sdf
+/*.opensdf
+/*.cachefile
+
+# Ignore les fichiers générés par Make
+/*.o
+/*.a
+/*.so
+/*.dll
+
+# Ignore les fichiers générés par Xcode
+/*.xcworkspace/
+/*.xcuserdatad/
+
+# Ignore les fichiers générés par CLion
+/cmake-build-*/

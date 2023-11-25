@@ -8,8 +8,12 @@ file(GLOB APP_SOURCES
 add_executable(App ${APP_SOURCES})
 
 # Incluez le répertoire Toto
-target_include_directories(App PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Toto)
+# target_include_directories(App PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Toto)
 # target_include_directories(App PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Engine)
+
+# Incluez le répertoire Toto comme un répertoire d'inclusion système
+target_include_directories(App SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Toto)
+
 
 # Lien avec la bibliothèque Toto
 target_link_libraries(App PRIVATE Toto)
