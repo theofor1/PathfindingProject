@@ -20,6 +20,7 @@ target_include_directories(Engine PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Gameplay/GameObject/>
 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../rapidxml> # Inclure la dépendence rapidxml
+    $<BUILD_INTERFACE:${SFML_SOURCE_DIR}/include>  # Chemin absolu vers le répertoire d'en-tête SFML
 )
 
 # Organisez l'architecture virtuelle pour refléter la structure des fichiers

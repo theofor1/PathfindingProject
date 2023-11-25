@@ -1,26 +1,38 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+
+#include <Engine/GameManager/IGameManager.h>
+#include <Engine/Render/Ressource/TextureManager.h>
 #include <Engine/System/Input/InputManager.h>
+
+#include <iostream>
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Red);
 
-    while (window.isOpen())
+    // std::ifstream file("Resources/PlayerShip/PlayerShip.xml");
+
+    // Texture Manager
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+       TextureManager::Instance()->ExtractFileData("./Ressources/PlayerShip/PlayerShip.xml");
+        // TextureManager::Instance()->ExtractFileData("./Ressources/Weapons/Laser.xml");
+        // TextureManager::Instance()->ExtractFileData("./Ressources/Ennemies/Alien.xml");
 
-        window.clear();
-        window.draw(shape);
-        window.display();
+        //
+        // TextureManager::Instance()->ExtractFileData("./Ressources/Basement.xml");
+        // TextureManager::Instance()->ExtractFileData("./Ressources/Tear.xml");
     }
 
+    // std::cout << TextureManager::Instance()->dataXml["PlayerShip"]["Base_Laser"]["SizeY"];
+    // std::cout << TextureManager::Instance()->textures["Animation"].getSize().x;
+
+    // GAME MANAGER
+    {
+        IGameManager::Instance()->RunGame();
+    }
+
+    // Destroy Instances
+    {
+        IGameManager::DeleteInstance();
+        TextureManager::DeleteInstance();
+    }
     return 0;
 }

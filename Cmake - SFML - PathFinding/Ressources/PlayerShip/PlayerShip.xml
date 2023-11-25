@@ -1,0 +1,13 @@
+<Animations>
+    <Animation Name="Base_Laser">
+        <X>0</X>
+        <Y>0</Y>
+        <SizeX>34</SizeX>
+        <SizeY>66</SizeY>
+        <OffsetX>0</OffsetX>
+        <OffsetY>0</OffsetY>
+        <SpriteNum>1</SpriteNum>
+        <SptitesOnLine>1</SptitesOnLine>
+        <Reverted>0</Reverted>
+    </Animation>
+</Animations>

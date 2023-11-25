@@ -29,21 +29,21 @@ void IGameManager::RunGame()
     // sf::Clock clock;
     // clock.restart();
    
-    // while (Window::Instance()->GetWindow().isOpen())
-    // {
+    while (Window::Instance()->GetWindow().isOpen())
+    {
     //     int deltaTimeMS = clock.getElapsedTime().asMilliseconds();
     //     float FDeltaTimeS = (float)deltaTimeMS / 1000.f;
     //     clock.restart();
 
-    //     sf::Event event;
+        sf::Event event;
 
-    //     while (Window::Instance()->GetWindow().pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-    //         {
-    //             Window::Instance()->GetWindow().close();
-    //         }
-    //     }
+        while (Window::Instance()->GetWindow().pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            {
+                Window::Instance()->GetWindow().close();
+            }
+        }
 
     //     // InputManager::Instance()->Update();
 
@@ -69,7 +69,7 @@ void IGameManager::RunGame()
     //     //
 
     //     Window::Instance()->GetWindow().display();
-    // }
+    }
 }
 
 void IGameManager::AddLevel(IScene NewScene)

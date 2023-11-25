@@ -12,12 +12,9 @@ void TextureManager::ExtractFileData(const std::filesystem::path& path)
     }
 
     std::string png_path = path.parent_path().u8string() + "/" + path.stem().u8string() + ".png";
-    std::cout << png_path << "\n";
 
     sf::Texture texture;
     texture.loadFromFile(png_path);
-
-    return;
 
     textures.insert({ path.stem().u8string(), texture });
 
