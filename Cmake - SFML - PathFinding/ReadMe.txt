@@ -1,6 +1,6 @@
-Go to build them :
+- Go to /build
 - cmake ..
-- Laucnh SLN file
+- Laucnh .sln file
 - compile : CTRL+MAJ+B
-- Go to bin/debug
+- Go to App/Debug
 - execute App.exe
