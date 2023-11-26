@@ -6,7 +6,7 @@ std::vector<WayPoint *> Dijkstra::GetPathFinding(const std::vector<WayPoint *> W
 {
     std::vector<WayPoint *> WayPointsPathFinding;
 
-    if (!Start || !End || WayPoints.size() == 0)
+    if (!Start || !End || WayPoints.size() == 0 || Start == End)
         return WayPointsPathFinding;
 
     // Declare variable
@@ -27,12 +27,12 @@ std::vector<WayPoint *> Dijkstra::GetPathFinding(const std::vector<WayPoint *> W
 
     // Remove Start
     int Index = GetIndexWayPoint(WayPointsRemaining, Start);
-    
+
     if (Index == -1)
         return WayPointsPathFinding;
 
     WayPointsRemaining.erase(WayPointsRemaining.begin() + Index);
-    
+
     float CostFromBeginning = 0;
 
     // Get the shortest Path
@@ -66,6 +66,7 @@ std::vector<WayPoint *> Dijkstra::GetPathFinding(const std::vector<WayPoint *> W
         WayPointsParcoured.push_back(CurrentWayPoint);
         WpsMeetedParcoured.push_back(LowestCostWayPointMeeted);
 
+        // If reached to end, end
         if (CurrentWayPoint == End)
             break;
 

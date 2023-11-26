@@ -70,6 +70,8 @@ void Cell::SetSize(const int _SideSize)
 
 	Rect.width = SideSize;
 	Rect.height = SideSize;
+
+	LocalPosition = sf::Vector2f(SideSize / 2, SideSize / 2);
 }
 
 void Cell::SetPosition(const sf::Vector2f Position)
@@ -79,6 +81,8 @@ void Cell::SetPosition(const sf::Vector2f Position)
 
 	Rect.left = Position.x;
 	Rect.top = Position.y;
+	// Rect.left = Position.x + LocalPosition.x;
+	// Rect.top = Position.y  + LocalPosition.y;
 }
 
 void Cell::UpdateColor()

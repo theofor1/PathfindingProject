@@ -96,14 +96,17 @@ std::string ICollider::GetComponentName() const
 
 void ICollider::UpdateRectPosition()
 {
-	// sf::Vector2f Offset(-m_RenderRect.width / 2, -m_RenderRect.height / 2);
+	LocalPosition = sf::Vector2f(m_RenderRect.width / 2, m_RenderRect.height / 2);
+	// GetGameObject().LocalPosition = LocalPosition;
 
+	// sf::Vector2f newPos = GetGameObject().GetPosition();
 	sf::Vector2f newPos = GetGameObject().GetComponent<Transform>()->GetWorldPosition();
+	// sf::Vector2f newPos = GetGameObject().GetComponent<Transform>()->GetWorldPosition() + LocalPosition;
 
-	m_RenderRect.left = newPos.x;
-	m_RenderRect.top = newPos.y;
+	m_RenderRect.left = newPos.x - LocalPosition.x;
+	m_RenderRect.top = newPos.y - LocalPosition.y;
 
-	m_debugRectangle.setPosition(newPos);
+	m_debugRectangle.setPosition(newPos - LocalPosition);
 }
 
 // Private

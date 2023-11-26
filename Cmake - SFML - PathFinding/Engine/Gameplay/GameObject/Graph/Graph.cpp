@@ -3,6 +3,7 @@
 #include "Cell/Cell.h"
 #include "./PathFinder/WayPoint.h"
 #include "./PathFinder/Dijkstra.h"
+// #include <GameObject/Graph/Line/Line.h>
 
 #include <iostream>
 
@@ -23,9 +24,19 @@ Graph::Graph(std::string Name, const sf::Vector2i _NbCell, const int _CellSideSi
 		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
 	}
 
+	// Cell *NewCell = new Cell("a cell", CurrentPosition, CellSideSize);
+	// Cells[0][0] = NewCell;
+
 	Cells[1][1]->SetIsAlive(false);
 	Cells[1][2]->SetIsAlive(false);
 	Cells[1][3]->SetIsAlive(false);
+
+	Cells[7][10]->SetIsAlive(false);
+	Cells[8][10]->SetIsAlive(false);
+	Cells[9][10]->SetIsAlive(false);
+	Cells[11][10]->SetIsAlive(false);
+	Cells[12][10]->SetIsAlive(false);
+	Cells[13][10]->SetIsAlive(false);
 
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
@@ -43,6 +54,7 @@ void Graph::Start()
 void Graph::Update(float DeltaTime)
 {
 	GameObject::Update(DeltaTime);
+
 }
 
 void Graph::Destroy()
@@ -70,6 +82,7 @@ void Graph::Draw(sf::RenderWindow &window) const
 			window.draw(Cell->GetRectangleShape());
 		}
 	}
+
 }
 
 Cell *Graph::GetCellByPosition(sf::Vector2f Position)
@@ -81,6 +94,7 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 			Cell *Cell = cellPair.second;
 			if (!Cell->GetIsAlive())
 				continue;
+
 			if (Cell->GetRect().contains(Position))
 			{
 				return Cell;
@@ -122,6 +136,11 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 
 	for (const WayPoint *Wp : WpPath)
 		Path.push_back(sf::Vector2f(Wp->X, Wp->Y));
+
+	if (Path.size() > 1)
+	{
+		Path.erase(Path.begin());
+	}
 
 	return Path;
 }

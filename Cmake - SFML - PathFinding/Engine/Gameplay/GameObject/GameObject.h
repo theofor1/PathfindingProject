@@ -45,6 +45,9 @@ public:
 
 	template <typename C>
 	C *GetComponent() const;
+	
+	sf::Vector2f LocalPosition;
+
 
 protected:
 	std::vector<IComponent *> Components;
@@ -52,7 +55,6 @@ protected:
 	Transform *CTransform;
 
 	std::string Name;
-
 };
 
 #include <Engine/Gameplay/GameObject/GameObject.hxx>

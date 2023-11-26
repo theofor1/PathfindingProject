@@ -36,7 +36,7 @@ const sf::Transform &Transform::GetTransform()
 void Transform::SetWorldPosition(sf::Vector2f NewPosition)
 {
 	PreviousWorldPosition = WorldPosition;
-	WorldPosition = NewPosition + OffsetPosition;
+	WorldPosition = NewPosition;
 }
 
 void Transform::SetOffsetPosition(sf::Vector2f NewOffsetPosition)
@@ -61,7 +61,7 @@ void Transform::SetScale(sf::Vector2f newScale)
 
 sf::Vector2f Transform::GetWorldPosition() const
 {
-	return WorldPosition + OffsetPosition;
+	return WorldPosition;
 }
 
 sf::Vector2f Transform::GetOffsetPosition() const

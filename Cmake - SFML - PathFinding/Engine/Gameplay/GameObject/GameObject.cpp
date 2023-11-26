@@ -47,12 +47,13 @@ void GameObject::Draw(sf::RenderWindow &window) const
 
 sf::Vector2f GameObject::GetPosition() const
 {
-	return CTransform->GetWorldPosition();
+	// return CTransform->GetWorldPosition();
+	return CTransform->GetWorldPosition() + LocalPosition;
 }
 
 void GameObject::SetPosition(const sf::Vector2f NewPosition)
 {
-	CTransform->SetWorldPosition(NewPosition);
+	CTransform->SetWorldPosition(NewPosition + LocalPosition);
 }
 
 void GameObject::AddWorldPosition(sf::Vector2f UpPosition)

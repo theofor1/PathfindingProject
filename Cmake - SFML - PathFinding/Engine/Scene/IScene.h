@@ -18,7 +18,7 @@ public:
 
 	virtual void Destroy();
 
-	void Draw(sf::RenderWindow& window) const;
+	virtual void Draw(sf::RenderWindow& window) const;
 
 	void AddGameObject(GameObject *gameObject);
 	std::vector<GameObject*> GetGameObjects();
