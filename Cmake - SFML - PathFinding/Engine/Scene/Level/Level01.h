@@ -19,9 +19,12 @@ protected:
 	Graph *graph;
 	PlayerShip *ship;
 
-	Cell* TargetCell;
-
 	void OnGraphCellOnClick();
 
+	void FollowWayPoints(float DeltaTime);
+	void MoveTo(float DeltaTime, const sf::Vector2f TargetPosition);
+
 private:
+	int CurrentIndexWaypoint = 0;
+	std::vector<sf::Vector2f> WayPoints;
 };

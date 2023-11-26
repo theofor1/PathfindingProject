@@ -1,5 +1,3 @@
-# MonProjetCMake/App/CMakeLists.txt
-
 project(App)
 
 # Ajoutez tous les fichiers source spécifiques à votre application
