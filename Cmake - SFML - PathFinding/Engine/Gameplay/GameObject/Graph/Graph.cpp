@@ -92,9 +92,6 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 		for (const auto &cellPair : row.second)
 		{
 			Cell *Cell = cellPair.second;
-			if (!Cell->GetIsAlive())
-				continue;
-
 			if (Cell->GetRect().contains(Position))
 			{
 				return Cell;
@@ -111,12 +108,16 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 	if (!CellStart || !CellEnd)
 		return Path;
 
+	if (!CellEnd->GetIsAlive())
+		return Path;
+
 	// Get Start and Tartget Wp
 	WayPoint *StartWp = GetWayPointByCell(CellStart);
 	WayPoint *EndWp = GetWayPointByCell(CellEnd);
 
 	if (!StartWp || !EndWp)
 		return Path;
+
 
 	std::vector<WayPoint *> Wps;
 
@@ -125,8 +126,8 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
 			Cell *Cell = Cells[x][y];
-			if (!Cell->GetIsAlive())
-				continue;
+			// if (!Cell->GetIsAlive())
+			// 	continue;
 			WayPoint *Wp = WayPoints[x][y];
 			Wps.push_back(Wp);
 		}

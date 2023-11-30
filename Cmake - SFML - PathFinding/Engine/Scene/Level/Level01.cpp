@@ -65,12 +65,11 @@ void Level01::OnGraphCellOnClick()
 
 	if (CellStart == CellEnd || !CellStart || !CellEnd)
 	{
-
 		ResetPath();
 		return;
 	}
 
-	std::cout << CellEnd->GetPosition().x << "   " << CellEnd->GetPosition().y << "\n";
+	// std::cout << CellEnd->GetPosition().x << "   " << CellEnd->GetPosition().y << "\n";
 
 	// ship->SetPosition(sf::Vector2f(75, 25));
 	// ship->SetPosition(CellEnd->GetPosition());
