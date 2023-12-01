@@ -11,20 +11,7 @@ Graph::Graph(std::string Name, const sf::Vector2i _NbCell, const int _CellSideSi
 																					  CellSideSize(_CellSideSize),
 																					  NbCell(_NbCell)
 {
-
 	UpdateSize(_NbCell);
-
-	// Cells[1][1]->SetIsAlive(false);
-	// Cells[1][2]->SetIsAlive(false);
-	// Cells[1][3]->SetIsAlive(false);
-
-	// Cells[7][10]->SetIsAlive(false);
-	// Cells[8][10]->SetIsAlive(false);
-	// Cells[9][10]->SetIsAlive(false);
-	// Cells[11][10]->SetIsAlive(false);
-	// Cells[12][10]->SetIsAlive(false);
-	// Cells[13][10]->SetIsAlive(false);
-
 }
 
 Graph::~Graph()
@@ -81,12 +68,19 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 	{
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
-			Cell *NewCell = new Cell("a cell", CurrentPosition, CellSideSize);
+			Cell *NewCell = new Cell("", CurrentPosition, CellSideSize);
 			Cells[x][y] = NewCell;
 			CurrentPosition += sf::Vector2f(CellSideSize, 0);
 		}
 		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
 	}
+
+	Cells[1][1]->SetIsAlive(false);
+	Cells[1][2]->SetIsAlive(false);
+	Cells[1][3]->SetIsAlive(false);
+
+	Cells[3][4]->SetIsAlive(false);
+	Cells[3][6]->SetIsAlive(false);
 
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
@@ -267,18 +261,20 @@ std::vector<WayPoint *> Graph::GetWayPointArroundWayPoint(const int x, const int
 	WayPoint *WpDown = GetWayPoint(x, y + 1);
 	WayPoint *WpLeft = GetWayPoint(x + 1, y);
 	WayPoint *WpRight = GetWayPoint(x - 1, y);
-	WayPoint *WpDownLeft = GetWayPoint(x, y + 1);
-	WayPoint *WpDownRight = GetWayPoint(x, y + 1);
-	WayPoint *WpUpLeft = GetWayPoint(x + 1, y - 1);
-	WayPoint *WpUpRight = GetWayPoint(x - 1, y - 1);
+
+	// WayPoint *WpDownLeft = GetWayPoint(x, y + 1);
+	// WayPoint *WpDownRight = GetWayPoint(x, y + 1);
+	// WayPoint *WpUpLeft = GetWayPoint(x + 1, y - 1);
+	// WayPoint *WpUpRight = GetWayPoint(x - 1, y - 1);
 
 	Wps.push_back(WpUp);
 	Wps.push_back(WpLeft);
 	Wps.push_back(WpRight);
-	Wps.push_back(WpDownLeft);
-	Wps.push_back(WpDownRight);
-	Wps.push_back(WpUpLeft);
-	Wps.push_back(WpUpRight);
+
+	// Wps.push_back(WpDownLeft);
+	// Wps.push_back(WpDownRight);
+	// Wps.push_back(WpUpLeft);
+	// Wps.push_back(WpUpRight);
 
 	return Wps;
 }

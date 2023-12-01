@@ -79,7 +79,7 @@ void Level01::OnGraphCellOnClick()
 
 void Level01::TestUpdateGraphSize(sf::Vector2i Size)
 {
-	graph->UpdateSize(sf::Vector2i(6, 5));
+	graph->UpdateSize(sf::Vector2i(8, 7));
 }
 
 void Level01::FollowWayPoints(float DeltaTime)
