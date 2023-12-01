@@ -19,7 +19,10 @@ public:
 
 	virtual void Draw(sf::RenderWindow &window) const;
 
+	virtual void UpdateSize(const sf::Vector2i Size);
+
 	virtual Cell *GetCellByPosition(sf::Vector2f Position);
+	virtual sf::Vector2i GetCellCoordinateByPosition(sf::Vector2f Position) const;
 	virtual std::vector<sf::Vector2f> GetPath(Cell *CellStart, Cell *CellEnd);
 
 	std::map<int, std::map<int, Cell *>> Cells;
@@ -38,5 +41,4 @@ private:
 	int CellSideSize;
 
 	std::map<int, std::map<int, WayPoint *>> WayPoints;
-
 };

@@ -24,6 +24,7 @@ protected:
 	PlayerShip *ship;
 
 	void OnGraphCellOnClick();
+	void TestUpdateGraphSize(sf::Vector2i Size);
 
 	void FollowWayPoints(float DeltaTime);
 	void MoveTo(float DeltaTime, const sf::Vector2f TargetPosition);

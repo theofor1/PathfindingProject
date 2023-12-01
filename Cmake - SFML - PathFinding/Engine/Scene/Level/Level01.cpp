@@ -12,13 +12,18 @@ Level01::Level01()
 {
 	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
 								   { OnGraphCellOnClick(); });
+
+	InputManager::Instance()->Bind(InputAction::Down, [this]()
+								   { TestUpdateGraphSize(sf::Vector2i(3, 7)); });
+
 }
 
 void Level01::Start()
 {
 	// graph = new Graph("", sf::Vector2i(1, 1));
-	// graph = new Graph("", sf::Vector2i(10, 10));
-	graph = new Graph("", sf::Vector2i(50, 50));
+	graph = new Graph("", sf::Vector2i(10, 10));
+	// graph = new Graph("", sf::Vector2i(50, 50));
+
 	ship = new PlayerShip();
 
 	AddGameObject(graph);
@@ -59,27 +64,22 @@ void Level01::OnGraphCellOnClick()
 
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
 	Cell *CellEnd = graph->GetCellByPosition(WorldMouseLocation);
-	// Cell *CellEnd = graph->Cells[0][0];
-
-	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
+	
+	sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
+	std::cout <<Coordinate.x << "   " << Coordinate.y << "\n";
+		
+	ResetPath();
 
 	if (CellStart == CellEnd || !CellStart || !CellEnd)
-	{
-		ResetPath();
 		return;
-	}
-
-	// std::cout << CellEnd->GetPosition().x << "   " << CellEnd->GetPosition().y << "\n";
-
-	// ship->SetPosition(sf::Vector2f(75, 25));
-	// ship->SetPosition(CellEnd->GetPosition());
-	// ship->SetPosition(graph->Cells[0][6]->GetPosition());
-
-	// ship->SetPosition(CellEnd->GetPosition() - ship->LocalPosition);
-	ResetPath();
 
 	WayPoints = graph->GetPath(CellStart, CellEnd);
 	UpdateDrawDebugLines();
+}
+
+void Level01::TestUpdateGraphSize(sf::Vector2i Size)
+{
+	graph->UpdateSize(sf::Vector2i(6, 5));
 }
 
 void Level01::FollowWayPoints(float DeltaTime)

@@ -11,35 +11,20 @@ Graph::Graph(std::string Name, const sf::Vector2i _NbCell, const int _CellSideSi
 																					  CellSideSize(_CellSideSize),
 																					  NbCell(_NbCell)
 {
-	// Init Cells
-	sf::Vector2f CurrentPosition(0, 0);
-	for (size_t x = 0; x < NbCell.x; x++)
-	{
-		for (size_t y = 0; y < NbCell.y; y++)
-		{
-			Cell *NewCell = new Cell("a cell", CurrentPosition, CellSideSize);
-			Cells[x][y] = NewCell;
-			CurrentPosition += sf::Vector2f(CellSideSize, 0);
-		}
-		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
-	}
 
-	// Cell *NewCell = new Cell("a cell", CurrentPosition, CellSideSize);
-	// Cells[0][0] = NewCell;
+	UpdateSize(_NbCell);
 
-	Cells[1][1]->SetIsAlive(false);
-	Cells[1][2]->SetIsAlive(false);
-	Cells[1][3]->SetIsAlive(false);
+	// Cells[1][1]->SetIsAlive(false);
+	// Cells[1][2]->SetIsAlive(false);
+	// Cells[1][3]->SetIsAlive(false);
 
-	Cells[7][10]->SetIsAlive(false);
-	Cells[8][10]->SetIsAlive(false);
-	Cells[9][10]->SetIsAlive(false);
-	Cells[11][10]->SetIsAlive(false);
-	Cells[12][10]->SetIsAlive(false);
-	Cells[13][10]->SetIsAlive(false);
+	// Cells[7][10]->SetIsAlive(false);
+	// Cells[8][10]->SetIsAlive(false);
+	// Cells[9][10]->SetIsAlive(false);
+	// Cells[11][10]->SetIsAlive(false);
+	// Cells[12][10]->SetIsAlive(false);
+	// Cells[13][10]->SetIsAlive(false);
 
-	WayPoints = GenerateWayPoints();
-	LinkWayPointsToNeighbor();
 }
 
 Graph::~Graph()
@@ -54,7 +39,6 @@ void Graph::Start()
 void Graph::Update(float DeltaTime)
 {
 	GameObject::Update(DeltaTime);
-
 }
 
 void Graph::Destroy()
@@ -82,7 +66,30 @@ void Graph::Draw(sf::RenderWindow &window) const
 			window.draw(Cell->GetRectangleShape());
 		}
 	}
+}
 
+void Graph::UpdateSize(const sf::Vector2i Size)
+{
+	NbCell = Size;
+
+	Cells.clear();
+	WayPoints.clear();
+
+	// Init Cells
+	sf::Vector2f CurrentPosition(0, 0);
+	for (size_t x = 0; x < NbCell.x; x++)
+	{
+		for (size_t y = 0; y < NbCell.y; y++)
+		{
+			Cell *NewCell = new Cell("a cell", CurrentPosition, CellSideSize);
+			Cells[x][y] = NewCell;
+			CurrentPosition += sf::Vector2f(CellSideSize, 0);
+		}
+		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
+	}
+
+	WayPoints = GenerateWayPoints();
+	LinkWayPointsToNeighbor();
 }
 
 Cell *Graph::GetCellByPosition(sf::Vector2f Position)
@@ -101,6 +108,25 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 	return nullptr;
 }
 
+sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
+{
+	sf::Vector2i Coordinate(0, 0);
+	for (const auto &row : Cells)
+	{
+		for (const auto &cellPair : row.second)
+		{
+			Cell *Cell = cellPair.second;
+			if (Cell->GetRect().contains(Position))
+			{
+				return Coordinate;
+			}
+			Coordinate.y++;
+		}
+		Coordinate.x++;
+	}
+	return Coordinate;
+}
+
 std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 {
 	std::vector<sf::Vector2f> Path;
@@ -117,7 +143,6 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 
 	if (!StartWp || !EndWp)
 		return Path;
-
 
 	std::vector<WayPoint *> Wps;
 
