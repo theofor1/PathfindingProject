@@ -2,6 +2,7 @@
 
 #include <Engine/Scene/IScene.h>
 #include <GameObject/Graph/Line/Line.h>
+#include <Engine/Render/UIElements/Button/Button.h>
 
 class Graph;
 class PlayerShip;
@@ -22,6 +23,7 @@ public:
 protected:
 	Graph *graph;
 	PlayerShip *ship;
+	Button* button;
 
 	void OnGraphCellOnClick();
 	void TestUpdateGraphSize(sf::Vector2i Size);

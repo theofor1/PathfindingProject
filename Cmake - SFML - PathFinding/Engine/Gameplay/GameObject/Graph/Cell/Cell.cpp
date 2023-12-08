@@ -66,7 +66,7 @@ void Cell::SetSize(const int _SideSize)
 	Size = sf::Vector2f(SideSize, SideSize);
 
 	Rectangle.setSize(Size);
-	Rectangle.setOutlineThickness(1);
+	Rectangle.setOutlineThickness(3);
 
 	Rect.width = SideSize;
 	Rect.height = SideSize;

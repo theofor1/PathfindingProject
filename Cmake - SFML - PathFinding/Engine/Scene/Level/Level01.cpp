@@ -25,11 +25,18 @@ void Level01::Start()
 	// graph = new Graph("", sf::Vector2i(50, 50));
 
 	ship = new PlayerShip();
+	// Create a button for the level : Pos -> Start x and y in % of screen, Size -> size x and y in % of screen
+	// Call Start and Update of the button in Start and Update of level. 
+	// In Draw of level, call UpdateRect, then Draw of the button
+	//button = new Button(sf::Vector2f(0.3, 0.3), sf::Vector2f(0.1,0.1));
 
 	AddGameObject(graph);
 	AddGameObject(ship);
 
 	IScene::Start();
+	//button->Start();
+	button->RenderRectangle.setFillColor(sf::Color::White);
+	button->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 
 	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
@@ -38,7 +45,7 @@ void Level01::Start()
 void Level01::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
-
+	//button->Update(DeltaTime);
 	FollowWayPoints(DeltaTime);
 	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
@@ -51,7 +58,9 @@ void Level01::Destroy()
 void Level01::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
-
+	sf::FloatRect windowRect(0, 0, window.getSize().x, window.getSize().y);
+	//button->UpdateRect(windowRect);
+	//button->Draw(window);
 	for (const Line line : DebugLines)
 		line.Draw(window);
 }
@@ -61,6 +70,12 @@ void Level01::OnGraphCellOnClick()
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
+
+	/*
+	if (button->Clicked(WorldMouseLocation)) {
+		std::cout << "Clicked" << std::endl;
+	}
+	*/
 
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
 	Cell *CellEnd = graph->GetCellByPosition(WorldMouseLocation);
