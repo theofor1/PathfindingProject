@@ -35,8 +35,8 @@ void Level01::Start()
 
 	IScene::Start();
 	//button->Start();
-	button->RenderRectangle.setFillColor(sf::Color::White);
-	button->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	//button->RenderRectangle.setFillColor(sf::Color::White);
+	//button->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 
 	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
