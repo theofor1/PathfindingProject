@@ -6,12 +6,14 @@
 
 #include <Level/LevelGraph.h>
 #include <Level/LevelCustom.h>
+#include <Level/MainMenu.h>
 #include <iostream>
 
 IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
+    AddLevel(new MainMenu());
     // AddLevel(new LevelCustom());
     // AddLevel(new LevelGraph());
 
