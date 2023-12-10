@@ -22,6 +22,12 @@ void Level01::Start()
 {
 	// graph = new Graph("", sf::Vector2i(1, 1));
 	graph = new Graph("", sf::Vector2i(10, 10));
+	graph->Cells[1][1]->SetIsAlive(false);
+	graph->Cells[1][2]->SetIsAlive(false);
+	graph->Cells[1][3]->SetIsAlive(false);
+
+	graph->Cells[3][4]->SetIsAlive(false);
+	graph->Cells[3][6]->SetIsAlive(false);
 	// graph = new Graph("", sf::Vector2i(50, 50));
 
 	ship = new PlayerShip();

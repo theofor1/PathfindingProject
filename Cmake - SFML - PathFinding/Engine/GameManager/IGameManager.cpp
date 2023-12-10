@@ -6,6 +6,7 @@
 //#include <Engine/Scene/IScene.h>
 
 #include <Level/Level01.h>
+#include <Level/LevelCustom.h>
 #include <iostream>
 
 IGameManager* IGameManager::instance = nullptr;

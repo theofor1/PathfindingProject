@@ -41,8 +41,6 @@ protected:
 	void UpdateLayoutList();
 public:
 
-	bool bDrawDebug = true;
-
 	UIElement(const Vec2f& _pos, const Vec2f& _size);
 
 	const Vec2f GetPos() const;

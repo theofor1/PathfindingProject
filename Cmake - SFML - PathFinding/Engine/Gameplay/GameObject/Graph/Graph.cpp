@@ -57,30 +57,48 @@ void Graph::Draw(sf::RenderWindow &window) const
 
 void Graph::UpdateSize(const sf::Vector2i Size)
 {
+	sf::Vector2i LastNbCells = NbCell;
 	NbCell = Size;
-
+	std::map<int, std::map<int, Cell*>> LastCells = Cells;
 	Cells.clear();
 	WayPoints.clear();
+	size_t MinNbCellX;
+	size_t MinNbCellY;
 
-	// Init Cells
+	if (NbCell == LastNbCells) {
+		//If it is equal, we are in the first graph construction, all cells are new
+		MinNbCellX = 0;
+		MinNbCellY = 0;
+	}
+	else {
+		MinNbCellX = fmin(NbCell.x, LastNbCells.x);
+		MinNbCellY = fmin(NbCell.y, LastNbCells.y);
+	}
+
+	//Report last cells that are in the new size
+	for (size_t x = 0; x < MinNbCellX; x++)
+	{
+		for (size_t y = 0; y < MinNbCellY; y++)
+		{
+			Cells[x][y] = LastCells[x][y];
+		}
+	}
+
+	// Init new Cells
 	sf::Vector2f CurrentPosition(0, 0);
 	for (size_t x = 0; x < NbCell.x; x++)
 	{
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
-			Cell *NewCell = new Cell("", CurrentPosition, CellSideSize);
-			Cells[x][y] = NewCell;
+			//Add if it is a new cell
+			if (x >= MinNbCellX || y >= MinNbCellY) {
+				Cell* NewCell = new Cell("", CurrentPosition, CellSideSize);
+				Cells[x][y] = NewCell;
+			}
 			CurrentPosition += sf::Vector2f(CellSideSize, 0);
 		}
 		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
 	}
-
-	Cells[1][1]->SetIsAlive(false);
-	Cells[1][2]->SetIsAlive(false);
-	Cells[1][3]->SetIsAlive(false);
-
-	Cells[3][4]->SetIsAlive(false);
-	Cells[3][6]->SetIsAlive(false);
 
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
@@ -163,6 +181,16 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 	}
 
 	return Path;
+}
+
+sf::Vector2i Graph::GetNbCell() const {
+	return NbCell;
+}
+
+void Graph::ReGenerateWaypoints()
+{
+	WayPoints = GenerateWayPoints();
+	LinkWayPointsToNeighbor();
 }
 
 //////////////////////////////////////////////////

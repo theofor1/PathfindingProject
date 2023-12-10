@@ -38,8 +38,8 @@ UIDirection UIElement::GetDirection() const
 
 void UIElement::Start()
 {
-	RenderRectangle.setOutlineColor(sf::Color::Red);
-	RenderRectangle.setOutlineThickness(2);
+	//RenderRectangle.setOutlineColor(sf::Color::Red);
+	//RenderRectangle.setOutlineThickness(0);
 	RenderRectangle.setFillColor(sf::Color::Transparent);
 
 	for (UIElement* pElem : Children)
@@ -77,11 +77,9 @@ const sf::FloatRect& UIElement::UpdateRect(const sf::FloatRect& _parentRect)
 	DetectionRect.width = vSize.x;
 	DetectionRect.height = vSize.y;
 
-	if (bDrawDebug)
-	{
-		RenderRectangle.setPosition(DetectionRect.left, DetectionRect.top);
-		RenderRectangle.setSize(sf::Vector2f(DetectionRect.width, DetectionRect.height));
-	}
+	RenderRectangle.setPosition(DetectionRect.left, DetectionRect.top);
+	RenderRectangle.setSize(sf::Vector2f(DetectionRect.width, DetectionRect.height));
+	
 
 
 	switch (Layout)
@@ -224,8 +222,6 @@ void UIElement::Draw(sf::RenderWindow& _window)
 	for (UIElement* pElem : Children)
 		pElem->Draw(_window);
 
-	if (bDrawDebug)
-	{
-		_window.draw(RenderRectangle);
-	}
+	_window.draw(RenderRectangle);
+	
 }
