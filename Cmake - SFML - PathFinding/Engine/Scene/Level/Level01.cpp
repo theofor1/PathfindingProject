@@ -28,6 +28,7 @@ void Level01::Start()
 
 	graph->Cells[3][4]->SetIsAlive(false);
 	graph->Cells[3][6]->SetIsAlive(false);
+	graph->ReGenerateWaypoints();
 	// graph = new Graph("", sf::Vector2i(50, 50));
 
 	ship = new PlayerShip();
