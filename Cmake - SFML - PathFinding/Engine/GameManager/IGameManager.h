@@ -14,6 +14,8 @@ public:
 
 	IScene* GetActiveScene();
 
+	virtual void LoadLevel(const int LevelIndex);
+
 	#pragma region Singleton
 
 		static IGameManager* Instance()
@@ -40,7 +42,7 @@ public:
 
 private:
 	std::vector<IScene*> Scenes;
-	int indexActiveScene = 0;
+	int IndexCurrentScene = 0;
 
 	void StartActiveScene();
 	void UpdateActiveScene(float DeltaTime);

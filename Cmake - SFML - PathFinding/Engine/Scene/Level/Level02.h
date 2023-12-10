@@ -8,16 +8,15 @@ class PlayerShip;
 class Cell;
 // class Live;
 
-class Level01 : public IScene
+class Level02 : public IScene
 {
 public:
-	Level01();
+	Level02();
 
 	void Start() override;
 	void Update(float DeltaTime) override;
 	void Destroy() override;
 	void Draw(sf::RenderWindow& window) const;
-
 
 protected:
 	Graph *graph;
@@ -33,7 +32,7 @@ protected:
 	void UpdateDrawDebugLines();
 
 private:
-	int CurrentIndexWaypoint;
+	int CurrentIndexWaypoint = 0;
 	std::vector<sf::Vector2f> WayPoints;
 
 

@@ -26,6 +26,7 @@ public:
 	void Update();
 
 	void Bind(InputAction IA, const Callback& callback);
+	void ResetBind();
 
 #pragma region Singleton
 
@@ -57,6 +58,8 @@ private:
 
 	void UpdateInputAction();
 	void UpdateMouseInputAction();
+
+	bool IsBinded(const std::vector<Callback> &Callbacks, const Callback &CallbackToCheck) const;
 
 	std::map<InputAction, sf::Keyboard::Key> InputBinds;
 	std::map<InputAction, sf::Mouse::Button> MouseBinds;

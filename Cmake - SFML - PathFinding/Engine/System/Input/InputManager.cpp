@@ -19,11 +19,27 @@ void InputManager::Bind(InputAction IA, const Callback &callback)
 {
 	if (IA == InputAction::MouseL || IA == InputAction::MouseR)
 	{
-		MouseInputActionCallbacks[IA].push_back(callback);
+		if (!IsBinded(MouseInputActionCallbacks[IA], callback))
+			MouseInputActionCallbacks[IA].push_back(callback);
 	}
 	else
 	{
-		InputActionCallbacks[IA].push_back(callback);
+		if (!IsBinded(InputActionCallbacks[IA], callback))
+			InputActionCallbacks[IA].push_back(callback);
+	}
+}
+
+void InputManager::ResetBind()
+{
+	for (auto &pair : InputActionCallbacks)
+	{
+		InputAction IA = pair.first;
+		InputActionCallbacks[IA].clear();
+	}
+	for (auto &pair : MouseInputActionCallbacks)
+	{
+		InputAction IA = pair.first;
+		MouseInputActionCallbacks[IA].clear();
 	}
 }
 
@@ -48,6 +64,8 @@ void InputManager::UpdateInputAction()
 
 void InputManager::UpdateMouseInputAction()
 {
+	std::cout << MouseInputActionCallbacks[InputAction::MouseL].size() << "\n";
+
 	for (const auto &pair : MouseBinds)
 	{
 		InputAction IA = pair.first;
@@ -87,4 +105,14 @@ void InputManager::InitMouseButtonBinds()
 		InputAction IA = pair.first;
 		MouseInputActionCallbacks[IA] = std::vector<Callback>();
 	}
+}
+
+bool InputManager::IsBinded(const std::vector<Callback> &Callbacks, const Callback &CallbackToCheck) const
+{
+	for (const auto &callback : Callbacks)
+	{
+		if (callback.target<void()>() == CallbackToCheck.target<void()>())
+			return true;
+	}
+	return false;
 }

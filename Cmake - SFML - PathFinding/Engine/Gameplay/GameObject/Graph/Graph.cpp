@@ -11,7 +11,6 @@ Graph::Graph(std::string Name, const sf::Vector2i _NbCell, const int _CellSideSi
 																					  CellSideSize(_CellSideSize),
 																					  NbCell(_NbCell)
 {
-	UpdateSize(_NbCell);
 }
 
 Graph::~Graph()
@@ -21,6 +20,7 @@ Graph::~Graph()
 void Graph::Start()
 {
 	GameObject::Start();
+	UpdateSize(NbCell);
 }
 
 void Graph::Update(float DeltaTime)

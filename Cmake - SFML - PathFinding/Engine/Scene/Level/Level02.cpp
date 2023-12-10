@@ -1,4 +1,4 @@
-#include "Level01.h"
+#include "Level02.h"
 #include <Actor/PlayerShip/PlayerShip.h>
 #include <System/Input/InputManager.h>
 #include <Engine/Render/Window.h>
@@ -9,20 +9,20 @@
 
 #include <iostream>
 
-Level01::Level01()
+Level02::Level02()
 {
 }
 
-void Level01::Start()
+void Level02::Start()
 {
 	Destroy();
-
+	
 	CurrentIndexWaypoint = 0;
-	GameObjects.clear();
 	WayPoints.clear();
 	DebugLines.clear();
+	GameObjects.clear();
 
-	graph = new Graph("", sf::Vector2i(10, 10));
+	graph = new Graph("", sf::Vector2i(20, 20));
 	ship = new PlayerShip();
 
 	AddGameObject(graph);
@@ -30,14 +30,13 @@ void Level01::Start()
 
 	IScene::Start();
 
-	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
-	ship->SetPosition(graph->Cells[0][0]->GetPosition());
+	ship->SetPosition(graph->Cells[5][3]->GetPosition());
 
 	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
 								   { OnGraphCellOnClick(); });
 }
 
-void Level01::Update(float DeltaTime)
+void Level02::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
 
@@ -45,12 +44,12 @@ void Level01::Update(float DeltaTime)
 	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
 
-void Level01::Destroy()
+void Level02::Destroy()
 {
 	IScene::Destroy();
 }
 
-void Level01::Draw(sf::RenderWindow &window) const
+void Level02::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 
@@ -59,7 +58,7 @@ void Level01::Draw(sf::RenderWindow &window) const
 }
 
 // Protected
-void Level01::OnGraphCellOnClick()
+void Level02::OnGraphCellOnClick()
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
@@ -79,12 +78,12 @@ void Level01::OnGraphCellOnClick()
 	UpdateDrawDebugLines();
 }
 
-void Level01::TestUpdateGraphSize(sf::Vector2i Size)
+void Level02::TestUpdateGraphSize(sf::Vector2i Size)
 {
 	graph->UpdateSize(sf::Vector2i(8, 7));
 }
 
-void Level01::FollowWayPoints(float DeltaTime)
+void Level02::FollowWayPoints(float DeltaTime)
 {
 	if (WayPoints.size() == 0)
 		return;
@@ -109,21 +108,21 @@ void Level01::FollowWayPoints(float DeltaTime)
 	}
 }
 
-void Level01::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
+void Level02::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
 {
 	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
 	Direction *= DeltaTime * 132;
 	ship->AddWorldPosition(Direction);
 }
 
-void Level01::ResetPath()
+void Level02::ResetPath()
 {
 	CurrentIndexWaypoint = 0;
 	WayPoints.clear();
 	UpdateDrawDebugLines();
 }
 
-void Level01::UpdateDrawDebugLines()
+void Level02::UpdateDrawDebugLines()
 {
 	DebugLines.clear();
 
