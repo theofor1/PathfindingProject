@@ -27,6 +27,8 @@ void LevelCustom::Start()
 	OnWallMode = false;
 	OnPutWallMode = true;
 	CurrentIndexWaypoint = 0;
+	ColorOnSelected = sf::Color(255, 0, 0, 255);
+
 
 	Mode = Mode::MOVE_PLAYER;
 
@@ -165,76 +167,6 @@ void LevelCustom::OnGraphCellOnClick()
 	graph->ReGenerateWaypoints();
 }
 
-void LevelCustom::EventOnClick()
-{
-	// if (TimeSinceLastInput < 0.3)
-	// 	return;
-
-	TimeSinceLastInput = 0;
-
-	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
-	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
-
-	if (btnPutWallMode->Clicked(WorldMouseLocation))
-	{
-		std::cout << "tot\n";
-		Mode = Mode::PUT_WALL;
-		// btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-
-		// OnWallMode = !OnWallMode;
-		// if (!OnWallMode)
-		// {
-		// 	btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		// 	btnPutWallMode->TextButton.setString("Place walls");
-		// }
-		// else
-		// {
-		// 	btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-		// 	btnPutWallMode->TextButton.setString("Move player");
-		// }
-		return;
-	}
-
-	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
-	{
-		if (GraphHeightNbCells == 4)
-			return;
-		GraphHeightNbCells--;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
-	{
-		if (GraphHeightNbCells == 14)
-			return;
-		GraphHeightNbCells++;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
-	{
-		if (GraphWidthNbCells == 4)
-			return;
-		GraphWidthNbCells--;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
-	{
-		if (GraphWidthNbCells == 14)
-			return;
-		GraphWidthNbCells++;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	OnGraphCellOnClick();
-}
-
 void LevelCustom::OnButtonsClick()
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
@@ -243,7 +175,7 @@ void LevelCustom::OnButtonsClick()
 	if (btnPlayerMoveMode->Clicked(WorldMouseLocation))
 	{
 		Mode = Mode::MOVE_PLAYER;
-		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnPlayerMoveMode->RenderRectangle.setFillColor(ColorOnSelected);
 		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
 		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
 		return;
@@ -252,7 +184,7 @@ void LevelCustom::OnButtonsClick()
 	if (btnPutWallMode->Clicked(WorldMouseLocation))
 	{
 		Mode = Mode::PUT_WALL;
-		btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnPutWallMode->RenderRectangle.setFillColor(ColorOnSelected);
 		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
 		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
 		ResetPath();
@@ -263,7 +195,7 @@ void LevelCustom::OnButtonsClick()
 	if (btnRemoveWallMode->Clicked(WorldMouseLocation))
 	{
 		Mode = Mode::REMOVE_WALL;
-		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnRemoveWallMode->RenderRectangle.setFillColor(ColorOnSelected);
 		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
 		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
 		ResetPath();

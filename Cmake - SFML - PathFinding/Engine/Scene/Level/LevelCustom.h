@@ -43,11 +43,12 @@ protected:
 	Button* btnRemoveGraphWidth;
 	Button* btnAddGraphWidth;
 
+	sf::Color ColorOnSelected;
+
 
 
 	void OnGraphCellOnClick();
 	void OnButtonsClick();
-	void EventOnClick();
 
 	void FollowWayPoints(float DeltaTime);
 	void MoveTo(float DeltaTime, const sf::Vector2f TargetPosition);
