@@ -4,16 +4,14 @@
 
 // #include <Engine/Scene/IScene.h>
 
-#include <Level/Level01.h>
-#include <Level/Level02.h>
+#include <Level/LevelGraph.h>
 #include <iostream>
 
 IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    AddLevel(new Level02());
-    AddLevel(new Level01());
+    AddLevel(new LevelGraph());
 
     InputManager::Instance()->Bind(InputAction::Down, [this]()
                                    { LoadLevel(1); });

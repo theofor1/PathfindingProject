@@ -1,4 +1,4 @@
-#include "Level02.h"
+#include "LevelGraph.h"
 #include <Actor/PlayerShip/PlayerShip.h>
 #include <System/Input/InputManager.h>
 #include <Engine/Render/Window.h>
@@ -9,20 +9,20 @@
 
 #include <iostream>
 
-Level02::Level02()
+LevelGraph::LevelGraph()
 {
 }
 
-void Level02::Start()
+void LevelGraph::Start()
 {
 	Destroy();
-	
+
 	CurrentIndexWaypoint = 0;
+	GameObjects.clear();
 	WayPoints.clear();
 	DebugLines.clear();
-	GameObjects.clear();
 
-	graph = new Graph("", sf::Vector2i(20, 20));
+	graph = new Graph("", sf::Vector2i(10, 10));
 	ship = new PlayerShip();
 
 	AddGameObject(graph);
@@ -30,13 +30,14 @@ void Level02::Start()
 
 	IScene::Start();
 
-	ship->SetPosition(graph->Cells[5][3]->GetPosition());
+	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
+	ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
 	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
 								   { OnGraphCellOnClick(); });
 }
 
-void Level02::Update(float DeltaTime)
+void LevelGraph::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
 
@@ -44,12 +45,12 @@ void Level02::Update(float DeltaTime)
 	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
 
-void Level02::Destroy()
+void LevelGraph::Destroy()
 {
 	IScene::Destroy();
 }
 
-void Level02::Draw(sf::RenderWindow &window) const
+void LevelGraph::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 
@@ -58,7 +59,7 @@ void Level02::Draw(sf::RenderWindow &window) const
 }
 
 // Protected
-void Level02::OnGraphCellOnClick()
+void LevelGraph::OnGraphCellOnClick()
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
@@ -84,12 +85,12 @@ void Level02::OnGraphCellOnClick()
 	UpdateDrawDebugLines();
 }
 
-void Level02::TestUpdateGraphSize(sf::Vector2i Size)
+void LevelGraph::TestUpdateGraphSize(sf::Vector2i Size)
 {
 	graph->UpdateSize(sf::Vector2i(8, 7));
 }
 
-void Level02::FollowWayPoints(float DeltaTime)
+void LevelGraph::FollowWayPoints(float DeltaTime)
 {
 	if (WayPoints.size() == 0)
 		return;
@@ -114,21 +115,21 @@ void Level02::FollowWayPoints(float DeltaTime)
 	}
 }
 
-void Level02::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
+void LevelGraph::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
 {
 	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
 	Direction *= DeltaTime * 132;
 	ship->AddWorldPosition(Direction);
 }
 
-void Level02::ResetPath()
+void LevelGraph::ResetPath()
 {
 	CurrentIndexWaypoint = 0;
 	WayPoints.clear();
 	UpdateDrawDebugLines();
 }
 
-void Level02::UpdateDrawDebugLines()
+void LevelGraph::UpdateDrawDebugLines()
 {
 	DebugLines.clear();
 
