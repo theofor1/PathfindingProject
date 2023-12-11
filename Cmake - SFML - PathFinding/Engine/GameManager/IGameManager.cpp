@@ -13,7 +13,7 @@ IGameManager *IGameManager::instance = nullptr;
 IGameManager::IGameManager()
 {
     // AddLevel(new LevelCustom());
-    AddLevel(new LevelGraph());
+    // AddLevel(new LevelGraph());
 
     // InputManager::Instance()->Bind(InputAction::Down, [this]()
     //                                { LoadLevel(1); });

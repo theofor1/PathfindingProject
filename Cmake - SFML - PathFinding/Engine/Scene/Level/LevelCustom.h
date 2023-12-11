@@ -7,7 +7,13 @@
 class Graph;
 class PlayerShip;
 class Cell;
-// class Live;
+
+enum class Mode
+{
+	MOVE_PLAYER,
+	PUT_WALL,
+	REMOVE_WALL
+};
 
 class LevelCustom : public IScene
 {
@@ -27,16 +33,21 @@ protected:
 	UIElement* outerBox;
 	UIElement* graphHeightBox;
 	UIElement* graphWidthBox;
-	Button* addWalls;
-	Button* removeGraphHeight;
-	Button* addGraphHeight;
-	Button* removeGraphWidth;
-	Button* addGraphWidth;
+
+	Button* btnPlayerMoveMode;
+	Button* btnPutWallMode;
+	Button* btnRemoveWallMode;
+
+	Button* btnRemoveGraphHeight;
+	Button* btnAddGraphHeight;
+	Button* btnRemoveGraphWidth;
+	Button* btnAddGraphWidth;
+
 
 
 	void OnGraphCellOnClick();
+	void OnButtonsClick();
 	void EventOnClick();
-	void TestUpdateGraphSize(sf::Vector2i Size);
 
 	void FollowWayPoints(float DeltaTime);
 	void MoveTo(float DeltaTime, const sf::Vector2f TargetPosition);
@@ -45,14 +56,20 @@ protected:
 	void UpdateDrawDebugLines();
 
 private:
-	int CurrentIndexWaypoint = 0;
+	int CurrentIndexWaypoint;
 	std::vector<sf::Vector2f> WayPoints;
+	Cell *CurrentCellDest;
 
 
 	std::vector<Line> DebugLines;
 	std::vector<Button*> AllButtons;
 
-	bool OnWallMode = false;
+	bool OnWallMode;
+	bool OnPutWallMode;
+
+	Mode Mode;
+
+
 	int GraphHeightNbCells;
 	int GraphWidthNbCells;
 

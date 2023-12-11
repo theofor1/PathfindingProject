@@ -164,8 +164,6 @@ void InputManager::UpdateMouseInputActionOnDown()
 
 		if (sf::Mouse::isButtonPressed(button) && InputActionIsUp[IA])
 		{
-			std::cout << "toto\n";
-
 			InputActionIsUp[IA] = false;
 			InputActionIsDown[IA] = true;
 			for (const auto &callback : OnDownMouseInputActionCallbacks[IA])

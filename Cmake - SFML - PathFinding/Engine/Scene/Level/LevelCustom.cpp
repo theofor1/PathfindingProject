@@ -10,76 +10,93 @@
 
 LevelCustom::LevelCustom()
 {
-	// InputManager::Instance()->Bind(InputAction::MouseL, [this]()
-	// 							   { EventOnClick(); });
+	graph = new Graph("", sf::Vector2i(10, 10));
+	GraphHeightNbCells = 10;
+	GraphWidthNbCells = 10;
 
+	ship = new PlayerShip();
+
+	AddGameObject(graph);
+	AddGameObject(ship);
 }
 
 void LevelCustom::Start()
 {
-	// graph = new Graph("", sf::Vector2i(1, 1));
-	graph = new Graph("", sf::Vector2i(10, 10));
-	GraphHeightNbCells = 10;
-	GraphWidthNbCells = 10;
-	// graph = new Graph("", sf::Vector2i(50, 50));
-
-	ship = new PlayerShip();
-	
-
-	AddGameObject(graph);
-	AddGameObject(ship);
-
 	IScene::Start();
+
+	OnWallMode = false;
+	OnPutWallMode = true;
+	CurrentIndexWaypoint = 0;
+
+	Mode = Mode::MOVE_PLAYER;
 
 	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
 	outerBox = new UIElement(sf::Vector2f(0.5f, 0.f), sf::Vector2f(0.1f, 0.3f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
-	
 
-	addWalls = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	addWalls->RenderRectangle.setFillColor(sf::Color::White);
-	addWalls->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	addWalls->TextButton.setString("Place walls");
-	outerBox->AddChild(addWalls);
+	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+	btnPlayerMoveMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
+	outerBox->AddChild(btnPlayerMoveMode);
 
+	btnPutWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
+	btnPutWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutWallMode->TextButton.setString("Place Wall Mode");
+	outerBox->AddChild(btnPutWallMode);
+
+	btnRemoveWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
+	btnRemoveWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnRemoveWallMode->TextButton.setString("Remove Wall Mode");
+	outerBox->AddChild(btnRemoveWallMode);
 
 	graphHeightBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphHeightBox);
 
-	removeGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	removeGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
-	removeGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	removeGraphHeight->TextButton.setString("- Height");
-	graphHeightBox->AddChild(removeGraphHeight);
+	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnRemoveGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
+	btnRemoveGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnRemoveGraphHeight->TextButton.setString("- Height");
+	graphHeightBox->AddChild(btnRemoveGraphHeight);
 
-	addGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	addGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
-	addGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	addGraphHeight->TextButton.setString("+ Height");
-	graphHeightBox->AddChild(addGraphHeight);
-
+	btnAddGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnAddGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
+	btnAddGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnAddGraphHeight->TextButton.setString("+ Height");
+	graphHeightBox->AddChild(btnAddGraphHeight);
 
 	graphWidthBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	graphWidthBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphWidthBox);
 
-	removeGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	removeGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
-	removeGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	removeGraphWidth->TextButton.setString("- Width");
-	graphWidthBox->AddChild(removeGraphWidth);
+	btnRemoveGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnRemoveGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
+	btnRemoveGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnRemoveGraphWidth->TextButton.setString("- Width");
+	graphWidthBox->AddChild(btnRemoveGraphWidth);
 
-	addGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	addGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
-	addGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	addGraphWidth->TextButton.setString("+ Width");
-	graphWidthBox->AddChild(addGraphWidth);
-	
+	btnAddGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnAddGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
+	btnAddGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnAddGraphWidth->TextButton.setString("+ Width");
+	graphWidthBox->AddChild(btnAddGraphWidth);
 
 	outerBox->Start();
+
+	// INPUT BINDING
+	InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
+											  { OnGraphCellOnClick(); });
+
+	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
+										 { OnButtonsClick(); });
+
+	// InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
+	// 										  { EventOnClick(); });
 }
 
 void LevelCustom::Update(float DeltaTime)
@@ -88,7 +105,6 @@ void LevelCustom::Update(float DeltaTime)
 	IScene::Update(DeltaTime);
 	outerBox->Update(DeltaTime);
 	FollowWayPoints(DeltaTime);
-	//std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
 
 void LevelCustom::Destroy()
@@ -101,7 +117,7 @@ void LevelCustom::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 	sf::Vector2u windowSize = window.getSize();
-	sf::FloatRect windowRect(0,0, windowSize.x,windowSize.y);
+	sf::FloatRect windowRect(0, 0, windowSize.x, windowSize.y);
 	outerBox->UpdateRect(windowRect);
 	outerBox->Draw(window);
 	for (const Line line : DebugLines)
@@ -114,79 +130,103 @@ void LevelCustom::OnGraphCellOnClick()
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
 
+	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
+	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
 
-	
-	sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
-	std::cout <<Coordinate.x << "   " << Coordinate.y << "\n";
-	
-	
-		
-	if (OnWallMode) {
-		Cell* CurCell = graph->GetCellByPosition(WorldMouseLocation);
-		Cell* PlayerCell = graph->GetCellByPosition(ship->GetPosition());
-		if (CurCell == PlayerCell || !CurCell) return;
-		CurCell->SetIsAlive(!CurCell->GetIsAlive());
-		graph->ReGenerateWaypoints();
-	}
-	else {
+	if (CurrentCellDest == CellDest)
+		return;
 
+	CurrentCellDest = CellDest;
+
+	if (!CellStart || !CellDest || CellStart == CellDest)
+		return;
+
+	switch (Mode)
+	{
+	case Mode::MOVE_PLAYER:
 		ResetPath();
-		Cell* CellStart = graph->GetCellByPosition(ship->GetPosition());
-		Cell* CellEnd = graph->GetCellByPosition(WorldMouseLocation);
-
-		if (CellStart == CellEnd || !CellStart || !CellEnd)
-			return;
-
-		WayPoints = graph->GetPath(CellStart, CellEnd);
+		WayPoints = graph->GetPath(CellStart, CellDest);
 		UpdateDrawDebugLines();
+		break;
+	case Mode::PUT_WALL:
+		if (!CellDest->GetIsAlive())
+			return;
+		CellDest->SetIsAlive(false);
+		break;
+	case Mode::REMOVE_WALL:
+		if (CellDest->GetIsAlive())
+			return;
+		CellDest->SetIsAlive(true);
+		break;
+	default:
+		return;
 	}
+
+	graph->ReGenerateWaypoints();
 }
 
 void LevelCustom::EventOnClick()
 {
-	if (TimeSinceLastInput < 0.3) return;
+	// if (TimeSinceLastInput < 0.3)
+	// 	return;
 
 	TimeSinceLastInput = 0;
 
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
 
-	if (addWalls->Clicked(WorldMouseLocation)) {
-		OnWallMode = !OnWallMode;
-		if (!OnWallMode) {
-			addWalls->RenderRectangle.setFillColor(sf::Color::White);
-			addWalls->TextButton.setString("Place walls");
-		}
-		else {
-			addWalls->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-			addWalls->TextButton.setString("Move player");
-		}
+	if (btnPutWallMode->Clicked(WorldMouseLocation))
+	{
+		std::cout << "tot\n";
+		Mode = Mode::PUT_WALL;
+		// btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+
+		// OnWallMode = !OnWallMode;
+		// if (!OnWallMode)
+		// {
+		// 	btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		// 	btnPutWallMode->TextButton.setString("Place walls");
+		// }
+		// else
+		// {
+		// 	btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		// 	btnPutWallMode->TextButton.setString("Move player");
+		// }
 		return;
 	}
 
-	if (removeGraphHeight->Clicked(WorldMouseLocation)) {
-		if (GraphHeightNbCells == 4) return;
+	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
+	{
+		if (GraphHeightNbCells == 4)
+			return;
 		GraphHeightNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
 	}
 
-	if (addGraphHeight->Clicked(WorldMouseLocation)) {
-		if (GraphHeightNbCells == 14) return;
+	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
+	{
+		if (GraphHeightNbCells == 14)
+			return;
 		GraphHeightNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
 	}
 
-	if (removeGraphWidth->Clicked(WorldMouseLocation)) {
-		if (GraphWidthNbCells == 4) return;
+	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
+	{
+		if (GraphWidthNbCells == 4)
+			return;
 		GraphWidthNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
 	}
 
-	if (addGraphWidth->Clicked(WorldMouseLocation)) {
-		if (GraphWidthNbCells == 14) return;
+	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
+	{
+		if (GraphWidthNbCells == 14)
+			return;
 		GraphWidthNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
@@ -195,9 +235,77 @@ void LevelCustom::EventOnClick()
 	OnGraphCellOnClick();
 }
 
-void LevelCustom::TestUpdateGraphSize(sf::Vector2i Size)
+void LevelCustom::OnButtonsClick()
 {
-	graph->UpdateSize(sf::Vector2i(8, 7));
+	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
+	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
+
+	if (btnPlayerMoveMode->Clicked(WorldMouseLocation))
+	{
+		Mode = Mode::MOVE_PLAYER;
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		return;
+	}
+
+	if (btnPutWallMode->Clicked(WorldMouseLocation))
+	{
+		Mode = Mode::PUT_WALL;
+		btnPutWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		ResetPath();
+		UpdateDrawDebugLines();
+		return;
+	}
+
+	if (btnRemoveWallMode->Clicked(WorldMouseLocation))
+	{
+		Mode = Mode::REMOVE_WALL;
+		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
+		ResetPath();
+		UpdateDrawDebugLines();
+		return;
+	}
+
+	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
+	{
+		if (GraphHeightNbCells == 4)
+			return;
+		GraphHeightNbCells--;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
+	{
+		if (GraphHeightNbCells == 14)
+			return;
+		GraphHeightNbCells++;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
+	{
+		if (GraphWidthNbCells == 4)
+			return;
+		GraphWidthNbCells--;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
+	{
+		if (GraphWidthNbCells == 14)
+			return;
+		GraphWidthNbCells++;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
 }
 
 void LevelCustom::FollowWayPoints(float DeltaTime)

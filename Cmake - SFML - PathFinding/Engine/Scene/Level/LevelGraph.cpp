@@ -91,12 +91,6 @@ void LevelGraph::OnGraphCellOnClick()
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
 
-	/*
-	if (button->Clicked(WorldMouseLocation)) {
-		std::cout << "Clicked" << std::endl;
-	}
-	*/
-
 	Cell *CellEnd = graph->GetCellByPosition(WorldMouseLocation);
 	if (CurrentCellEnd == CellEnd)
 		return;
@@ -104,8 +98,6 @@ void LevelGraph::OnGraphCellOnClick()
 	CurrentCellEnd = CellEnd;
 
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
-
-	// sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
 
 	if (CellStart == CellEnd || !CellStart || !CellEnd)
 		return;
