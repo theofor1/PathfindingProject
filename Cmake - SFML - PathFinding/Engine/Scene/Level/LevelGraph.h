@@ -34,6 +34,8 @@ protected:
 	void ResetPath();
 	void UpdateDrawDebugLines();
 
+	void UpdateNumberCell(const sf::Vector2i Amount);
+
 private:
 	int CurrentIndexWaypoint;
 	

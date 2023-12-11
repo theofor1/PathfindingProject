@@ -14,6 +14,7 @@ enum class InputAction
 	Down,
 	MouseL,
 	MouseR,
+	Count,
 };
 
 class InputManager
@@ -25,7 +26,9 @@ public:
 
 	void Update();
 
-	void Bind(InputAction IA, const Callback& callback);
+	void BindOnTriggered(InputAction IA, const Callback& callback);
+	void BindOnDown(InputAction IA, const Callback& callback);
+	void BindOnUp(InputAction IA, const Callback& callback);
 	void ResetBind();
 
 #pragma region Singleton
@@ -56,8 +59,13 @@ private:
 	void InitInputBinds();
 	void InitMouseButtonBinds();
 
-	void UpdateInputAction();
-	void UpdateMouseInputAction();
+	void UpdateInputActionOnTriggered();
+	void UpdateInputActionOnUp();
+	void UpdateInputActionOnDown();
+
+	void UpdateMouseInputActionOnTriggered();
+	void UpdateMouseInputActionOnUp();
+	void UpdateMouseInputActionOnDown();
 
 	bool IsBinded(const std::vector<Callback> &Callbacks, const Callback &CallbackToCheck) const;
 
@@ -65,6 +73,16 @@ private:
 	std::map<InputAction, sf::Mouse::Button> MouseBinds;
 
 
-	std::map<InputAction, std::vector<Callback>> InputActionCallbacks;
-	std::map<InputAction, std::vector<Callback>> MouseInputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> OnTringgeredInputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> OnDownInputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> OnUpInputActionCallbacks;
+
+	std::map<InputAction, std::vector<Callback>> OnTriggeredMouseInputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> OnDownMouseInputActionCallbacks;
+	std::map<InputAction, std::vector<Callback>> OnUpMouseInputActionCallbacks;
+
+	std::map<InputAction, bool> InputActionIsUp;
+	std::map<InputAction, bool> InputActionIsDown;
+
+
 };

@@ -100,19 +100,6 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
 	}
 
-	Cells[1][1]->SetIsAlive(false);
-	Cells[1][2]->SetIsAlive(false);
-	Cells[1][3]->SetIsAlive(false);
-
-	Cells[3][4]->SetIsAlive(false);
-	Cells[3][5]->SetIsAlive(false);
-	Cells[3][6]->SetIsAlive(false);
-	Cells[5][4]->SetIsAlive(false);
-	Cells[5][5]->SetIsAlive(false);
-	Cells[5][6]->SetIsAlive(false);
-	Cells[4][4]->SetIsAlive(false);
-	Cells[4][6]->SetIsAlive(false);
-
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
 }

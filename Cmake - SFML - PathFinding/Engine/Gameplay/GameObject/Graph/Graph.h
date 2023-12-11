@@ -25,6 +25,7 @@ public:
 	virtual sf::Vector2i GetCellCoordinateByPosition(sf::Vector2f Position) const;
 	virtual std::vector<sf::Vector2f> GetPath(Cell *CellStart, Cell *CellEnd);
 	virtual sf::Vector2i GetNbCell() const;
+	
 	//To call when cells Alive state is updated (adding walls in custom level)
 	void ReGenerateWaypoints();
 

@@ -9,24 +9,15 @@
 
 #include <iostream>
 
+////////////////////////////////////////////////////////////////////////
+// PUBLIC
 LevelGraph::LevelGraph()
 {
 }
 
 void LevelGraph::Start()
 {
-	// graph = new Graph("", sf::Vector2i(1, 1));
-	graph = new Graph("", sf::Vector2i(10, 10));
-	graph->Cells[1][1]->SetIsAlive(false);
-	graph->Cells[1][2]->SetIsAlive(false);
-	graph->Cells[1][3]->SetIsAlive(false);
-
-	graph->Cells[3][4]->SetIsAlive(false);
-	graph->Cells[3][6]->SetIsAlive(false);
-	graph->ReGenerateWaypoints();
-	// graph = new Graph("", sf::Vector2i(50, 50));
 	Destroy();
-
 	CurrentIndexWaypoint = 0;
 	GameObjects.clear();
 	WayPoints.clear();
@@ -34,30 +25,48 @@ void LevelGraph::Start()
 
 	graph = new Graph("", sf::Vector2i(10, 10));
 	ship = new PlayerShip();
+
 	// Create a button for the level : Pos -> Start x and y in % of screen, Size -> size x and y in % of screen
-	// Call Start and Update of the button in Start and Update of level. 
+	// Call Start and Update of the button in Start and Update of level.
 	// In Draw of level, call UpdateRect, then Draw of the button
-	//button = new Button(sf::Vector2f(0.3, 0.3), sf::Vector2f(0.1,0.1));
+	// button = new Button(sf::Vector2f(0.3, 0.3), sf::Vector2f(0.1,0.1));
 
 	AddGameObject(graph);
 	AddGameObject(ship);
 
 	IScene::Start();
-	//button->Start();
-	//button->RenderRectangle.setFillColor(sf::Color::White);
-	//button->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	// button->Start();
+	// button->RenderRectangle.setFillColor(sf::Color::White);
+	// button->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 
-	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
+	// Just for test
+	graph->Cells[1][1]->SetIsAlive(false);
+	graph->Cells[1][2]->SetIsAlive(false);
+	graph->Cells[1][3]->SetIsAlive(false);
+	graph->Cells[3][4]->SetIsAlive(false);
+	graph->Cells[3][5]->SetIsAlive(false);
+	graph->Cells[3][6]->SetIsAlive(false);
+	graph->Cells[5][4]->SetIsAlive(false);
+	graph->Cells[5][5]->SetIsAlive(false);
+	graph->Cells[5][6]->SetIsAlive(false);
+	graph->Cells[4][4]->SetIsAlive(false);
+	graph->Cells[4][6]->SetIsAlive(false);
+	graph->ReGenerateWaypoints();
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
-	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
+	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
 								   { OnGraphCellOnClick(); });
+	// InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
+	// 							   { OnGraphCellOnClick(); });
+
+	// InputManager::Instance()->Bind(InputAction::Up, [this]()
+	// 							   { UpdateNumberCell(sf::Vector2i(0, 1)); });
 }
 
 void LevelGraph::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
-	//button->Update(DeltaTime);
+	// button->Update(DeltaTime);
 	FollowWayPoints(DeltaTime);
 	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
@@ -71,12 +80,13 @@ void LevelGraph::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 	sf::FloatRect windowRect(0, 0, window.getSize().x, window.getSize().y);
-	//button->UpdateRect(windowRect);
-	//button->Draw(window);
+	// button->UpdateRect(windowRect);
+	// button->Draw(window);
 	for (const Line line : DebugLines)
 		line.Draw(window);
 }
 
+////////////////////////////////////////////////////////////////////////
 // Protected
 void LevelGraph::OnGraphCellOnClick()
 {
@@ -172,4 +182,20 @@ void LevelGraph::UpdateDrawDebugLines()
 
 		DebugLines.push_back(Line(StartLocation, EndLocation));
 	}
+}
+
+void LevelGraph::UpdateNumberCell(const sf::Vector2i Amount)
+{
+	if (!graph)
+		return;
+
+	sf::Vector2i NewSize = graph->GetNbCell() + Amount;
+
+	if (NewSize.x < 0)
+		NewSize.x = 0;
+
+	if (NewSize.y < 0)
+		NewSize.y = 0;
+
+	graph->UpdateSize(NewSize);
 }

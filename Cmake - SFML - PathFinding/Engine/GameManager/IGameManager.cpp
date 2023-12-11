@@ -5,19 +5,21 @@
 // #include <Engine/Scene/IScene.h>
 
 #include <Level/LevelGraph.h>
+#include <Level/LevelCustom.h>
 #include <iostream>
 
 IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
+    // AddLevel(new LevelCustom());
     AddLevel(new LevelGraph());
 
-    InputManager::Instance()->Bind(InputAction::Down, [this]()
-                                   { LoadLevel(1); });
+    // InputManager::Instance()->Bind(InputAction::Down, [this]()
+    //                                { LoadLevel(1); });
 
-    InputManager::Instance()->Bind(InputAction::Up, [this]()
-                                   { LoadLevel(0); });
+    // InputManager::Instance()->Bind(InputAction::Up, [this]()
+    //                                { LoadLevel(0); });
 }
 
 void IGameManager::RunGame()
@@ -86,14 +88,16 @@ void IGameManager::StartActiveScene()
 {
     if (IndexCurrentScene < 0 || IndexCurrentScene >= Scenes.size())
         return;
+
     InputManager::Instance()->ResetBind();
+
     Scenes[IndexCurrentScene]->Start();
 
-      InputManager::Instance()->Bind(InputAction::Down, [this]()
-                                   { LoadLevel(1); });
+    // InputManager::Instance()->Bind(InputAction::Down, [this]()
+    //                                { LoadLevel(1); });
 
-    InputManager::Instance()->Bind(InputAction::Up, [this]()
-                                   { LoadLevel(0); });
+    // InputManager::Instance()->Bind(InputAction::Up, [this]()
+    //                                { LoadLevel(0); });
 }
 
 void IGameManager::UpdateActiveScene(float DeltaTime)

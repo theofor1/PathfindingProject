@@ -10,8 +10,8 @@
 
 LevelCustom::LevelCustom()
 {
-	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
-								   { EventOnClick(); });
+	// InputManager::Instance()->Bind(InputAction::MouseL, [this]()
+	// 							   { EventOnClick(); });
 
 }
 
