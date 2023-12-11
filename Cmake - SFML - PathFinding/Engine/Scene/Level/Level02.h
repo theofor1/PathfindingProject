@@ -34,6 +34,7 @@ protected:
 private:
 	int CurrentIndexWaypoint = 0;
 	std::vector<sf::Vector2f> WayPoints;
+	Cell *CurrentCellEnd;
 
 
 	std::vector<Line> DebugLines;

@@ -64,8 +64,6 @@ void InputManager::UpdateInputAction()
 
 void InputManager::UpdateMouseInputAction()
 {
-	std::cout << MouseInputActionCallbacks[InputAction::MouseL].size() << "\n";
-
 	for (const auto &pair : MouseBinds)
 	{
 		InputAction IA = pair.first;

@@ -63,18 +63,24 @@ void Level02::OnGraphCellOnClick()
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
 
-	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
+
 	Cell *CellEnd = graph->GetCellByPosition(WorldMouseLocation);
+	if (CurrentCellEnd == CellEnd)
+		return;
 
-	sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
-	// std::cout << Coordinate.x << "   " << Coordinate.y << "\n";
+	CurrentCellEnd = CellEnd;
 
-	ResetPath();
+	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
+
+	// sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
 
 	if (CellStart == CellEnd || !CellStart || !CellEnd)
 		return;
 
+	ResetPath();
+
 	WayPoints = graph->GetPath(CellStart, CellEnd);
+
 	UpdateDrawDebugLines();
 }
 

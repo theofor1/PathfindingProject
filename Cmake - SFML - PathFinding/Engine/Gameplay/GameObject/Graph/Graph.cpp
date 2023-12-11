@@ -80,7 +80,13 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 	Cells[1][3]->SetIsAlive(false);
 
 	Cells[3][4]->SetIsAlive(false);
+	Cells[3][5]->SetIsAlive(false);
 	Cells[3][6]->SetIsAlive(false);
+	Cells[5][4]->SetIsAlive(false);
+	Cells[5][5]->SetIsAlive(false);
+	Cells[5][6]->SetIsAlive(false);
+	Cells[4][4]->SetIsAlive(false);
+	Cells[4][6]->SetIsAlive(false);
 
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
