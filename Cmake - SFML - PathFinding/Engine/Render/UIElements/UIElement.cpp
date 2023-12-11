@@ -6,6 +6,12 @@ UIElement::UIElement(const Vec2f& _pos, const Vec2f& _size) : Pos(_pos), Size(_s
 
 }
 
+UIElement::~UIElement()
+{
+	for (auto Child : Children)
+		delete Child;
+}
+
 const Vec2f UIElement::GetPos() const
 {
 	return Pos;
@@ -50,6 +56,7 @@ bool UIElement::Clicked(sf::Vector2f _mouseLocation)
 {
 	return false;
 }
+
 
 void UIElement::RemoveChild(UIElement* _child)
 {
@@ -156,39 +163,63 @@ void UIElement::UpdateLayoutList()
 	{
 		switch (VerticalAlign)
 		{
-		case UIAlignment::Start:fStart = 0; break;
-		case UIAlignment::Center: fStart = 0.5 - ftotalHeight * 0.5; break;
-		case UIAlignment::End: fStart = 1 - ftotalHeight; break;
+		case UIAlignment::Start:
+			fStart = 0; 
+			break;
+		case UIAlignment::Center: 
+			fStart = 0.5 - ftotalHeight * 0.5; 
+			break;
+		case UIAlignment::End: 
+			fStart = 1 - ftotalHeight; 
+			break;
 		}
 	}
 	else if (Direction == UIDirection::Horizontal)
 	{
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start: fStart = 0; break;
-		case UIAlignment::Center:fStart = 0.5 - fTotalWidth * 0.5; break;
-		case UIAlignment::End: fStart = 1 - fTotalWidth; break;
+		case UIAlignment::Start: 
+			fStart = 0; 
+			break;
+		case UIAlignment::Center:
+			fStart = 0.5 - fTotalWidth * 0.5; 
+			break;
+		case UIAlignment::End: 
+			fStart = 1 - fTotalWidth; 
+			break;
 		}
 	}
 
 	float fCurrentInDir = fStart;
 	float fCurrentLineHeight = 0;
 	float fCurrentLineWidth = 0;
-	float fCurrentCrossDir = 0;
 
 	for (UIElement* pElem : Children)
 	{
 		switch (VerticalAlign)
 		{
-		case UIAlignment::Start: pElem->SetPosY(0); break;
-		case UIAlignment::End: pElem->SetPosY(1 - pElem->GetSize().y); break;
-		case UIAlignment::Center: pElem->SetPosY(0.5 - pElem->GetSize().y * 0.5);
+		case UIAlignment::Start: 
+			pElem->SetPosY(0); 
+			break;
+		case UIAlignment::End: 
+			pElem->SetPosY(1 - pElem->GetSize().y); 
+			break;
+		case UIAlignment::Center: 
+			pElem->SetPosY(0.5 - pElem->GetSize().y * 0.5);
+			break;
 		}
+
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start: pElem->SetPosX(0); break;
-		case UIAlignment::End: pElem->SetPosX(1 - pElem->GetSize().x); break;
-		case UIAlignment::Center: pElem->SetPosX(0.5 - pElem->GetSize().x * 0.5);
+		case UIAlignment::Start: 
+			pElem->SetPosX(0); 
+			break;
+		case UIAlignment::End: 
+			pElem->SetPosX(1 - pElem->GetSize().x); 
+			break;
+		case UIAlignment::Center: 
+			pElem->SetPosX(0.5 - pElem->GetSize().x * 0.5);
+			break;
 		}
 
 

@@ -71,8 +71,8 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 		MinNbCellY = 0;
 	}
 	else {
-		MinNbCellX = fmin(NbCell.x, LastNbCells.x);
-		MinNbCellY = fmin(NbCell.y, LastNbCells.y);
+		MinNbCellX = std::min(NbCell.x, LastNbCells.x);
+		MinNbCellY = std::min(NbCell.y, LastNbCells.y);
 	}
 
 	//Report last cells that are in the new size

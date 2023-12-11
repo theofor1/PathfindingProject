@@ -10,4 +10,9 @@ public:
 	bool Clicked(sf::Vector2f _mouseLocation) override;
 
 	virtual void Start() override;
+	virtual void Draw(sf::RenderWindow& _window);
+	virtual const sf::FloatRect& UpdateRect(const sf::FloatRect& _parentRect);
+
+	sf::Text TextButton;
+	sf::Font FontTextButton;
 };

@@ -42,6 +42,7 @@ protected:
 public:
 
 	UIElement(const Vec2f& _pos, const Vec2f& _size);
+	virtual ~UIElement();
 
 	const Vec2f GetPos() const;
 	const Vec2f GetSize() const;

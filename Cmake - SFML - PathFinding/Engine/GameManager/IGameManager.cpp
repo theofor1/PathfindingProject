@@ -20,6 +20,7 @@ IGameManager::IGameManager()
 
     // InputManager::Instance()->Bind(InputAction::Up, [this]()
     //                                { LoadLevel(0); });
+    AddLevel(new LevelCustom());
 }
 
 void IGameManager::RunGame()
