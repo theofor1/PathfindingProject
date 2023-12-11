@@ -34,36 +34,48 @@ void LevelCustom::Start()
 	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
-	outerBox = new UIElement(sf::Vector2f(0.8f, 0.f), sf::Vector2f(0.1f, 0.3f));
+	outerBox = new UIElement(sf::Vector2f(0.5f, 0.f), sf::Vector2f(0.1f, 0.3f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 	
+
 	addWalls = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	addWalls->RenderRectangle.setFillColor(sf::Color::White);
 	addWalls->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	addWalls->TextButton.setString("Place walls");
 	outerBox->AddChild(addWalls);
+
 
 	graphHeightBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphHeightBox);
+
 	removeGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	removeGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
 	removeGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	removeGraphHeight->TextButton.setString("- Height");
+	graphHeightBox->AddChild(removeGraphHeight);
+
 	addGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	addGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
 	addGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	graphHeightBox->AddChild(removeGraphHeight);
+	addGraphHeight->TextButton.setString("+ Height");
 	graphHeightBox->AddChild(addGraphHeight);
+
 
 	graphWidthBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	graphWidthBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphWidthBox);
+
 	removeGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	removeGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
 	removeGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	removeGraphWidth->TextButton.setString("- Width");
+	graphWidthBox->AddChild(removeGraphWidth);
+
 	addGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	addGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
 	addGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	graphWidthBox->AddChild(removeGraphWidth);
+	addGraphWidth->TextButton.setString("+ Width");
 	graphWidthBox->AddChild(addGraphWidth);
 	
 
@@ -76,7 +88,7 @@ void LevelCustom::Update(float DeltaTime)
 	IScene::Update(DeltaTime);
 	outerBox->Update(DeltaTime);
 	FollowWayPoints(DeltaTime);
-	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
+	//std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
 
 void LevelCustom::Destroy()
@@ -88,7 +100,8 @@ void LevelCustom::Destroy()
 void LevelCustom::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
-	sf::FloatRect windowRect(0, 0, window.getSize().y, window.getSize().x);
+	sf::Vector2u windowSize = window.getSize();
+	sf::FloatRect windowRect(0,0, windowSize.x,windowSize.y);
 	outerBox->UpdateRect(windowRect);
 	outerBox->Draw(window);
 	for (const Line line : DebugLines)
@@ -140,11 +153,14 @@ void LevelCustom::EventOnClick()
 
 	if (addWalls->Clicked(WorldMouseLocation)) {
 		OnWallMode = !OnWallMode;
-		if (!OnWallMode) 
+		if (!OnWallMode) {
 			addWalls->RenderRectangle.setFillColor(sf::Color::White);
-		else 
+			addWalls->TextButton.setString("Place walls");
+		}
+		else {
 			addWalls->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-
+			addWalls->TextButton.setString("Move player");
+		}
 		return;
 	}
 

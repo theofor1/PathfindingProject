@@ -13,7 +13,7 @@ IGameManager* IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    AddLevel(new Level01());
+    AddLevel(new LevelCustom());
 }
 
 void IGameManager::RunGame()
