@@ -56,11 +56,9 @@ void LevelGraph::Start()
 
 	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
 								   { OnGraphCellOnClick(); });
-	// InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
-	// 							   { OnGraphCellOnClick(); });
 
-	// InputManager::Instance()->Bind(InputAction::Up, [this]()
-	// 							   { UpdateNumberCell(sf::Vector2i(0, 1)); });
+	InputManager::Instance()->BindOnDown(InputAction::Up, [this]()
+								   { UpdateNumberCell(sf::Vector2i(0, 1)); });
 }
 
 void LevelGraph::Update(float DeltaTime)
