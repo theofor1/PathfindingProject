@@ -1,24 +1,19 @@
-#include "Level01.h"
+#include "LevelGraph.h"
 #include <Actor/PlayerShip/PlayerShip.h>
 #include <System/Input/InputManager.h>
 #include <Engine/Render/Window.h>
 #include <GameObject/Graph/Graph.h>
 #include <GameObject/Graph/Cell/Cell.h>
 #include <Math/Vector/Vector.h>
+#include <GameManager/IGameManager.h>
 
 #include <iostream>
 
-Level01::Level01()
+LevelGraph::LevelGraph()
 {
-	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
-								   { OnGraphCellOnClick(); });
-
-	InputManager::Instance()->Bind(InputAction::Down, [this]()
-								   { TestUpdateGraphSize(sf::Vector2i(3, 7)); });
-
 }
 
-void Level01::Start()
+void LevelGraph::Start()
 {
 	// graph = new Graph("", sf::Vector2i(1, 1));
 	graph = new Graph("", sf::Vector2i(10, 10));
@@ -30,7 +25,14 @@ void Level01::Start()
 	graph->Cells[3][6]->SetIsAlive(false);
 	graph->ReGenerateWaypoints();
 	// graph = new Graph("", sf::Vector2i(50, 50));
+	Destroy();
 
+	CurrentIndexWaypoint = 0;
+	GameObjects.clear();
+	WayPoints.clear();
+	DebugLines.clear();
+
+	graph = new Graph("", sf::Vector2i(10, 10));
 	ship = new PlayerShip();
 	// Create a button for the level : Pos -> Start x and y in % of screen, Size -> size x and y in % of screen
 	// Call Start and Update of the button in Start and Update of level. 
@@ -47,9 +49,12 @@ void Level01::Start()
 
 	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
 	ship->SetPosition(graph->Cells[0][0]->GetPosition());
+
+	InputManager::Instance()->Bind(InputAction::MouseL, [this]()
+								   { OnGraphCellOnClick(); });
 }
 
-void Level01::Update(float DeltaTime)
+void LevelGraph::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
 	//button->Update(DeltaTime);
@@ -57,12 +62,12 @@ void Level01::Update(float DeltaTime)
 	// std::cout << ship->GetPosition().x << "   " << ship->GetPosition().y << "\n";
 }
 
-void Level01::Destroy()
+void LevelGraph::Destroy()
 {
 	IScene::Destroy();
 }
 
-void Level01::Draw(sf::RenderWindow &window) const
+void LevelGraph::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 	sf::FloatRect windowRect(0, 0, window.getSize().x, window.getSize().y);
@@ -73,7 +78,7 @@ void Level01::Draw(sf::RenderWindow &window) const
 }
 
 // Protected
-void Level01::OnGraphCellOnClick()
+void LevelGraph::OnGraphCellOnClick()
 {
 	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
 	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
@@ -84,27 +89,32 @@ void Level01::OnGraphCellOnClick()
 	}
 	*/
 
-	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
 	Cell *CellEnd = graph->GetCellByPosition(WorldMouseLocation);
-	
-	sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
-	std::cout <<Coordinate.x << "   " << Coordinate.y << "\n";
-		
-	ResetPath();
+	if (CurrentCellEnd == CellEnd)
+		return;
+
+	CurrentCellEnd = CellEnd;
+
+	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
+
+	// sf::Vector2i Coordinate = graph->GetCellCoordinateByPosition(WorldMouseLocation);
 
 	if (CellStart == CellEnd || !CellStart || !CellEnd)
 		return;
 
+	ResetPath();
+
 	WayPoints = graph->GetPath(CellStart, CellEnd);
+
 	UpdateDrawDebugLines();
 }
 
-void Level01::TestUpdateGraphSize(sf::Vector2i Size)
+void LevelGraph::TestUpdateGraphSize(sf::Vector2i Size)
 {
 	graph->UpdateSize(sf::Vector2i(8, 7));
 }
 
-void Level01::FollowWayPoints(float DeltaTime)
+void LevelGraph::FollowWayPoints(float DeltaTime)
 {
 	if (WayPoints.size() == 0)
 		return;
@@ -129,21 +139,21 @@ void Level01::FollowWayPoints(float DeltaTime)
 	}
 }
 
-void Level01::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
+void LevelGraph::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
 {
 	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
 	Direction *= DeltaTime * 132;
 	ship->AddWorldPosition(Direction);
 }
 
-void Level01::ResetPath()
+void LevelGraph::ResetPath()
 {
 	CurrentIndexWaypoint = 0;
 	WayPoints.clear();
 	UpdateDrawDebugLines();
 }
 
-void Level01::UpdateDrawDebugLines()
+void LevelGraph::UpdateDrawDebugLines()
 {
 	DebugLines.clear();
 

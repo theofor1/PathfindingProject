@@ -36,11 +36,12 @@ void PlayerShip::Start()
 	Actor::Start();
 
 	Ship = CRenderer->AddNewDrawable<Sprite>("Ship", sf::Vector2f(0, 0), 0, sf::Vector2f(0.1f, 0.1f));
-	// Ship->SetTexture("PlayerShip");
+	Ship->SetTexture("PlayerShip");
 
 	// CoverBoxColliderToSprite(TextureManager::Instance()->textures["PlayerShip"], *Ship);
 
 	CBoxCollider->SetColliderSize(sf::Vector2f(50, 50));
+	Ship->SetLocalPosition(-sf::Vector2f(50 / 2, 50 / 2));
 }
 
 void PlayerShip::Update(float DeltaTime)

@@ -67,12 +67,15 @@ std::vector<WayPoint *> Dijkstra::GetPathFinding(const std::vector<WayPoint *> W
         WpsMeetedParcoured.push_back(LowestCostWayPointMeeted);
 
         // If reached to end, end
-        if (CurrentWayPoint == End)
+        if (!CurrentWayPoint || CurrentWayPoint == End)
             break;
 
         // Remove from WpsMeeted the new current waypoint
         WpsMeeted = GetWayPointMeetedWithout(WpsMeeted, CurrentWayPoint);
     }
+
+    if (WpsMeetedParcoured.size() == 0 || WpsMeetedParcoured[WpsMeetedParcoured.size() - 1].Wp != End)
+        return WayPointsPathFinding;
 
     WayPointsPathFinding = GetPathFindByWayPointsParcoured(WpsMeetedParcoured);
     return WayPointsPathFinding;
@@ -119,6 +122,9 @@ WayPointMeeted Dijkstra::GetWayPointMeetedWithLowestCost(std::vector<WayPointMee
 std::vector<WayPointMeeted> Dijkstra::GetWayPointMeetedWithout(std::vector<WayPointMeeted> WayPointsMeeted, WayPoint *WayPointToNotConserve)
 {
     std::vector<WayPointMeeted> WpsMeeted;
+
+    if (!WayPointToNotConserve)
+        return WpsMeeted;
 
     for (WayPointMeeted WpMeeted : WayPointsMeeted)
     {

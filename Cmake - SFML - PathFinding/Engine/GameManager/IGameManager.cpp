@@ -2,18 +2,22 @@
 #include <System/Input/InputManager.h>
 #include <Engine/Render/Window.h>
 
+// #include <Engine/Scene/IScene.h>
 
-//#include <Engine/Scene/IScene.h>
-
-#include <Level/Level01.h>
-#include <Level/LevelCustom.h>
+#include <Level/LevelGraph.h>
 #include <iostream>
 
-IGameManager* IGameManager::instance = nullptr;
+IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    AddLevel(new Level01());
+    AddLevel(new LevelGraph());
+
+    InputManager::Instance()->Bind(InputAction::Down, [this]()
+                                   { LoadLevel(1); });
+
+    InputManager::Instance()->Bind(InputAction::Up, [this]()
+                                   { LoadLevel(0); });
 }
 
 void IGameManager::RunGame()
@@ -57,27 +61,47 @@ void IGameManager::RunGame()
     }
 }
 
-void IGameManager::AddLevel(IScene* NewScene)
+void IGameManager::LoadLevel(const int LevelIndex)
+{
+    if (LevelIndex >= Scenes.size())
+        return;
+
+    IndexCurrentScene = LevelIndex;
+    StartActiveScene();
+}
+
+// Private
+
+void IGameManager::AddLevel(IScene *NewScene)
 {
     Scenes.push_back(NewScene);
 }
 
-IScene* IGameManager::GetActiveScene()
+IScene *IGameManager::GetActiveScene()
 {
-    return Scenes[indexActiveScene];
+    return Scenes[IndexCurrentScene];
 }
 
 void IGameManager::StartActiveScene()
 {
-    Scenes[indexActiveScene]->Start();
+    if (IndexCurrentScene < 0 || IndexCurrentScene >= Scenes.size())
+        return;
+    InputManager::Instance()->ResetBind();
+    Scenes[IndexCurrentScene]->Start();
+
+      InputManager::Instance()->Bind(InputAction::Down, [this]()
+                                   { LoadLevel(1); });
+
+    InputManager::Instance()->Bind(InputAction::Up, [this]()
+                                   { LoadLevel(0); });
 }
 
 void IGameManager::UpdateActiveScene(float DeltaTime)
 {
-    Scenes[indexActiveScene]->Update(DeltaTime);
+    Scenes[IndexCurrentScene]->Update(DeltaTime);
 }
 
-void IGameManager::DrawActiveScene(sf::RenderWindow& window) const
+void IGameManager::DrawActiveScene(sf::RenderWindow &window) const
 {
-    Scenes[indexActiveScene]->Draw(window);
+    Scenes[IndexCurrentScene]->Draw(window);
 }
