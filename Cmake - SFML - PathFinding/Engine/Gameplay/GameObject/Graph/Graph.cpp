@@ -193,6 +193,17 @@ void Graph::ReGenerateWaypoints()
 	LinkWayPointsToNeighbor();
 }
 
+void Graph::ResetCells()
+{
+	for (size_t x = 0; x < NbCell.x; x++)
+	{
+		for (size_t y = 0; y < NbCell.y; y++)
+		{
+			Cells[x][y]->SetIsAlive(true);
+		}
+	}
+}
+
 //////////////////////////////////////////////////
 // PROTECTED
 
