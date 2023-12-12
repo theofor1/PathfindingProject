@@ -43,6 +43,9 @@ protected:
 	Button* btnRemoveGraphWidth;
 	Button* btnAddGraphWidth;
 
+	Button* btnSaveLevel;
+	Button* btnLoadLevel;
+
 	sf::Color ColorOnSelected;
 
 

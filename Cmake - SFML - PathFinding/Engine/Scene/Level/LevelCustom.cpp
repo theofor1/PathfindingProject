@@ -5,8 +5,15 @@
 #include <GameObject/Graph/Graph.h>
 #include <GameObject/Graph/Cell/Cell.h>
 #include <Math/Vector/Vector.h>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_utils.hpp>
+#include<rapidxml/rapidxml_print.hpp>
 
 #include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace rapidxml;
 
 LevelCustom::LevelCustom()
 {
@@ -87,6 +94,18 @@ void LevelCustom::Start()
 	btnAddGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnAddGraphWidth->TextButton.setString("+ Width");
 	graphWidthBox->AddChild(btnAddGraphWidth);
+
+	btnSaveLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnSaveLevel->RenderRectangle.setFillColor(sf::Color::White);
+	btnSaveLevel->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnSaveLevel->TextButton.setString("Save Level");
+	outerBox->AddChild(btnSaveLevel);
+
+	btnLoadLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnLoadLevel->RenderRectangle.setFillColor(sf::Color::White);
+	btnLoadLevel->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnLoadLevel->TextButton.setString("Load Level");
+	outerBox->AddChild(btnLoadLevel);
 
 	outerBox->Start();
 
@@ -237,6 +256,78 @@ void LevelCustom::OnButtonsClick()
 		GraphWidthNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
+	}
+
+	if (btnSaveLevel->Clicked(WorldMouseLocation)) {
+		char buffer[5+sizeof(char)];
+
+		xml_document<> doc;
+
+		xml_node<>* decl = doc.allocate_node(node_declaration);
+		decl->append_attribute(doc.allocate_attribute("version", "1.0"));
+		decl->append_attribute(doc.allocate_attribute("encoding", "utf-8"));
+		doc.append_node(decl);
+
+		xml_node<>* root = doc.allocate_node(node_element, "CustomLevel");
+		doc.append_node(root);
+
+		xml_node<>* playerNode = doc.allocate_node(node_element, "Player");
+		root->append_node(playerNode);
+		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
+
+		sprintf(buffer, "%i", playerPos.x);
+		xml_attribute<>* playerXAttr = doc.allocate_attribute("X", buffer);
+		playerNode->append_attribute(playerXAttr);
+
+		sprintf(buffer, "%i", playerPos.y);
+		xml_attribute<>* playerYAttr = doc.allocate_attribute("Y", buffer);
+		playerNode->append_attribute(playerYAttr);
+
+		xml_node<> *graphNode = doc.allocate_node(node_element, "Graph");
+		root->append_node(graphNode);
+
+		int height = graph->GetNbCell().x;
+		int width = graph->GetNbCell().y;
+
+		//itoa(height, buffer, 10);
+		sprintf(buffer, "%i", height);
+		
+		xml_attribute<>* heightAttr = doc.allocate_attribute("Height",buffer);
+		graphNode->append_attribute(heightAttr);
+
+		//itoa(width, buffer, 10);
+		sprintf(buffer, "%i", width);
+		xml_attribute<>* widthAttr = doc.allocate_attribute("Width",buffer);
+		graphNode->append_attribute(widthAttr);
+
+		for (int x = 0; x < height; ++x) {
+			for (int y = 0; y < width; ++y) {
+				Cell* curCell = graph->Cells[x][y];
+				if (!curCell->GetIsAlive()) {
+					xml_node<>* thisCell = doc.allocate_node(node_element, "NotAliveCell");
+					graphNode->append_node(thisCell);
+
+					itoa(x, buffer, 10);
+					xml_attribute<>* xAttr = doc.allocate_attribute("X", buffer);
+					thisCell->append_attribute(xAttr);
+
+					itoa(y, buffer, 10);
+					xml_attribute<>* yAttr = doc.allocate_attribute("Y", buffer);
+					thisCell->append_attribute(yAttr);
+				}
+			}
+		}
+
+		std::ofstream file("Ressources/Saves/CustomLevelSave.xml");
+		file << doc;
+		file.close();
+		doc.clear();
+		return;
+
+	}
+
+	if (btnLoadLevel->Clicked(WorldMouseLocation)) {
+
 	}
 }
 
