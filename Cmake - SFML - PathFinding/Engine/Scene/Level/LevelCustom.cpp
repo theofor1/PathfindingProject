@@ -56,20 +56,15 @@ void LevelCustom::Start()
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
 	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-	btnPlayerMoveMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	
 	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
 	outerBox->AddChild(btnPlayerMoveMode);
 
 	btnPutWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-	btnPutWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnPutWallMode->TextButton.setString("Place Wall Mode");
 	outerBox->AddChild(btnPutWallMode);
 
 	btnRemoveWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
-	btnRemoveWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnRemoveWallMode->TextButton.setString("Remove Wall Mode");
 	outerBox->AddChild(btnRemoveWallMode);
 
@@ -102,14 +97,10 @@ void LevelCustom::Start()
 	graphHeightBox->AddChild(btnDownPlayerSpeed);
 
 	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnRemoveGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
-	btnRemoveGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnRemoveGraphHeight->TextButton.setString("- Height");
 	graphHeightBox->AddChild(btnRemoveGraphHeight);
 
 	btnAddGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnAddGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
-	btnAddGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnAddGraphHeight->TextButton.setString("+ Height");
 	graphHeightBox->AddChild(btnAddGraphHeight);
 
@@ -118,14 +109,10 @@ void LevelCustom::Start()
 	outerBox->AddChild(graphWidthBox);
 
 	btnRemoveGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnRemoveGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
-	btnRemoveGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnRemoveGraphWidth->TextButton.setString("- Width");
 	graphWidthBox->AddChild(btnRemoveGraphWidth);
 
 	btnAddGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnAddGraphWidth->RenderRectangle.setFillColor(sf::Color::White);
-	btnAddGraphWidth->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnAddGraphWidth->TextButton.setString("+ Width");
 	graphWidthBox->AddChild(btnAddGraphWidth);
 

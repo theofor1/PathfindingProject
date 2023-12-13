@@ -1,10 +1,16 @@
 #include "Button.h"
 #include <iostream>
 
-Button::Button(const Vec2f& _pos, const Vec2f& _size) : UIElement(_pos,_size)
+Button::Button(
+	const Vec2f& _pos,
+	const Vec2f& _size, 
+	sf::Color color,
+	sf::Color fillColor,
+	sf::Color outlineColor) : UIElement(_pos,_size)
 {
-
-
+	RenderRectangle.setFillColor(fillColor);
+	RenderRectangle.setOutlineColor(outlineColor);
+	RenderRectangle.setOutlineThickness(2);
 }
 
 bool Button::Clicked(sf::Vector2f _mouseLocation)
@@ -14,11 +20,7 @@ bool Button::Clicked(sf::Vector2f _mouseLocation)
 
 void Button::Start()
 {
-	RenderRectangle.setFillColor(sf::Color::White);
-	RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	RenderRectangle.setOutlineThickness(2);
-
-	//TextButton.setColor(sf::Color::Black);
+	TextButton.setColor(sf::Color::Black);
 	TextButton.setFillColor(sf::Color::Black);
 	TextButton.setOutlineColor(sf::Color::Black);
 	TextButton.setCharacterSize(10);
