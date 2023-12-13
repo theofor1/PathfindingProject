@@ -6,7 +6,6 @@
 #include <GameObject/Graph/Cell/Cell.h>
 #include <Math/Vector/Vector.h>
 
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -29,11 +28,14 @@ void LevelCustom::Start()
 {
 	IScene::Start();
 
+	CurrentIndexWaypoint = 0;
+	WayPoints.clear();
+	DebugLines.clear();
+
 	OnWallMode = false;
 	OnPutWallMode = true;
 	CurrentIndexWaypoint = 0;
 	ColorOnSelected = sf::Color(255, 0, 0, 255);
-
 
 	Mode = Mode::MOVE_PLAYER;
 	xml_document<> doc;
@@ -43,7 +45,7 @@ void LevelCustom::Start()
 	std::string content(buffer.str());
 	doc.parse<0>(&content[0]);
 
-	if(loadLevelFromXMLFile(doc))
+	if (loadLevelFromXMLFile(doc))
 		std::cout << "Last save loaded.\n";
 	else
 		ship->SetPosition(graph->Cells[0][0]->GetPosition());
@@ -134,7 +136,7 @@ void LevelCustom::Update(float DeltaTime)
 	IScene::Update(DeltaTime);
 
 	sf::View viewport = Window::Instance()->GetView();
-    sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
+	sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
 	outerBox->UpdateRect(windowRect);
 	outerBox->Update(DeltaTime);
 
@@ -165,7 +167,7 @@ void LevelCustom::OnGraphCellOnClick()
 
 	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
-	
+
 	if (CurrentCellDest == CellDest)
 		return;
 
@@ -246,7 +248,7 @@ void LevelCustom::OnButtonsClick()
 	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
 	{
 		// if (GraphHeightNbCells == 1)
-			// return;
+		// return;
 		GraphHeightNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
@@ -264,18 +266,20 @@ void LevelCustom::OnButtonsClick()
 	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
 	{
 		// if (GraphWidthNbCells == 14)
-			// return;
+		// return;
 		GraphWidthNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
 	}
 
-	if (btnSaveLevel->Clicked(WorldMouseLocation)) {
+	if (btnSaveLevel->Clicked(WorldMouseLocation))
+	{
 
 		xml_document<> doc;
 		produceXMLDocForSave(doc);
 		std::ofstream file("Ressources/Saves/CustomLevelSave.xml");
-		if (!file) {
+		if (!file)
+		{
 			std::cout << "Could not save level : xml file missing.\n";
 			return;
 		}
@@ -284,10 +288,10 @@ void LevelCustom::OnButtonsClick()
 		std::cout << "Level Saved!\n";
 		doc.clear();
 		return;
-
 	}
 
-	if (btnLoadLevel->Clicked(WorldMouseLocation)) {
+	if (btnLoadLevel->Clicked(WorldMouseLocation))
+	{
 		xml_document<> doc;
 		std::ifstream file("Ressources/Saves/CustomLevelSave.xml");
 		std::stringstream buffer;
@@ -298,6 +302,11 @@ void LevelCustom::OnButtonsClick()
 		loadLevelFromXMLFile(doc);
 
 		doc.clear();
+
+		CurrentIndexWaypoint = 0;
+		WayPoints.clear();
+		DebugLines.clear();
+
 		return;
 	}
 }
@@ -362,74 +371,75 @@ void LevelCustom::UpdateDrawDebugLines()
 	}
 }
 
-void LevelCustom::produceXMLDocForSave(xml_document<>& Doc)
+void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 {
 
-	//root of xml doc
-	xml_node<>* decl = Doc.allocate_node(node_declaration);
+	// root of xml doc
+	xml_node<> *decl = Doc.allocate_node(node_declaration);
 	decl->append_attribute(Doc.allocate_attribute("version", "1.0"));
 	decl->append_attribute(Doc.allocate_attribute("encoding", "utf-8"));
 	Doc.append_node(decl);
 
-	xml_node<>* root = Doc.allocate_node(node_element, "CustomLevel");
+	xml_node<> *root = Doc.allocate_node(node_element, "CustomLevel");
 	Doc.append_node(root);
 
-	//player position
-	xml_node<>* playerNode = Doc.allocate_node(node_element, "Player");
+	// player position
+	xml_node<> *playerNode = Doc.allocate_node(node_element, "Player");
 	root->append_node(playerNode);
 	sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
 
-	xml_attribute<>* playerXAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(playerPos.x).c_str()));
+	xml_attribute<> *playerXAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(playerPos.x).c_str()));
 	playerNode->append_attribute(playerXAttr);
 
-	xml_attribute<>* playerYAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(playerPos.y).c_str()));
+	xml_attribute<> *playerYAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(playerPos.y).c_str()));
 	playerNode->append_attribute(playerYAttr);
 
-	//graph size
-	xml_node<>* graphNode = Doc.allocate_node(node_element, "Graph");
+	// graph size
+	xml_node<> *graphNode = Doc.allocate_node(node_element, "Graph");
 	root->append_node(graphNode);
 
 	int height = graph->GetNbCell().x;
 	int width = graph->GetNbCell().y;
 
-	xml_attribute<>* heightAttr = Doc.allocate_attribute("Height", Doc.allocate_string(std::to_string(height).c_str()));
+	xml_attribute<> *heightAttr = Doc.allocate_attribute("Height", Doc.allocate_string(std::to_string(height).c_str()));
 	graphNode->append_attribute(heightAttr);
 
-	xml_attribute<>* widthAttr = Doc.allocate_attribute("Width", Doc.allocate_string(std::to_string(width).c_str()));
+	xml_attribute<> *widthAttr = Doc.allocate_attribute("Width", Doc.allocate_string(std::to_string(width).c_str()));
 	graphNode->append_attribute(widthAttr);
 
-
-	//graph walls
-	for (int x = 0; x < height; ++x) {
-		for (int y = 0; y < width; ++y) {
-			Cell* curCell = graph->Cells[x][y];
-			if (!curCell->GetIsAlive()) {
-				xml_node<>* thisCell = Doc.allocate_node(node_element, "NotAliveCell");
+	// graph walls
+	for (int x = 0; x < height; ++x)
+	{
+		for (int y = 0; y < width; ++y)
+		{
+			Cell *curCell = graph->Cells[x][y];
+			if (!curCell->GetIsAlive())
+			{
+				xml_node<> *thisCell = Doc.allocate_node(node_element, "NotAliveCell");
 				graphNode->append_node(thisCell);
 
-				xml_attribute<>* xAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(x).c_str()));
+				xml_attribute<> *xAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(x).c_str()));
 				thisCell->append_attribute(xAttr);
 
-				xml_attribute<>* yAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(y).c_str()));
+				xml_attribute<> *yAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(y).c_str()));
 				thisCell->append_attribute(yAttr);
 			}
 		}
 	}
-
 }
 
-bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
+bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<> &Doc)
 {
-	xml_node<>* root = Doc.first_node("CustomLevel");
-	if (!root) {
+	xml_node<> *root = Doc.first_node("CustomLevel");
+	if (!root)
+	{
 		std::cout << "XML file badly parsed : cannot load level.\n";
 		return false;
 	}
 
-	
-	xml_node<>* graphNode = root->first_node("Graph");
-	xml_attribute<>* graphAttr = graphNode->first_attribute("Height");
-	
+	xml_node<> *graphNode = root->first_node("Graph");
+	xml_attribute<> *graphAttr = graphNode->first_attribute("Height");
+
 	std::string strGraphX(graphAttr->value());
 	std::istringstream ssGraphX(strGraphX);
 	int height;
@@ -446,9 +456,10 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
 	GraphWidthNbCells = width;
 
 	graph->ResetCells();
-	
-	for (xml_node<>* cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling()) {
-		xml_attribute<>* cellAttr = cellNode->first_attribute("X");
+
+	for (xml_node<> *cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling())
+	{
+		xml_attribute<> *cellAttr = cellNode->first_attribute("X");
 		std::string strCellX(cellAttr->value());
 		std::istringstream ssCellX(strCellX);
 		int cellX;
@@ -465,23 +476,26 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
 
 	graph->ReGenerateWaypoints();
 
-	xml_node<>* playerNode = root->first_node("Player");
-	xml_attribute<>* playerAttr = playerNode->first_attribute("X");
+	xml_node<> *playerNode = root->first_node("Player");
+	xml_attribute<> *playerAttr = playerNode->first_attribute("X");
 	std::string strPlayerX(playerAttr->value());
 	std::istringstream ssPlayerX(strPlayerX);
 	int playerPosX;
 	ssPlayerX >> playerPosX;
-	std::cout << playerPosX << std::endl;
+	// std::cout << playerPosX << std::endl;
 
 	playerAttr = playerAttr->next_attribute("Y");
 	std::string strPlayerY(playerAttr->value());
 	std::istringstream ssPlayerY(strPlayerY);
 	int playerPosY;
 	ssPlayerY >> playerPosY;
-	std::cout << playerPosY << std::endl;
+	// std::cout << playerPosY << std::endl;
 
-	ship->SetPosition(graph->Cells[playerPosY][playerPosX]->GetPosition());
+	if (graph->GetNbCell().x - 1 <= playerPosX || graph->GetNbCell().y - 1 <= playerPosY)
+		ship->SetPosition(graph->Cells[playerPosY][playerPosX]->GetPosition());
+	else
+		ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
-	std::cout << "Level Loaded !\n";
+	// std::cout << "Level Loaded !\n";
 	return true;
 }
