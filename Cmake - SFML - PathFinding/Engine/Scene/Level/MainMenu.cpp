@@ -2,6 +2,7 @@
 #include <iostream>
 #include <System/Input/InputManager.h>
 #include <Engine/Render/Window.h>
+#include <GameManager/IGameManager.h>
 
 MainMenu::MainMenu() {
 	
@@ -18,18 +19,13 @@ void MainMenu::Start()
 
 	title = new Text(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 0.1f));
 	title->text.setString("Space seeker");
-	title->text.setColor(sf::Color(255, 0, 0));
 	outerBox->AddChild(title);
 
 	btnPlay = new Button(sf::Vector2f(0.f, 0.0f), sf::Vector2f(0.5f, 0.1f));
-	btnPlay->RenderRectangle.setFillColor(sf::Color(239, 0, 0));
-	btnPlay->RenderRectangle.setOutlineColor(sf::Color(239, 0, 0));
 	btnPlay->TextButton.setString("Play");
 	outerBox->AddChild(btnPlay);
 
 	btnExit = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 0.1f));
-	btnExit->RenderRectangle.setFillColor(sf::Color(239, 239, 240));
-	btnExit->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnExit->TextButton.setString("Exit");
 	outerBox->AddChild(btnExit);
 
@@ -85,13 +81,14 @@ void MainMenu::OnButtonsClick()
 
 	if (btnPlay->Clicked(WorldMouseLocation))
 	{
-		btnPlay->RenderRectangle.setFillColor(ColorOnSelected);
+		IGameManager::Instance()->LoadLevel(1);
+		IGameManager::Instance()->RunGame();
 		return;
 	}
 
 	if (btnExit->Clicked(WorldMouseLocation))
 	{
-		btnExit->RenderRectangle.setFillColor(ColorOnSelected);
+		exit(0);
 		return;
 	}
 }

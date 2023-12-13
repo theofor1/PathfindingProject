@@ -5,7 +5,10 @@
 class Text : public UIElement {
 public:
 
-	Text(const Vec2f& _pos, const Vec2f& _size);
+	Text(
+		const Vec2f& _pos,
+		const Vec2f& _size,
+		sf::Color fillColor = sf::Color::Transparent);
 
 	virtual void Start() override;
 	virtual void Draw(sf::RenderWindow& _window);

@@ -13,7 +13,7 @@ IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    //AddLevel(new MainMenu());
+    AddLevel(new MainMenu());
     // AddLevel(new LevelCustom());
     // AddLevel(new LevelGraph());
 

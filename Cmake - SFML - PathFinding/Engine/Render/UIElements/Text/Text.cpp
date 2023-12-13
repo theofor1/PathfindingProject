@@ -1,9 +1,9 @@
 #include "Text.h"
 #include <iostream>
 
-Text::Text(const Vec2f& _pos, const Vec2f& _size) : UIElement(_pos,_size)
+Text::Text(const Vec2f& _pos, const Vec2f& _size, sf::Color fillColor) : UIElement(_pos,_size)
 {
-
+	text.setFillColor(fillColor);
 
 }
 
@@ -14,8 +14,6 @@ void Text::Start()
 	RenderRectangle.setOutlineThickness(2);
 
 	//text.setColor(sf::Color::Black);
-	text.setFillColor(sf::Color::Black);
-	text.setOutlineColor(sf::Color::Black);
 	text.setCharacterSize(10);
 	if (textFont.loadFromFile("Ressources/Fonts/OpenSans-Regular.ttf"))
 		text.setFont(textFont);
