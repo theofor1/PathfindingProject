@@ -151,6 +151,9 @@ void LevelCustom::OnGraphCellOnClick()
 
 	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
+	
+	std::cout << graph->GetCellCoordinateByPosition(WorldMouseLocation).x << " " << graph->GetCellCoordinateByPosition(WorldMouseLocation).y << "\n";
+
 
 	if (CurrentCellDest == CellDest)
 		return;

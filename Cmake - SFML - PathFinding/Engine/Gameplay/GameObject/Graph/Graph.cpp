@@ -132,9 +132,10 @@ sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
 			{
 				return Coordinate;
 			}
-			Coordinate.y++;
-		}
 		Coordinate.x++;
+		Coordinate.x %= NbCell.x;
+		}
+		Coordinate.y++;
 	}
 	return Coordinate;
 }
