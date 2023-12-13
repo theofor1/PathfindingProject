@@ -105,7 +105,12 @@ void LevelCustom::Update(float DeltaTime)
 {
 	TimeSinceLastInput += DeltaTime;
 	IScene::Update(DeltaTime);
+
+	sf::View viewport = Window::Instance()->GetView();
+    sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
+	outerBox->UpdateRect(windowRect);
 	outerBox->Update(DeltaTime);
+
 	FollowWayPoints(DeltaTime);
 }
 
@@ -118,10 +123,9 @@ void LevelCustom::Destroy()
 void LevelCustom::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
-	sf::Vector2u windowSize = window.getSize();
-	sf::FloatRect windowRect(0, 0, windowSize.x, windowSize.y);
-	outerBox->UpdateRect(windowRect);
 	outerBox->Draw(window);
+
+	// Draw debug path finding
 	for (const Line line : DebugLines)
 		line.Draw(window);
 }
@@ -135,9 +139,6 @@ void LevelCustom::OnGraphCellOnClick()
 	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
 	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
 	
-	std::cout << graph->GetCellCoordinateByPosition(WorldMouseLocation).x << " " << graph->GetCellCoordinateByPosition(WorldMouseLocation).y << "\n";
-
-
 	if (CurrentCellDest == CellDest)
 		return;
 
@@ -208,7 +209,7 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
 	{
-		if (GraphHeightNbCells == 4)
+		if (GraphHeightNbCells == 1)
 			return;
 		GraphHeightNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
@@ -217,8 +218,8 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
 	{
-		if (GraphHeightNbCells == 14)
-			return;
+		// if (GraphHeightNbCells == 1)
+			// return;
 		GraphHeightNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;
@@ -226,7 +227,7 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
 	{
-		if (GraphWidthNbCells == 4)
+		if (GraphWidthNbCells == 1)
 			return;
 		GraphWidthNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
@@ -235,8 +236,8 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
 	{
-		if (GraphWidthNbCells == 14)
-			return;
+		// if (GraphWidthNbCells == 14)
+			// return;
 		GraphWidthNbCells++;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
 		return;

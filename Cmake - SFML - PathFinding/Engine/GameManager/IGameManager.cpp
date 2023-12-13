@@ -36,6 +36,8 @@ void IGameManager::RunGame()
     sf::Clock clock;
     clock.restart();
 
+    Window::Instance()->SetViewSpeedMove(500);
+
     while (Window::Instance()->GetWindow().isOpen())
     {
         int deltaTimeMS = clock.getElapsedTime().asMilliseconds();
@@ -53,6 +55,7 @@ void IGameManager::RunGame()
         }
 
         InputManager::Instance()->Update();
+        Window::Instance()->Update(DeltaTime);
 
         UpdateActiveScene(DeltaTime);
 
@@ -60,6 +63,7 @@ void IGameManager::RunGame()
 
         DrawActiveScene(Window::Instance()->GetWindow());
 
+        Window::Instance()->GetView();
         Window::Instance()->GetWindow().display();
     }
 }

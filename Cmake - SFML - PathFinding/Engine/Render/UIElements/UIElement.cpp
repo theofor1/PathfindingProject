@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
-UIElement::UIElement(const Vec2f& _pos, const Vec2f& _size) : Pos(_pos), Size(_size) {
-
+UIElement::UIElement(const Vec2f &_pos, const Vec2f &_size) : Pos(_pos), Size(_size)
+{
 }
 
 UIElement::~UIElement()
@@ -44,11 +44,11 @@ UIDirection UIElement::GetDirection() const
 
 void UIElement::Start()
 {
-	//RenderRectangle.setOutlineColor(sf::Color::Red);
-	//RenderRectangle.setOutlineThickness(0);
+	// RenderRectangle.setOutlineColor(sf::Color::Red);
+	// RenderRectangle.setOutlineThickness(2);
 	RenderRectangle.setFillColor(sf::Color::Transparent);
 
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 		pElem->Start();
 }
 
@@ -57,8 +57,7 @@ bool UIElement::Clicked(sf::Vector2f _mouseLocation)
 	return false;
 }
 
-
-void UIElement::RemoveChild(UIElement* _child)
+void UIElement::RemoveChild(UIElement *_child)
 {
 	auto found = std::find(Children.begin(), Children.end(), _child);
 	if (found != Children.end())
@@ -69,11 +68,11 @@ void UIElement::RemoveChild(UIElement* _child)
 
 void UIElement::Update(float _dTime)
 {
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 		pElem->Update(_dTime);
 }
 
-const sf::FloatRect& UIElement::UpdateRect(const sf::FloatRect& _parentRect)
+const sf::FloatRect &UIElement::UpdateRect(const sf::FloatRect &_parentRect)
 {
 	Vec2f vPos = Vec2f(_parentRect.left, _parentRect.top) + Vec2f(Pos.x * _parentRect.width, Pos.y * _parentRect.height);
 	Vec2f vSize = Vec2f(_parentRect.width * Size.x, _parentRect.height * Size.y);
@@ -86,8 +85,6 @@ const sf::FloatRect& UIElement::UpdateRect(const sf::FloatRect& _parentRect)
 
 	RenderRectangle.setPosition(DetectionRect.left, DetectionRect.top);
 	RenderRectangle.setSize(sf::Vector2f(DetectionRect.width, DetectionRect.height));
-	
-
 
 	switch (Layout)
 	{
@@ -98,17 +95,16 @@ const sf::FloatRect& UIElement::UpdateRect(const sf::FloatRect& _parentRect)
 	}
 	}
 
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 		pElem->UpdateRect(DetectionRect);
 
 	return DetectionRect;
 }
 
-
 void UIElement::SetLayout(UILayout _layout, UIDirection _direction)
 {
-	 Layout = _layout; 
-	 Direction = _direction; 
+	Layout = _layout;
+	Direction = _direction;
 }
 
 void UIElement::SetHorizontalAlignment(UIAlignment _align)
@@ -134,7 +130,7 @@ UIAlignment UIElement::GetVerticalAlignment() const
 float UIElement::GetTotalChildrenWidth() const
 {
 	float total = 0;
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 	{
 		total += pElem->GetSize().x;
 	}
@@ -143,7 +139,7 @@ float UIElement::GetTotalChildrenWidth() const
 float UIElement::GetTotalChildrenHeight() const
 {
 	float total = 0;
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 	{
 		total += pElem->GetSize().y;
 	}
@@ -151,26 +147,25 @@ float UIElement::GetTotalChildrenHeight() const
 	return total;
 }
 
-
-
 void UIElement::UpdateLayoutList()
 {
 	float fStart = 0;
 
-	float fTotalWidth = GetTotalChildrenWidth();;
+	float fTotalWidth = GetTotalChildrenWidth();
+	;
 	float ftotalHeight = GetTotalChildrenHeight();
 	if (Direction == UIDirection::Vertical)
 	{
 		switch (VerticalAlign)
 		{
 		case UIAlignment::Start:
-			fStart = 0; 
+			fStart = 0;
 			break;
-		case UIAlignment::Center: 
-			fStart = 0.5 - ftotalHeight * 0.5; 
+		case UIAlignment::Center:
+			fStart = 0.5 - ftotalHeight * 0.5;
 			break;
-		case UIAlignment::End: 
-			fStart = 1 - ftotalHeight; 
+		case UIAlignment::End:
+			fStart = 1 - ftotalHeight;
 			break;
 		}
 	}
@@ -178,14 +173,14 @@ void UIElement::UpdateLayoutList()
 	{
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start: 
-			fStart = 0; 
+		case UIAlignment::Start:
+			fStart = 0;
 			break;
 		case UIAlignment::Center:
-			fStart = 0.5 - fTotalWidth * 0.5; 
+			fStart = 0.5 - fTotalWidth * 0.5;
 			break;
-		case UIAlignment::End: 
-			fStart = 1 - fTotalWidth; 
+		case UIAlignment::End:
+			fStart = 1 - fTotalWidth;
 			break;
 		}
 	}
@@ -194,44 +189,42 @@ void UIElement::UpdateLayoutList()
 	float fCurrentLineHeight = 0;
 	float fCurrentLineWidth = 0;
 
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 	{
 		switch (VerticalAlign)
 		{
-		case UIAlignment::Start: 
-			pElem->SetPosY(0); 
+		case UIAlignment::Start:
+			pElem->SetPosY(0);
 			break;
-		case UIAlignment::End: 
-			pElem->SetPosY(1 - pElem->GetSize().y); 
+		case UIAlignment::End:
+			pElem->SetPosY(1 - pElem->GetSize().y);
 			break;
-		case UIAlignment::Center: 
+		case UIAlignment::Center:
 			pElem->SetPosY(0.5 - pElem->GetSize().y * 0.5);
 			break;
 		}
 
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start: 
-			pElem->SetPosX(0); 
+		case UIAlignment::Start:
+			pElem->SetPosX(0);
 			break;
-		case UIAlignment::End: 
-			pElem->SetPosX(1 - pElem->GetSize().x); 
+		case UIAlignment::End:
+			pElem->SetPosX(1 - pElem->GetSize().x);
 			break;
-		case UIAlignment::Center: 
+		case UIAlignment::Center:
 			pElem->SetPosX(0.5 - pElem->GetSize().x * 0.5);
 			break;
 		}
 
-
 		switch (Direction)
 		{
-		case  UIDirection::Horizontal:
+		case UIDirection::Horizontal:
 		{
 			pElem->SetPosX(fCurrentInDir);
 
 			fCurrentInDir += pElem->GetSize().x;
 			fCurrentLineHeight = std::max(fCurrentLineHeight, pElem->GetPos().y + pElem->GetSize().y);
-
 
 			break;
 		}
@@ -241,18 +234,14 @@ void UIElement::UpdateLayoutList()
 			fCurrentInDir += pElem->GetSize().y;
 			fCurrentLineWidth = std::max(fCurrentLineWidth, pElem->GetPos().x + pElem->GetSize().x);
 
-
 			break;
 		}
 		}
 	}
-
 }
-void UIElement::Draw(sf::RenderWindow& _window)
+void UIElement::Draw(sf::RenderWindow &_window)
 {
-	for (UIElement* pElem : Children)
+	for (UIElement *pElem : Children)
 		pElem->Draw(_window);
-
 	_window.draw(RenderRectangle);
-	
 }
