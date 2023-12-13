@@ -9,7 +9,6 @@ public:
 
 	sf::Vertex line[2];
 
-
 	void Draw(sf::RenderWindow& window) const;
 };
 

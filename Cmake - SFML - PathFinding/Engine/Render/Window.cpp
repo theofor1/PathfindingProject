@@ -38,6 +38,11 @@ sf::View &Window::GetView()
     return viewport;
 }
 
+float Window::GetViewSpeedMove() const
+{
+    return speedMove;
+}
+
 void Window::UpdateView()
 {
     window.setView(viewport);

@@ -77,6 +77,30 @@ void LevelCustom::Start()
 	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphHeightBox);
 
+	btnUpWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnUpWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnUpWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpWindowSpeed->TextButton.setString("+ Speed Viewport");
+	graphHeightBox->AddChild(btnUpWindowSpeed);
+
+	btnDownWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnDownWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnDownWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnDownWindowSpeed->TextButton.setString("- Speed Viewport");
+	graphHeightBox->AddChild(btnDownWindowSpeed);
+
+	btnUpPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnUpPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnUpPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpPlayerSpeed->TextButton.setString("+ Speed Player");
+	graphHeightBox->AddChild(btnUpPlayerSpeed);
+
+	btnDownPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnDownPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnDownPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnDownPlayerSpeed->TextButton.setString("- Speed Player");
+	graphHeightBox->AddChild(btnDownPlayerSpeed);
+
 	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	btnRemoveGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
 	btnRemoveGraphHeight->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
@@ -309,6 +333,33 @@ void LevelCustom::OnButtonsClick()
 
 		return;
 	}
+
+	if (btnDownWindowSpeed->Clicked(WorldMouseLocation))
+	{
+		if (Window::Instance()->GetViewSpeedMove() > 0)
+			Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() - AmountSpeed);
+		return;
+	}
+
+	if (btnUpWindowSpeed->Clicked(WorldMouseLocation))
+	{
+		Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() + AmountSpeed);
+		return;
+	}
+
+	if (btnUpPlayerSpeed->Clicked(WorldMouseLocation))
+	{
+		if (ship->GetSpeedMove() > 1000)
+			return;
+		ship->SetSpeedMove(ship->GetSpeedMove() + AmountSpeed);
+		return;
+	}
+
+	if (btnDownPlayerSpeed->Clicked(WorldMouseLocation))
+	{
+		ship->SetSpeedMove(ship->GetSpeedMove() - AmountSpeed);
+		return;
+	}
 }
 
 void LevelCustom::FollowWayPoints(float DeltaTime)
@@ -320,9 +371,17 @@ void LevelCustom::FollowWayPoints(float DeltaTime)
 
 	sf::Vector2f CurrentWayPoint = WayPoints[CurrentIndexWaypoint];
 
-	if (Vector::GetDistance(CurrentWayPoint, ship->GetPosition()) > 5)
+	float CurrentDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
+
+	if (CurrentDist > 5)
 	{
 		MoveTo(DeltaTime, CurrentWayPoint);
+
+		float NewDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
+		
+		if (NewDist > CurrentDist)
+			ship->SetPosition(CurrentWayPoint);
+
 	}
 	else
 	{
@@ -339,7 +398,7 @@ void LevelCustom::FollowWayPoints(float DeltaTime)
 void LevelCustom::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
 {
 	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
-	Direction *= DeltaTime * 132;
+	Direction *= DeltaTime * ship->GetSpeedMove();
 	ship->AddWorldPosition(Direction);
 }
 

@@ -41,6 +41,12 @@ protected:
 	Button* btnPutWallMode;
 	Button* btnRemoveWallMode;
 
+	Button* btnUpWindowSpeed;
+	Button* btnDownWindowSpeed;
+
+	Button* btnUpPlayerSpeed;
+	Button* btnDownPlayerSpeed;
+
 	Button* btnRemoveGraphHeight;
 	Button* btnAddGraphHeight;
 	Button* btnRemoveGraphWidth;
@@ -50,7 +56,6 @@ protected:
 	Button* btnLoadLevel;
 
 	sf::Color ColorOnSelected;
-
 
 
 	void OnGraphCellOnClick();
@@ -84,6 +89,8 @@ private:
 	int GraphWidthNbCells;
 
 	float TimeSinceLastInput = 0;
+
+	float AmountSpeed = 20;
 
 
 };

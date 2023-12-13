@@ -12,6 +12,7 @@ public:
 
 	void Update(const float DeltaTime);
 	void SetViewSpeedMove(const float _speedMove);
+	float GetViewSpeedMove() const;
 
 	void UpdateView();
 
