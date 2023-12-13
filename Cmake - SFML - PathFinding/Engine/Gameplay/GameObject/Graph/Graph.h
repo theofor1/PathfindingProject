@@ -28,6 +28,8 @@ public:
 	
 	//To call when cells Alive state is updated (adding walls in custom level)
 	void ReGenerateWaypoints();
+	//To set all Cells alive, called when loading level
+	void ResetCells();
 
 	std::map<int, std::map<int, Cell *>> Cells;
 

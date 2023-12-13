@@ -3,6 +3,9 @@
 #include <Engine/Scene/IScene.h>
 #include <GameObject/Graph/Line/Line.h>
 #include <Engine/Render/UIElements/Button/Button.h>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_utils.hpp>
+#include <rapidxml/rapidxml_print.hpp>
 
 class Graph;
 class PlayerShip;
@@ -43,6 +46,9 @@ protected:
 	Button* btnRemoveGraphWidth;
 	Button* btnAddGraphWidth;
 
+	Button* btnSaveLevel;
+	Button* btnLoadLevel;
+
 	sf::Color ColorOnSelected;
 
 
@@ -55,6 +61,9 @@ protected:
 
 	void ResetPath();
 	void UpdateDrawDebugLines();
+
+	void produceXMLDocForSave(rapidxml::xml_document<>& Doc);
+	bool loadLevelFromXMLFile(rapidxml::xml_document<>& Doc);
 
 private:
 	int CurrentIndexWaypoint;
