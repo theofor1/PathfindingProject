@@ -63,7 +63,7 @@ protected:
 	void UpdateDrawDebugLines();
 
 	void produceXMLDocForSave(rapidxml::xml_document<>& Doc);
-	void loadLevelFromXMLFile(rapidxml::xml_document<>& Doc);
+	bool loadLevelFromXMLFile(rapidxml::xml_document<>& Doc);
 
 private:
 	int CurrentIndexWaypoint;

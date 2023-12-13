@@ -123,6 +123,7 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
 {
 	sf::Vector2i Coordinate(0, 0);
+
 	for (const auto &row : Cells)
 	{
 		for (const auto &cellPair : row.second)
@@ -133,10 +134,11 @@ sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
 				return Coordinate;
 			}
 		Coordinate.x++;
-		Coordinate.x %= NbCell.x;
+		Coordinate.x %= NbCell.y;
 		}
 		Coordinate.y++;
 	}
+
 	return Coordinate;
 }
 

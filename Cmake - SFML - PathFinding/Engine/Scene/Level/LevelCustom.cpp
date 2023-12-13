@@ -36,9 +36,19 @@ void LevelCustom::Start()
 
 
 	Mode = Mode::MOVE_PLAYER;
+	xml_document<> doc;
+	std::ifstream file("Ressources/Saves/CustomLevelSave.xml");
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+	std::string content(buffer.str());
+	doc.parse<0>(&content[0]);
 
-	// ship->SetPosition(graph->Cells[5][3]->GetPosition());
-	ship->SetPosition(graph->Cells[0][0]->GetPosition());
+	if(loadLevelFromXMLFile(doc))
+		std::cout << "Last save loaded.\n";
+	else
+		ship->SetPosition(graph->Cells[0][0]->GetPosition());
+
+	doc.clear();
 
 	outerBox = new UIElement(sf::Vector2f(0.5f, 0.f), sf::Vector2f(0.1f, 0.3f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
@@ -407,37 +417,53 @@ void LevelCustom::produceXMLDocForSave(xml_document<>& Doc)
 
 }
 
-void LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
+bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
 {
 	xml_node<>* root = Doc.first_node("CustomLevel");
 	if (!root) {
 		std::cout << "XML file badly parsed : cannot load level.\n";
-		return;
+		return false;
 	}
 
 	
 	xml_node<>* graphNode = root->first_node("Graph");
 	xml_attribute<>* graphAttr = graphNode->first_attribute("Height");
-	std::cout << graphAttr->value() << std::endl;
 	
 	std::string strGraphX(graphAttr->value());
 	std::istringstream ssGraphX(strGraphX);
 	int height;
 	ssGraphX >> height;
-	std::cout << height << std::endl;
 
 	graphAttr = graphAttr->next_attribute("Width");
 	std::string strGraphY(graphAttr->value());
-	std::cout << graphAttr->value() << std::endl;
 	std::istringstream ssGraphY(strGraphY);
 	int width;
 	ssGraphY >> width;
-	std::cout << width << std::endl;
 
 	graph->UpdateSize(sf::Vector2i(height, width));
 	GraphHeightNbCells = height;
 	GraphWidthNbCells = width;
+
+	graph->ResetCells();
 	
+	for (xml_node<>* cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling()) {
+		xml_attribute<>* cellAttr = cellNode->first_attribute("X");
+		std::string strCellX(cellAttr->value());
+		std::istringstream ssCellX(strCellX);
+		int cellX;
+		ssCellX >> cellX;
+
+		cellAttr = cellAttr->next_attribute("Y");
+		std::string strCellY(cellAttr->value());
+		std::istringstream ssCellY(strCellY);
+		int cellY;
+		ssCellY >> cellY;
+
+		graph->Cells[cellX][cellY]->SetIsAlive(false);
+	}
+
+	graph->ReGenerateWaypoints();
+
 	xml_node<>* playerNode = root->first_node("Player");
 	xml_attribute<>* playerAttr = playerNode->first_attribute("X");
 	std::string strPlayerX(playerAttr->value());
@@ -453,29 +479,8 @@ void LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<>& Doc)
 	ssPlayerY >> playerPosY;
 	std::cout << playerPosY << std::endl;
 
-	ship->SetPosition(graph->Cells[playerPosX][playerPosY%height]->GetPosition());
-
-	graph->ResetCells();
-	
-	for (xml_node<>* cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling()) {
-		xml_attribute<>* cellAttr = cellNode->first_attribute("X");
-		std::string strCellX(cellAttr->value());
-		std::istringstream ssCellX(strCellX);
-		int cellX;
-		ssCellX >> cellX;
-		std::cout << cellX << std::endl;
-
-		cellAttr = cellAttr->next_attribute("Y");
-		std::string strCellY(cellAttr->value());
-		std::istringstream ssCellY(strCellY);
-		int cellY;
-		ssCellY >> cellY;
-		std::cout << cellY << std::endl;
-
-		graph->Cells[cellX][cellY]->SetIsAlive(false);
-	}
-
-	graph->ReGenerateWaypoints();
+	ship->SetPosition(graph->Cells[playerPosY][playerPosX]->GetPosition());
 
 	std::cout << "Level Loaded !\n";
+	return true;
 }
