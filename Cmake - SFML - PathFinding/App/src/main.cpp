@@ -2,6 +2,8 @@
 #include <Engine/GameManager/IGameManager.h>
 #include <Engine/Render/Ressource/TextureManager.h>
 #include <Engine/System/Input/InputManager.h>
+#include <Engine/System/Input/InputManager.h>
+#include <Engine/Render/Window.h>
 
 void TextureManager()
 {
@@ -25,7 +27,8 @@ int main()
     {
         IGameManager::DeleteInstance();
         TextureManager::DeleteInstance();
-        // InputManager::DeleteInstance();
+        InputManager::DeleteInstance();
+        Window::DeleteInstance();
     }
 
     return 0;

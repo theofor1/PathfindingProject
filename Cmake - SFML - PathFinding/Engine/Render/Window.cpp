@@ -17,7 +17,10 @@ Window::Window(const float _speedMove) : window(sf::VideoMode(1280, 720), "SFML 
     window.setView(viewport);
 
     speedMove = _speedMove;
+}
 
+void Window::BindInput()
+{
     InputManager::Instance()->BindOnTriggered(InputAction::Up, [this]()
                                               { axis.y = -1; });
     InputManager::Instance()->BindOnTriggered(InputAction::Down, [this]()

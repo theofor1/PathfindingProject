@@ -90,7 +90,9 @@ void IGameManager::StartActiveScene()
         return;
 
     InputManager::Instance()->ResetBind();
+    Window::Instance()->BindInput();
     Scenes[IndexCurrentScene]->Start();
+
 }
 
 void IGameManager::UpdateActiveScene(float DeltaTime)

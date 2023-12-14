@@ -7,52 +7,51 @@ class Window
 public:
 	Window(const float _speedMove = 100);
 
-	sf::RenderWindow& GetWindow();
-	sf::View& GetView();
+	sf::RenderWindow &GetWindow();
+	sf::View &GetView();
 
 	void Update(const float DeltaTime);
 	void SetViewSpeedMove(const float _speedMove);
 	float GetViewSpeedMove() const;
+	void BindInput();
 
 	void UpdateView();
 
 	int fpsMax = 60;
-	
+
 	int Width = 1920;
 	int Height = 1080;
-	
+
 	std::string Title = "Path Finder";
 
-	#pragma region Singleton
+#pragma region Singleton
 
-		static Window* Instance()
+	static Window *Instance()
+	{
+		if (!instance)
 		{
-			if (!instance)
-			{
-				instance = new Window();
-			}
-
-			return instance;
+			instance = new Window();
 		}
 
-		static Window* DeleteInstance()
-		{
-			if (!instance)
-			{
-				delete instance;
-				instance = nullptr;
-			}
-		}
+		return instance;
+	}
 
-		static Window* instance;
-	#pragma endregion
+	static void DeleteInstance()
+	{
+		if (!instance)
+		{
+			delete instance;
+			instance = nullptr;
+		}
+	}
+
+	static Window *instance;
+#pragma endregion
 
 private:
 	sf::RenderWindow window;
-    sf::View viewport;
+	sf::View viewport;
 
 	sf::Vector2f axis;
 	float speedMove;
-
 };
-
