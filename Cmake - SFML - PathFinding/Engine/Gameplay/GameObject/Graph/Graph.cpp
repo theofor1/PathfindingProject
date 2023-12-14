@@ -53,7 +53,8 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 	sf::Vector2i LastNbCells = NbCell;
 	NbCell = Size;
 	std::map<int, std::map<int, Cell *>> LastCells = Cells;
-	DestroyCells();
+	Cells.clear();
+
 	DestroyWayPoints();
 	size_t MinNbCellX;
 	size_t MinNbCellY;
@@ -166,10 +167,6 @@ std::vector<WayPoint *> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 
 	if (CellEnd->GetCellType() == CellType::BLOCK)
 		return Path;
-
-	// Get Start and Tartget Wp
-	// if (CellStart->GetCellType() == CellType::TELEPORTATION)
-	// 	CellStart = CellStart->OtherCellTypeTeleportation;
 
 	WayPoint *StartWp = GetWayPointByCell(CellStart);
 	WayPoint *EndWp = GetWayPointByCell(CellEnd);
@@ -423,8 +420,8 @@ void Graph::DestroyCells()
 	{
 		for (auto &innerPair : outerPair.second)
 		{
-			// if (innerPair.second)
-				// delete innerPair.second;
+			if (innerPair.second)
+				delete innerPair.second;
 		}
 	}
 	Cells.clear();
