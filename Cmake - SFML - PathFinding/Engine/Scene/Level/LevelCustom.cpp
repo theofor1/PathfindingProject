@@ -132,11 +132,23 @@ void LevelCustom::OnGraphCellOnClick()
 	case Mode::PUT_CELL_BLOCK:
 		if (CellDest->GetCellType() == CellType::BLOCK)
 			return;
+		if (CellDest->GetCellType() == CellType::TELEPORTATION)
+		{
+			if (CellDest->OtherCellTypeTeleportation)
+				CellDest->OtherCellTypeTeleportation->SetCellType(CellType::NORMAL);
+		}
 		CellDest->SetCellType(CellType::BLOCK);
 		break;
 	case Mode::PUT_CELL_NORMAL:
 		if (CellDest->GetCellType() == CellType::NORMAL)
 			return;
+
+		if (CellDest->GetCellType() == CellType::TELEPORTATION)
+		{
+			if (CellDest->OtherCellTypeTeleportation)
+				CellDest->OtherCellTypeTeleportation->SetCellType(CellType::NORMAL);
+		}
+
 		CellDest->SetCellType(CellType::NORMAL);
 		break;
 	case Mode::PUT_CELL_TELEPORTATION:
