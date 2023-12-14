@@ -549,16 +549,14 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<> &Doc)
 	std::istringstream ssPlayerX(strPlayerX);
 	int playerPosX;
 	ssPlayerX >> playerPosX;
-	// std::cout << playerPosX << std::endl;
 
 	playerAttr = playerAttr->next_attribute("Y");
 	std::string strPlayerY(playerAttr->value());
 	std::istringstream ssPlayerY(strPlayerY);
 	int playerPosY;
 	ssPlayerY >> playerPosY;
-	// std::cout << playerPosY << std::endl;
 
-	if (graph->GetNbCell().x - 1 <= playerPosX || graph->GetNbCell().y - 1 <= playerPosY)
+	if (playerPosX <= graph->GetNbCell().y - 1 && playerPosY <= graph->GetNbCell().x - 1)
 		ship->SetPosition(graph->Cells[playerPosY][playerPosX]->GetPosition());
 	else
 		ship->SetPosition(graph->Cells[0][0]->GetPosition());
