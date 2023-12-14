@@ -122,51 +122,51 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 	return nullptr;
 }
 
-sf::Vector2i Graph::GetCellCoordinate(Cell *CellToFind) const
+sf::Vector2i Graph::GetCellCoordinate(Cell *CellToFind)
 {
 	sf::Vector2i Coordinate(0, 0);
 
-	for (const auto &row : Cells)
+	for (size_t x = 0; x < NbCell.x; x++)
 	{
-		for (const auto &cellPair : row.second)
+		for (size_t y = 0; y < NbCell.y; y++)
 		{
-			Cell *Cell = cellPair.second;
+			Cell *Cell = Cells[x][y];
 			if (Cell == CellToFind)
-				return Coordinate;
-			Coordinate.x++;
-			Coordinate.x %= NbCell.y;
-		}
-		Coordinate.y++;
-	}
-
-	return Coordinate;
-}
-
-sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
-{
-	sf::Vector2i Coordinate(0, 0);
-
-	for (const auto &row : Cells)
-	{
-		for (const auto &cellPair : row.second)
-		{
-			Cell *Cell = cellPair.second;
-			if (Cell->GetRect().contains(Position))
 			{
+				Coordinate.x = x;
+				Coordinate.y = y;
 				return Coordinate;
 			}
-			Coordinate.x++;
-			Coordinate.x %= NbCell.y;
 		}
-		Coordinate.y++;
 	}
 
 	return Coordinate;
 }
 
-std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
+sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position)
 {
-	std::vector<sf::Vector2f> Path;
+	sf::Vector2i Coordinate(0, 0);
+
+	for (size_t x = 0; x < NbCell.x; x++)
+	{
+		for (size_t y = 0; y < NbCell.y; y++)
+		{
+			Cell *Cell = Cells[x][y];
+			if (Cell->GetRect().contains(Position))
+			{
+				Coordinate.x = x;
+				Coordinate.y = y;
+				return Coordinate;
+			}
+		}
+	}
+
+	return Coordinate;
+}
+
+std::vector<WayPoint *> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
+{
+	std::vector<WayPoint *> Path;
 
 	if (!CellStart || !CellEnd)
 		return Path;
@@ -175,6 +175,9 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 		return Path;
 
 	// Get Start and Tartget Wp
+	// if (CellStart->GetCellType() == CellType::TELEPORTATION)
+	// 	CellStart = CellStart->OtherCellTypeTeleportation;
+
 	WayPoint *StartWp = GetWayPointByCell(CellStart);
 	WayPoint *EndWp = GetWayPointByCell(CellEnd);
 
@@ -195,8 +198,8 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 
 	std::vector<WayPoint *> WpPath = Dijkstra::GetPathFinding(Wps, StartWp, EndWp);
 
-	for (const WayPoint *Wp : WpPath)
-		Path.push_back(sf::Vector2f(Wp->X, Wp->Y));
+	for (WayPoint *Wp : WpPath)
+		Path.push_back(Wp);
 
 	if (Path.size() > 1)
 	{

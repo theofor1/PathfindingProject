@@ -22,9 +22,9 @@ public:
 	virtual void UpdateSize(const sf::Vector2i Size);
 
 	virtual Cell *GetCellByPosition(sf::Vector2f Position);
-	virtual sf::Vector2i GetCellCoordinate(Cell* CellToFind) const;
-	virtual sf::Vector2i GetCellCoordinateByPosition(sf::Vector2f Position) const;
-	virtual std::vector<sf::Vector2f> GetPath(Cell *CellStart, Cell *CellEnd);
+	virtual sf::Vector2i GetCellCoordinate(Cell* CellToFind);
+	virtual sf::Vector2i GetCellCoordinateByPosition(sf::Vector2f Position);
+	virtual std::vector<WayPoint*> GetPath(Cell *CellStart, Cell *CellEnd);
 	virtual sf::Vector2i GetNbCell() const;
 	
 	//To call when cells Alive state is updated (adding walls in custom level)

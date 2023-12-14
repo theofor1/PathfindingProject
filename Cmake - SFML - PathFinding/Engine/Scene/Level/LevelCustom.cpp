@@ -65,25 +65,10 @@ void LevelCustom::Start()
 
 	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
 										 { OnButtonsClick(); });
-
-	// InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
-	// 										  { EventOnClick(); });
 }
 
 void LevelCustom::Update(float DeltaTime)
 {
-	// Cell *Cell1 = graph->Cells[0][2];
-	// Cell *Cell2 = graph->Cells[6][2];
-
-	// Cell1->SetCellType(CellType::TELEPORTATION);
-	// Cell2->SetCellType(CellType::TELEPORTATION);
-
-	// // WayPoint *Wp1 = graph->GetWayPoint(0, 2);
-	// // WayPoint *Wp2 = graph->GetWayPoint(4, 6);
-	// WayPoint *Wp1 = graph->GetWayPointByCell(Cell1);
-	// WayPoint *Wp2 = graph->GetWayPointByCell(Cell2);
-	// Wp1->LinkWayPoint(Wp2, true);
-
 	IScene::Update(DeltaTime);
 
 	sf::View viewport = Window::Instance()->GetView();
@@ -133,7 +118,14 @@ void LevelCustom::OnGraphCellOnClick()
 	{
 	case Mode::MOVE_PLAYER:
 		ResetPath();
+
 		Path = graph->GetPath(CellStart, CellDest);
+		if (CellStart->GetCellType() == CellType::TELEPORTATION && Path.size() > 0)
+		{
+			sf::Vector2f CurrentWayPoint = sf::Vector2f(Path[CurrentIndexWaypoint]->X, Path[CurrentIndexWaypoint]->Y);
+			ship->SetPosition(CurrentWayPoint);
+		}
+
 		UpdateDrawDebugLines();
 		return;
 		break;
@@ -350,28 +342,34 @@ void LevelCustom::FollowPath(float DeltaTime)
 
 	UpdateDrawDebugLines();
 
-	sf::Vector2f CurrentWayPoint = Path[CurrentIndexWaypoint];
+	sf::Vector2f CurrentWayPoint = sf::Vector2f(Path[CurrentIndexWaypoint]->X, Path[CurrentIndexWaypoint]->Y);
 
 	float CurrentDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
 
-	if (CurrentDist > 5)
+	if (CurrentDist < 5)
 	{
+		if (CurrentIndexWaypoint < Path.size() - 1 && Path[CurrentIndexWaypoint]->IsNoCostWayPoint(Path[CurrentIndexWaypoint + 1]))
+		{
+			sf::Vector2f NextWayPoint = sf::Vector2f(Path[CurrentIndexWaypoint + 1]->X, Path[CurrentIndexWaypoint + 1]->Y);
+			ship->SetPosition(NextWayPoint);
+		}
+		else
+		{
+			ship->SetPosition(CurrentWayPoint);
+		}
+		CurrentIndexWaypoint++;
+		if (CurrentIndexWaypoint >= Path.size())
+			ResetPath();
+	}
+	else
+	{
+
 		MoveTo(DeltaTime, CurrentWayPoint);
 
 		float NewDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
 
 		if (NewDist > CurrentDist)
 			ship->SetPosition(CurrentWayPoint);
-	}
-	else
-	{
-		ship->SetPosition(CurrentWayPoint);
-		CurrentIndexWaypoint++;
-
-		if (CurrentIndexWaypoint >= Path.size())
-		{
-			ResetPath();
-		}
 	}
 }
 
@@ -396,15 +394,15 @@ void LevelCustom::UpdateDrawDebugLines()
 	if (Path.size() == 0)
 		return;
 
-	DebugLines.push_back(Line(ship->GetPosition(), sf::Vector2f(Path[CurrentIndexWaypoint])));
+	DebugLines.push_back(Line(ship->GetPosition(), sf::Vector2f(Path[CurrentIndexWaypoint]->X, Path[CurrentIndexWaypoint]->Y)));
 
 	for (int i = CurrentIndexWaypoint; i <= Path.size(); i++)
 	{
 		if (i + 1 >= Path.size())
 			return;
 
-		sf::Vector2f StartLocation = Path[i];
-		sf::Vector2f EndLocation = Path[i + 1];
+		sf::Vector2f StartLocation = sf::Vector2f(Path[i]->X, Path[i]->Y);
+		sf::Vector2f EndLocation = sf::Vector2f(Path[i + 1]->X, Path[i + 1]->Y);
 
 		DebugLines.push_back(Line(StartLocation, EndLocation));
 	}
@@ -583,11 +581,11 @@ void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 			}
 			if (curCell->GetCellType() == CellType::TELEPORTATION)
 			{
-				Cell *LinkdedCell = curCell->OtherCellTypeTeleportation;
-				if (!LinkdedCell)
+				Cell *LinkedCell = curCell->OtherCellTypeTeleportation;
+				if (!LinkedCell)
 					continue;
 
-				sf::Vector2i LinkdedCellCoordinate = graph->GetCellCoordinate(LinkdedCell);
+				sf::Vector2i LinkedCellCoordinate = graph->GetCellCoordinate(LinkedCell);
 
 				xml_node<> *thisCell = Doc.allocate_node(node_element, "CellTeleportation");
 				graphNode->append_node(thisCell);
@@ -598,10 +596,10 @@ void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 				xml_attribute<> *yAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(y).c_str()));
 				thisCell->append_attribute(yAttr);
 
-				xml_attribute<> *LinkedCellXAttr = Doc.allocate_attribute("LinkdedCellX", Doc.allocate_string(std::to_string(LinkdedCellCoordinate.x).c_str()));
+				xml_attribute<> *LinkedCellXAttr = Doc.allocate_attribute("LinkedCellX", Doc.allocate_string(std::to_string(LinkedCellCoordinate.x).c_str()));
 				thisCell->append_attribute(LinkedCellXAttr);
 
-				xml_attribute<> *LinkedCellYAttr = Doc.allocate_attribute("LinkdedCellY", Doc.allocate_string(std::to_string(LinkdedCellCoordinate.y).c_str()));
+				xml_attribute<> *LinkedCellYAttr = Doc.allocate_attribute("LinkedCellY", Doc.allocate_string(std::to_string(LinkedCellCoordinate.y).c_str()));
 				thisCell->append_attribute(LinkedCellYAttr);
 			}
 		}
@@ -668,28 +666,26 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<> &Doc)
 		int cellY;
 		ssCellY >> cellY;
 
-		cellAttr = cellAttr->next_attribute("LinkdedCellX");
-		std::string strLinkdedCellX(cellAttr->value());
-		std::istringstream ssLinkdedCellX(strLinkdedCellX);
-		int LinkdedCellX;
-		ssCellY >> LinkdedCellX;
+		cellAttr = cellAttr->next_attribute("LinkedCellX");
+		std::string strLinkedCellX(cellAttr->value());
+		std::istringstream ssLinkedCellX(strLinkedCellX);
+		int LinkedCellX;
+		ssLinkedCellX >> LinkedCellX;
 
-		cellAttr = cellAttr->next_attribute("LinkdedCellY");
-		std::string strLinkdedCellY(cellAttr->value());
-		std::istringstream ssLinkdedCellY(strLinkdedCellY);
-		int LinkdedCellY;
-		ssCellY >> LinkdedCellY;
+		cellAttr = cellAttr->next_attribute("LinkedCellY");
+		std::string strLinkedCellY(cellAttr->value());
+		std::istringstream ssLinkedCellY(strLinkedCellY);
+		int LinkedCellY;
+		ssLinkedCellY >> LinkedCellY;
 
 		graph->Cells[cellX][cellY]->SetCellType(CellType::TELEPORTATION);
 
-		std::cout << LinkdedCellX << "\n";
+		Cell *LinkedCell = graph->Cells[LinkedCellX][LinkedCellY];
 
-		// Cell *LinkedCell = graph->Cells[LinkdedCellX][LinkdedCellY];
+		if (!LinkedCell)
+			continue;
 
-		// if (!LinkedCell)
-		// 	continue;
-
-		// graph->Cells[cellX][cellY]->SetOtherCellTypeTeleportation(LinkedCell);
+		graph->Cells[cellX][cellY]->SetOtherCellTypeTeleportation(LinkedCell);
 	}
 
 	graph->ReGenerateWaypoints();

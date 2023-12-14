@@ -10,6 +10,7 @@
 class Graph;
 class PlayerShip;
 class Cell;
+class WayPoint;
 
 enum class Mode
 {
@@ -79,7 +80,7 @@ protected:
 
 private:
 	int CurrentIndexWaypoint;
-	std::vector<sf::Vector2f> Path;
+	std::vector<WayPoint*> Path;
 	Cell *CurrentCellDest;
 	Cell *CurrentCellTypeTeleportation;
 
