@@ -32,7 +32,7 @@ void Actor::Destroy()
 void Actor::Draw(sf::RenderWindow &window) const
 {
 	GameObject::Draw(window);
-	window.draw(CBoxCollider->m_debugRectangle);
+	// window.draw(CBoxCollider->m_debugRectangle);
 }
 
 float Actor::GetSpeedMove() const

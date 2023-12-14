@@ -12,8 +12,8 @@ IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
+    //AddLevel(new MainMenu());
     AddLevel(new LevelCustom());
-    AddLevel(new MainMenu());
     // AddLevel(new LevelCustom());
     // AddLevel(new LevelGraph());
 
@@ -39,6 +39,8 @@ void IGameManager::RunGame()
     clock.restart();
 
     Window::Instance()->SetViewSpeedMove(500);
+    // Window::Instance()->GetWindow().create(sf::VideoMode::getFullscreenModes()[0], "SFML Fullscreen Example", sf::Style::Fullscreen);
+
 
     while (Window::Instance()->GetWindow().isOpen())
     {

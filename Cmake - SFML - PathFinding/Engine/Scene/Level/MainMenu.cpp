@@ -4,8 +4,8 @@
 #include <Engine/Render/Window.h>
 #include <GameManager/IGameManager.h>
 
-MainMenu::MainMenu() {
-	
+MainMenu::MainMenu()
+{
 }
 
 void MainMenu::Start()
@@ -34,44 +34,41 @@ void MainMenu::Start()
 	// INPUT BINDING
 
 	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
-		{ OnButtonsClick(); });
-	
-	if (!font.loadFromFile("./Ressources/Fonts/OpenSans-Regular.ttf")) {
-		std::cout << "Failed to load font";
-	} 
-	else 
+										 { OnButtonsClick(); });
+
+	if (!font.loadFromFile("./Ressources/Fonts/OpenSans-Regular.ttf"))
 	{
-		std::cout << "load font";
-		std::cout << "yo";
+		std::cout << "Failed to load font";
 	}
 
-	text.setFont(font); // Définition de la police de caractères
-	text.setString("Bonjour, SFML !"); // Définition du texte
-	text.setCharacterSize(24); // Taille des caractères
-	text.setFillColor(sf::Color::White); // Couleur du texte 
+	text.setFont(font);					 // Dï¿½finition de la police de caractï¿½res
+	text.setString("Bonjour, SFML !");	 // Dï¿½finition du texte
+	text.setCharacterSize(24);			 // Taille des caractï¿½res
+	text.setFillColor(sf::Color::White); // Couleur du texte
 }
 
 void MainMenu::Update(float DeltaTime)
 {
 	IScene::Update(DeltaTime);
+
+	sf::View viewport = Window::Instance()->GetView();
+	sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
+	outerBox->UpdateRect(windowRect);
 	outerBox->Update(DeltaTime);
-	
 }
 
 void MainMenu::Destroy()
 {
 	IScene::Destroy();
-
 }
 
-void MainMenu::Draw(sf::RenderWindow& window) const
+void MainMenu::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 	sf::Vector2u windowSize = window.getSize();
 	sf::FloatRect windowRect(0, 0, windowSize.x, windowSize.y);
 	outerBox->UpdateRect(windowRect);
 	outerBox->Draw(window);
-	
 }
 
 void MainMenu::OnButtonsClick()
@@ -82,7 +79,6 @@ void MainMenu::OnButtonsClick()
 	if (btnPlay->Clicked(WorldMouseLocation))
 	{
 		IGameManager::Instance()->LoadLevel(1);
-		IGameManager::Instance()->RunGame();
 		return;
 	}
 

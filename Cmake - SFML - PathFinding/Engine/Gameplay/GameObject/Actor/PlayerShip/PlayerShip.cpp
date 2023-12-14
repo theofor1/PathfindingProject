@@ -13,18 +13,6 @@
 PlayerShip::PlayerShip(std::string Name) : Actor(Name)
 {
 	SpeedMove = 300;
-
-	// InputManager::Instance()->Bind(InputAction::Up, [this]()
-	// 							   { MoveUp(); });
-	// InputManager::Instance()->Bind(InputAction::Down, [this]()
-	// 							   { MoveDown(); });
-	// InputManager::Instance()->Bind(InputAction::Left, [this]()
-	// 							   { MoveLeft(); });
-	// InputManager::Instance()->Bind(InputAction::Right, [this]()
-	// 							   { MoveRight(); });
-
-	// InputManager::Instance()->Bind(InputAction::MouseL, [this]()
-	// 							   { SetCurrentDirectionByMouseLocation(); });
 }
 
 PlayerShip::~PlayerShip()
