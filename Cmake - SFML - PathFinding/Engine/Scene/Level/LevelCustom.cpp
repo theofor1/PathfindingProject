@@ -425,25 +425,19 @@ void LevelCustom::InitButtons()
 	outerBox = new UIElement(sf::Vector2f(0.8f, 0.f), sf::Vector2f(0.2f, 0.4f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
-	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
 	outerBox->AddChild(btnPlayerMoveMode);
 
-	btnPutCellTypeNormal = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPutCellTypeNormal->RenderRectangle.setFillColor(sf::Color::White);
-	btnPutCellTypeNormal->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeNormal = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f),10, sf::Color::White, sf::Color(239, 239, 240),3);
 	btnPutCellTypeNormal->TextButton.setString("Put Cell Type To Normal");
 	outerBox->AddChild(btnPutCellTypeNormal);
 
-	btnPutCellTypeBlock = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
-	btnPutCellTypeBlock->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeBlock = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnPutCellTypeBlock->TextButton.setString("Put Cell Type To Block");
 	outerBox->AddChild(btnPutCellTypeBlock);
 
-	btnPutCellTypeTeleportation = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPutCellTypeTeleportation->RenderRectangle.setFillColor(sf::Color::White);
-	btnPutCellTypeTeleportation->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeTeleportation = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnPutCellTypeTeleportation->TextButton.setString("Put Cell Type To Teleportation");
 	outerBox->AddChild(btnPutCellTypeTeleportation);
 
@@ -451,15 +445,11 @@ void LevelCustom::InitButtons()
 	windowSpeedBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(windowSpeedBox);
 
-	btnDownWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnDownWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnDownWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnDownWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnDownWindowSpeed->TextButton.setString("- Speed Viewport");
 	windowSpeedBox->AddChild(btnDownWindowSpeed);
 
-	btnUpWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnUpWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnUpWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnUpWindowSpeed->TextButton.setString("+ Speed Viewport");
 	windowSpeedBox->AddChild(btnUpWindowSpeed);
 
@@ -467,15 +457,11 @@ void LevelCustom::InitButtons()
 	playerSpeedBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(playerSpeedBox);
 
-	btnDownPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnDownPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnDownPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnDownPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnDownPlayerSpeed->TextButton.setString("- Speed Player");
 	playerSpeedBox->AddChild(btnDownPlayerSpeed);
 
-	btnUpPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnUpPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnUpPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnUpPlayerSpeed->TextButton.setString("+ Speed Player");
 	playerSpeedBox->AddChild(btnUpPlayerSpeed);
 
@@ -483,11 +469,11 @@ void LevelCustom::InitButtons()
 	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphHeightBox);
 
-	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnRemoveGraphHeight->TextButton.setString("- Height");
 	graphHeightBox->AddChild(btnRemoveGraphHeight);
 
-	btnAddGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnAddGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnAddGraphHeight->TextButton.setString("+ Height");
 	graphHeightBox->AddChild(btnAddGraphHeight);
 
@@ -495,23 +481,19 @@ void LevelCustom::InitButtons()
 	graphWidthBox->SetLayout(UILayout::List, UIDirection::Horizontal);
 	outerBox->AddChild(graphWidthBox);
 
-	btnRemoveGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnRemoveGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnRemoveGraphWidth->TextButton.setString("- Width");
 	graphWidthBox->AddChild(btnRemoveGraphWidth);
 
-	btnAddGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnAddGraphWidth = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnAddGraphWidth->TextButton.setString("+ Width");
 	graphWidthBox->AddChild(btnAddGraphWidth);
 
-	btnSaveLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnSaveLevel->RenderRectangle.setFillColor(sf::Color::White);
-	btnSaveLevel->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnSaveLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnSaveLevel->TextButton.setString("Save Level");
 	outerBox->AddChild(btnSaveLevel);
 
-	btnLoadLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnLoadLevel->RenderRectangle.setFillColor(sf::Color::White);
-	btnLoadLevel->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnLoadLevel = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnLoadLevel->TextButton.setString("Load Level");
 	outerBox->AddChild(btnLoadLevel);
 
