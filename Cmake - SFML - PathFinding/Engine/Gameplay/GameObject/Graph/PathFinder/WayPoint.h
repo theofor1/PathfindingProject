@@ -16,6 +16,7 @@ public:
     bool IsLinkedTo(WayPoint *AnotherWayPoint);
     virtual bool IsNoCostWayPoint(WayPoint *WayPointToCheck) const;
     virtual float GetCost(WayPoint *WpDest) const;
+    virtual void AddLinkedWayPointsWithNoCost(WayPoint* AnotherWayPoint);
     
     int X;
     int Y;

@@ -20,7 +20,6 @@ void ICollider::SetColliderPositionLocal(sf::Vector2f pos)
 
 bool ICollider::IsOnCollisionWidth(sf::FloatRect OtherRect)
 {
-
 	return GetRect().intersects(OtherRect);
 }
 

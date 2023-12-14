@@ -63,8 +63,7 @@ void LevelCustom::Start()
 	InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
 											  { OnGraphCellOnClick(); });
 
-	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
-										 { OnButtonsClick(); });
+	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]() { OnButtonsClick(); });
 }
 
 void LevelCustom::Update(float DeltaTime)

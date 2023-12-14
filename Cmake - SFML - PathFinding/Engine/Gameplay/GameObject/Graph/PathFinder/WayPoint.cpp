@@ -27,13 +27,7 @@ void WayPoint::LinkWayPoint(WayPoint *AnotherWayPoint, bool NoCost)
         if (Wp == AnotherWayPoint)
         {
             if (NoCost)
-            {
-                LinkedWayPointsWithNoCost.erase(std::remove_if(LinkedWayPointsWithNoCost.begin(), LinkedWayPointsWithNoCost.end(),
-                                                               [AnotherWayPoint](const WayPoint *wp)
-                                                               { return wp == AnotherWayPoint; }),
-                                                LinkedWayPointsWithNoCost.end());
-                LinkedWayPointsWithNoCost.push_back(AnotherWayPoint);
-            }
+                AddLinkedWayPointsWithNoCost(AnotherWayPoint);
 
             exists = true;
             break;
@@ -44,13 +38,7 @@ void WayPoint::LinkWayPoint(WayPoint *AnotherWayPoint, bool NoCost)
     {
         LinkedWayPoints.push_back(AnotherWayPoint);
         if (NoCost)
-        {
-            LinkedWayPointsWithNoCost.erase(std::remove_if(LinkedWayPointsWithNoCost.begin(), LinkedWayPointsWithNoCost.end(),
-                                                           [AnotherWayPoint](const WayPoint *wp)
-                                                           { return wp == AnotherWayPoint; }),
-                                            LinkedWayPointsWithNoCost.end());
-            LinkedWayPointsWithNoCost.push_back(AnotherWayPoint);
-        }
+            AddLinkedWayPointsWithNoCost(AnotherWayPoint);
         AnotherWayPoint->LinkWayPoint(this, NoCost);
     }
 }
@@ -109,4 +97,13 @@ bool WayPoint::IsNoCostWayPoint(WayPoint *WayPointToCheck) const
         if (Wp == WayPointToCheck)
             return true;
     return false;
+}
+
+void WayPoint::AddLinkedWayPointsWithNoCost(WayPoint *AnotherWayPoint)
+{
+    LinkedWayPointsWithNoCost.erase(std::remove_if(LinkedWayPointsWithNoCost.begin(), LinkedWayPointsWithNoCost.end(),
+                                                   [AnotherWayPoint](const WayPoint *wp)
+                                                   { return wp == AnotherWayPoint; }),
+                                    LinkedWayPointsWithNoCost.end());
+    LinkedWayPointsWithNoCost.push_back(AnotherWayPoint);
 }
