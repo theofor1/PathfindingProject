@@ -184,7 +184,6 @@ void LevelCustom::OnButtonsClick()
 	if (btnPlayerMoveMode->Clicked(WorldMouseLocation))
 	{
 		CancelPuttingCurrentCellTeleportation();
-
 		Mode = Mode::MOVE_PLAYER;
 		btnPlayerMoveMode->RenderRectangle.setFillColor(ColorOnSelected);
 		btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
@@ -195,6 +194,7 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnPutCellTypeBlock->Clicked(WorldMouseLocation))
 	{
+		CancelPuttingCurrentCellTeleportation();
 		Mode = Mode::PUT_CELL_BLOCK;
 		btnPutCellTypeBlock->RenderRectangle.setFillColor(ColorOnSelected);
 		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
