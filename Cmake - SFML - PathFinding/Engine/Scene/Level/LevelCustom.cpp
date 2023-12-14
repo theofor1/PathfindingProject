@@ -270,7 +270,10 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
 	{
-		if (GraphHeightNbCells == 1)
+		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
+
+		if (GraphHeightNbCells == 1 || playerPos.y == GraphHeightNbCells - 1)
+			//Do not reduce graph is player is at max to avoid OOB
 			return;
 		GraphHeightNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
@@ -288,7 +291,8 @@ void LevelCustom::OnButtonsClick()
 
 	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
 	{
-		if (GraphWidthNbCells == 1)
+		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
+		if (GraphWidthNbCells == 1 || playerPos.x == GraphWidthNbCells - 1)
 			return;
 		GraphWidthNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
