@@ -62,7 +62,6 @@ protected:
 
 	sf::Color ColorOnSelected;
 
-
 	void OnGraphCellOnClick();
 	void OnButtonsClick();
 

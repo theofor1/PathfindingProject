@@ -5,6 +5,7 @@
 // #include <Engine/Scene/IScene.h>
 
 #include <Level/LevelCustom.h>
+#include <Level/MainMenu.h>
 #include <iostream>
 
 IGameManager *IGameManager::instance = nullptr;
@@ -12,6 +13,9 @@ IGameManager *IGameManager::instance = nullptr;
 IGameManager::IGameManager()
 {
     AddLevel(new LevelCustom());
+    AddLevel(new MainMenu());
+    // AddLevel(new LevelCustom());
+    // AddLevel(new LevelGraph());
 
     // InputManager::Instance()->BindOnDown(InputAction::Down, [this]()
     //                                { LoadLevel(1); });
