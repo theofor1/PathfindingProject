@@ -5,6 +5,7 @@
 #include <GameObject/Graph/Graph.h>
 #include <GameObject/Graph/Cell/Cell.h>
 #include <Math/Vector/Vector.h>
+#include <GameObject/Graph/PathFinder/WayPoint.h>
 
 #include <iostream>
 #include <string>
@@ -29,8 +30,9 @@ void LevelCustom::Start()
 	IScene::Start();
 
 	CurrentIndexWaypoint = 0;
-	WayPoints.clear();
+	Path.clear();
 	DebugLines.clear();
+	CurrentCellTypeTeleportation = nullptr;
 
 	OnWallMode = false;
 	OnPutWallMode = true;
@@ -38,6 +40,7 @@ void LevelCustom::Start()
 	ColorOnSelected = sf::Color(255, 0, 0, 255);
 
 	Mode = Mode::MOVE_PLAYER;
+
 	xml_document<> doc;
 	std::ifstream file("Ressources/Saves/CustomLevelSave.xml");
 	std::stringstream buffer;
@@ -46,12 +49,369 @@ void LevelCustom::Start()
 	doc.parse<0>(&content[0]);
 
 	if (loadLevelFromXMLFile(doc))
-		std::cout << "Last save loaded.\n";
+	{
+		// std::cout << "Last save loaded.\n";
+	}
 	else
 		ship->SetPosition(graph->Cells[0][0]->GetPosition());
 
 	doc.clear();
 
+	InitButtons();
+
+	// INPUT BINDING
+	InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
+											  { OnGraphCellOnClick(); });
+
+	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
+										 { OnButtonsClick(); });
+
+	// InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
+	// 										  { EventOnClick(); });
+}
+
+void LevelCustom::Update(float DeltaTime)
+{
+	// Cell *Cell1 = graph->Cells[0][2];
+	// Cell *Cell2 = graph->Cells[6][2];
+
+	// Cell1->SetCellType(CellType::TELEPORTATION);
+	// Cell2->SetCellType(CellType::TELEPORTATION);
+
+	// // WayPoint *Wp1 = graph->GetWayPoint(0, 2);
+	// // WayPoint *Wp2 = graph->GetWayPoint(4, 6);
+	// WayPoint *Wp1 = graph->GetWayPointByCell(Cell1);
+	// WayPoint *Wp2 = graph->GetWayPointByCell(Cell2);
+	// Wp1->LinkWayPoint(Wp2, true);
+
+	IScene::Update(DeltaTime);
+
+	sf::View viewport = Window::Instance()->GetView();
+	sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
+	outerBox->UpdateRect(windowRect);
+	outerBox->Update(DeltaTime);
+
+	FollowPath(DeltaTime);
+}
+
+void LevelCustom::Destroy()
+{
+	delete outerBox;
+	IScene::Destroy();
+}
+
+void LevelCustom::Draw(sf::RenderWindow &window) const
+{
+	IScene::Draw(window);
+	outerBox->Draw(window);
+
+	// Draw debug path finding
+	for (const Line line : DebugLines)
+		line.Draw(window);
+}
+
+// Protected
+void LevelCustom::OnGraphCellOnClick()
+{
+	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
+	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
+
+	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
+	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
+
+	// std::cout << graph->GetCellCoordinateByPosition(WorldMouseLocation).x << " " << graph->GetCellCoordinateByPosition(WorldMouseLocation).y << "\n";
+
+	if (CurrentCellDest == CellDest)
+		return;
+
+	CurrentCellDest = CellDest;
+
+	if (!CellStart || !CellDest || CellStart == CellDest)
+		return;
+
+	switch (Mode)
+	{
+	case Mode::MOVE_PLAYER:
+		ResetPath();
+		Path = graph->GetPath(CellStart, CellDest);
+		UpdateDrawDebugLines();
+		return;
+		break;
+	case Mode::PUT_CELL_BLOCK:
+		if (CellDest->GetCellType() == CellType::BLOCK)
+			return;
+		CellDest->SetCellType(CellType::BLOCK);
+		break;
+	case Mode::PUT_CELL_NORMAL:
+		if (CellDest->GetCellType() == CellType::NORMAL)
+			return;
+		CellDest->SetCellType(CellType::NORMAL);
+		break;
+	case Mode::PUT_CELL_TELEPORTATION:
+		if (CellDest->GetCellType() == CellType::TELEPORTATION)
+			return;
+		CellDest->SetCellType(CellType::TELEPORTATION);
+
+		if (CurrentCellTypeTeleportation == CellDest)
+			return;
+
+		if (CurrentCellTypeTeleportation)
+		{
+			CurrentCellTypeTeleportation->SetOtherCellTypeTeleportation(CellDest);
+			CurrentCellTypeTeleportation = nullptr;
+		}
+		else
+		{
+			CurrentCellTypeTeleportation = CellDest;
+		}
+		break;
+	default:
+		return;
+	}
+
+	graph->ReGenerateWaypoints();
+}
+
+void LevelCustom::OnButtonsClick()
+{
+	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
+	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
+
+	if (btnPlayerMoveMode->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		Mode = Mode::MOVE_PLAYER;
+		btnPlayerMoveMode->RenderRectangle.setFillColor(ColorOnSelected);
+		btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeNormal->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeTeleportation->RenderRectangle.setFillColor(sf::Color::White);
+		return;
+	}
+
+	if (btnPutCellTypeBlock->Clicked(WorldMouseLocation))
+	{
+		Mode = Mode::PUT_CELL_BLOCK;
+		btnPutCellTypeBlock->RenderRectangle.setFillColor(ColorOnSelected);
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeNormal->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeTeleportation->RenderRectangle.setFillColor(sf::Color::White);
+		ResetPath();
+		UpdateDrawDebugLines();
+		return;
+	}
+
+	if (btnPutCellTypeNormal->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		Mode = Mode::PUT_CELL_NORMAL;
+		btnPutCellTypeNormal->RenderRectangle.setFillColor(ColorOnSelected);
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeTeleportation->RenderRectangle.setFillColor(sf::Color::White);
+		ResetPath();
+		UpdateDrawDebugLines();
+		return;
+	}
+
+	if (btnPutCellTypeTeleportation->Clicked(WorldMouseLocation))
+	{
+		Mode = Mode::PUT_CELL_TELEPORTATION;
+		btnPutCellTypeTeleportation->RenderRectangle.setFillColor(ColorOnSelected);
+		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
+		btnPutCellTypeNormal->RenderRectangle.setFillColor(sf::Color::White);
+		ResetPath();
+		UpdateDrawDebugLines();
+		return;
+	}
+
+	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
+
+		if (GraphHeightNbCells == 1 || playerPos.y == GraphHeightNbCells - 1)
+			// Do not reduce graph is player is at max to avoid OOB
+			return;
+		GraphHeightNbCells--;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		// if (GraphHeightNbCells == 1)
+		// return;
+		GraphHeightNbCells++;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
+		if (GraphWidthNbCells == 1 || playerPos.x == GraphWidthNbCells - 1)
+			return;
+		GraphWidthNbCells--;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		// if (GraphWidthNbCells == 14)
+		// return;
+		GraphWidthNbCells++;
+		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
+		return;
+	}
+
+	if (btnSaveLevel->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+
+		xml_document<> doc;
+		produceXMLDocForSave(doc);
+		std::ofstream file("Ressources/Saves/CustomLevelSave.xml");
+		if (!file)
+		{
+			std::cout << "Could not save level : xml file missing.\n";
+			return;
+		}
+		file << doc;
+		file.close();
+		// std::cout << "Level Saved!\n";
+		doc.clear();
+		return;
+	}
+
+	if (btnLoadLevel->Clicked(WorldMouseLocation))
+	{
+		CancelPuttingCurrentCellTeleportation();
+		xml_document<> doc;
+		std::ifstream file("Ressources/Saves/CustomLevelSave.xml");
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		std::string content(buffer.str());
+		doc.parse<0>(&content[0]);
+
+		loadLevelFromXMLFile(doc);
+
+		doc.clear();
+
+		CurrentIndexWaypoint = 0;
+		Path.clear();
+		DebugLines.clear();
+
+		return;
+	}
+
+	if (btnDownWindowSpeed->Clicked(WorldMouseLocation))
+	{
+		if (Window::Instance()->GetViewSpeedMove() > 0)
+			Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() - AmountSpeed);
+		return;
+	}
+
+	if (btnUpWindowSpeed->Clicked(WorldMouseLocation))
+	{
+		Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() + AmountSpeed);
+		return;
+	}
+
+	if (btnUpPlayerSpeed->Clicked(WorldMouseLocation))
+	{
+		if (ship->GetSpeedMove() > 1000)
+			return;
+		ship->SetSpeedMove(ship->GetSpeedMove() + AmountSpeed);
+		return;
+	}
+
+	if (btnDownPlayerSpeed->Clicked(WorldMouseLocation))
+	{
+		ship->SetSpeedMove(ship->GetSpeedMove() - AmountSpeed);
+		return;
+	}
+}
+
+void LevelCustom::FollowPath(float DeltaTime)
+{
+	if (Path.size() == 0)
+		return;
+
+	UpdateDrawDebugLines();
+
+	sf::Vector2f CurrentWayPoint = Path[CurrentIndexWaypoint];
+
+	float CurrentDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
+
+	if (CurrentDist > 5)
+	{
+		MoveTo(DeltaTime, CurrentWayPoint);
+
+		float NewDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
+
+		if (NewDist > CurrentDist)
+			ship->SetPosition(CurrentWayPoint);
+	}
+	else
+	{
+		ship->SetPosition(CurrentWayPoint);
+		CurrentIndexWaypoint++;
+
+		if (CurrentIndexWaypoint >= Path.size())
+		{
+			ResetPath();
+		}
+	}
+}
+
+void LevelCustom::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
+{
+	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
+	Direction *= DeltaTime * ship->GetSpeedMove();
+	ship->AddWorldPosition(Direction);
+}
+
+void LevelCustom::ResetPath()
+{
+	CurrentIndexWaypoint = 0;
+	Path.clear();
+	UpdateDrawDebugLines();
+}
+
+void LevelCustom::UpdateDrawDebugLines()
+{
+	DebugLines.clear();
+
+	if (Path.size() == 0)
+		return;
+
+	DebugLines.push_back(Line(ship->GetPosition(), sf::Vector2f(Path[CurrentIndexWaypoint])));
+
+	for (int i = CurrentIndexWaypoint; i <= Path.size(); i++)
+	{
+		if (i + 1 >= Path.size())
+			return;
+
+		sf::Vector2f StartLocation = Path[i];
+		sf::Vector2f EndLocation = Path[i + 1];
+
+		DebugLines.push_back(Line(StartLocation, EndLocation));
+	}
+}
+
+void LevelCustom::InitButtons()
+{
 	outerBox = new UIElement(sf::Vector2f(0.8f, 0.f), sf::Vector2f(0.2f, 0.4f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
@@ -61,17 +421,23 @@ void LevelCustom::Start()
 	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
 	outerBox->AddChild(btnPlayerMoveMode);
 
-	btnPutWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-	btnPutWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	btnPutWallMode->TextButton.setString("Place Wall Mode");
-	outerBox->AddChild(btnPutWallMode);
+	btnPutCellTypeNormal = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPutCellTypeNormal->RenderRectangle.setFillColor(sf::Color::White);
+	btnPutCellTypeNormal->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeNormal->TextButton.setString("Put Cell Type To Normal");
+	outerBox->AddChild(btnPutCellTypeNormal);
 
-	btnRemoveWallMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
-	btnRemoveWallMode->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	btnRemoveWallMode->TextButton.setString("Remove Wall Mode");
-	outerBox->AddChild(btnRemoveWallMode);
+	btnPutCellTypeBlock = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPutCellTypeBlock->RenderRectangle.setFillColor(sf::Color::White);
+	btnPutCellTypeBlock->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeBlock->TextButton.setString("Put Cell Type To Block");
+	outerBox->AddChild(btnPutCellTypeBlock);
+
+	btnPutCellTypeTeleportation = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	btnPutCellTypeTeleportation->RenderRectangle.setFillColor(sf::Color::White);
+	btnPutCellTypeTeleportation->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnPutCellTypeTeleportation->TextButton.setString("Put Cell Type To Teleportation");
+	outerBox->AddChild(btnPutCellTypeTeleportation);
 
 	windowSpeedBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
 	windowSpeedBox->SetLayout(UILayout::List, UIDirection::Horizontal);
@@ -150,295 +516,14 @@ void LevelCustom::Start()
 	outerBox->AddChild(btnLoadLevel);
 
 	outerBox->Start();
-
-	// INPUT BINDING
-	InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
-											  { OnGraphCellOnClick(); });
-
-	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
-										 { OnButtonsClick(); });
-
-	// InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
-	// 										  { EventOnClick(); });
 }
 
-void LevelCustom::Update(float DeltaTime)
+void LevelCustom::CancelPuttingCurrentCellTeleportation()
 {
-	TimeSinceLastInput += DeltaTime;
-	IScene::Update(DeltaTime);
-
-	sf::View viewport = Window::Instance()->GetView();
-	sf::FloatRect windowRect(viewport.getCenter().x - viewport.getSize().x / 2, viewport.getCenter().y - viewport.getSize().y / 2, viewport.getSize().x, viewport.getSize().y);
-	outerBox->UpdateRect(windowRect);
-	outerBox->Update(DeltaTime);
-
-	FollowWayPoints(DeltaTime);
-}
-
-void LevelCustom::Destroy()
-{
-	delete outerBox;
-	IScene::Destroy();
-}
-
-void LevelCustom::Draw(sf::RenderWindow &window) const
-{
-	IScene::Draw(window);
-	outerBox->Draw(window);
-
-	// Draw debug path finding
-	for (const Line line : DebugLines)
-		line.Draw(window);
-}
-
-// Protected
-void LevelCustom::OnGraphCellOnClick()
-{
-	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
-	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
-
-	Cell *CellDest = graph->GetCellByPosition(WorldMouseLocation);
-	Cell *CellStart = graph->GetCellByPosition(ship->GetPosition());
-
-	if (CurrentCellDest == CellDest)
-		return;
-
-	CurrentCellDest = CellDest;
-
-	if (!CellStart || !CellDest || CellStart == CellDest)
-		return;
-
-	switch (Mode)
+	if (CurrentCellTypeTeleportation)
 	{
-	case Mode::MOVE_PLAYER:
-		ResetPath();
-		WayPoints = graph->GetPath(CellStart, CellDest);
-		UpdateDrawDebugLines();
-		break;
-	case Mode::PUT_WALL:
-		if (!CellDest->GetIsAlive())
-			return;
-		CellDest->SetIsAlive(false);
-		break;
-	case Mode::REMOVE_WALL:
-		if (CellDest->GetIsAlive())
-			return;
-		CellDest->SetIsAlive(true);
-		break;
-	default:
-		return;
-	}
-
-	graph->ReGenerateWaypoints();
-}
-
-void LevelCustom::OnButtonsClick()
-{
-	sf::Vector2i MouseLocation = sf::Mouse::getPosition(Window::Instance()->GetWindow());
-	sf::Vector2f WorldMouseLocation = Window::Instance()->GetWindow().mapPixelToCoords(MouseLocation);
-
-	if (btnPlayerMoveMode->Clicked(WorldMouseLocation))
-	{
-		Mode = Mode::MOVE_PLAYER;
-		btnPlayerMoveMode->RenderRectangle.setFillColor(ColorOnSelected);
-		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		return;
-	}
-
-	if (btnPutWallMode->Clicked(WorldMouseLocation))
-	{
-		Mode = Mode::PUT_WALL;
-		btnPutWallMode->RenderRectangle.setFillColor(ColorOnSelected);
-		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
-		btnRemoveWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		ResetPath();
-		UpdateDrawDebugLines();
-		return;
-	}
-
-	if (btnRemoveWallMode->Clicked(WorldMouseLocation))
-	{
-		Mode = Mode::REMOVE_WALL;
-		btnRemoveWallMode->RenderRectangle.setFillColor(ColorOnSelected);
-		btnPlayerMoveMode->RenderRectangle.setFillColor(sf::Color::White);
-		btnPutWallMode->RenderRectangle.setFillColor(sf::Color::White);
-		ResetPath();
-		UpdateDrawDebugLines();
-		return;
-	}
-
-	if (btnRemoveGraphHeight->Clicked(WorldMouseLocation))
-	{
-		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
-
-		if (GraphHeightNbCells == 1 || playerPos.y == GraphHeightNbCells - 1)
-			//Do not reduce graph is player is at max to avoid OOB
-			return;
-		GraphHeightNbCells--;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnAddGraphHeight->Clicked(WorldMouseLocation))
-	{
-		// if (GraphHeightNbCells == 1)
-		// return;
-		GraphHeightNbCells++;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnRemoveGraphWidth->Clicked(WorldMouseLocation))
-	{
-		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
-		if (GraphWidthNbCells == 1 || playerPos.x == GraphWidthNbCells - 1)
-			return;
-		GraphWidthNbCells--;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnAddGraphWidth->Clicked(WorldMouseLocation))
-	{
-		// if (GraphWidthNbCells == 14)
-		// return;
-		GraphWidthNbCells++;
-		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
-		return;
-	}
-
-	if (btnSaveLevel->Clicked(WorldMouseLocation))
-	{
-
-		xml_document<> doc;
-		produceXMLDocForSave(doc);
-		std::ofstream file("Ressources/Saves/CustomLevelSave.xml");
-		if (!file)
-		{
-			std::cout << "Could not save level : xml file missing.\n";
-			return;
-		}
-		file << doc;
-		file.close();
-		std::cout << "Level Saved!\n";
-		doc.clear();
-		return;
-	}
-
-	if (btnLoadLevel->Clicked(WorldMouseLocation))
-	{
-		xml_document<> doc;
-		std::ifstream file("Ressources/Saves/CustomLevelSave.xml");
-		std::stringstream buffer;
-		buffer << file.rdbuf();
-		std::string content(buffer.str());
-		doc.parse<0>(&content[0]);
-
-		loadLevelFromXMLFile(doc);
-
-		doc.clear();
-
-		CurrentIndexWaypoint = 0;
-		WayPoints.clear();
-		DebugLines.clear();
-
-		return;
-	}
-
-	if (btnDownWindowSpeed->Clicked(WorldMouseLocation))
-	{
-		if (Window::Instance()->GetViewSpeedMove() > 0)
-			Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() - AmountSpeed);
-		return;
-	}
-
-	if (btnUpWindowSpeed->Clicked(WorldMouseLocation))
-	{
-		Window::Instance()->SetViewSpeedMove(Window::Instance()->GetViewSpeedMove() + AmountSpeed);
-		return;
-	}
-
-	if (btnUpPlayerSpeed->Clicked(WorldMouseLocation))
-	{
-		if (ship->GetSpeedMove() > 1000)
-			return;
-		ship->SetSpeedMove(ship->GetSpeedMove() + AmountSpeed);
-		return;
-	}
-
-	if (btnDownPlayerSpeed->Clicked(WorldMouseLocation))
-	{
-		ship->SetSpeedMove(ship->GetSpeedMove() - AmountSpeed);
-		return;
-	}
-}
-
-void LevelCustom::FollowWayPoints(float DeltaTime)
-{
-	if (WayPoints.size() == 0)
-		return;
-
-	UpdateDrawDebugLines();
-
-	sf::Vector2f CurrentWayPoint = WayPoints[CurrentIndexWaypoint];
-
-	float CurrentDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
-
-	if (CurrentDist > 5)
-	{
-		MoveTo(DeltaTime, CurrentWayPoint);
-
-		float NewDist = Vector::GetDistance(CurrentWayPoint, ship->GetPosition());
-		
-		if (NewDist > CurrentDist)
-			ship->SetPosition(CurrentWayPoint);
-
-	}
-	else
-	{
-		ship->SetPosition(CurrentWayPoint);
-		CurrentIndexWaypoint++;
-
-		if (CurrentIndexWaypoint >= WayPoints.size())
-		{
-			ResetPath();
-		}
-	}
-}
-
-void LevelCustom::MoveTo(float DeltaTime, const sf::Vector2f TargetPosition)
-{
-	sf::Vector2f Direction = Vector::GetDirection(ship->GetPosition(), TargetPosition);
-	Direction *= DeltaTime * ship->GetSpeedMove();
-	ship->AddWorldPosition(Direction);
-}
-
-void LevelCustom::ResetPath()
-{
-	CurrentIndexWaypoint = 0;
-	WayPoints.clear();
-	UpdateDrawDebugLines();
-}
-
-void LevelCustom::UpdateDrawDebugLines()
-{
-	DebugLines.clear();
-
-	if (WayPoints.size() == 0)
-		return;
-
-	DebugLines.push_back(Line(ship->GetPosition(), sf::Vector2f(WayPoints[CurrentIndexWaypoint])));
-
-	for (int i = CurrentIndexWaypoint; i <= WayPoints.size(); i++)
-	{
-		if (i + 1 >= WayPoints.size())
-			return;
-
-		sf::Vector2f StartLocation = WayPoints[i];
-		sf::Vector2f EndLocation = WayPoints[i + 1];
-
-		DebugLines.push_back(Line(StartLocation, EndLocation));
+		CurrentCellTypeTeleportation->SetCellType(CellType::NORMAL);
+		CurrentCellTypeTeleportation = nullptr;
 	}
 }
 
@@ -484,7 +569,8 @@ void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 		for (int y = 0; y < width; ++y)
 		{
 			Cell *curCell = graph->Cells[x][y];
-			if (!curCell->GetIsAlive())
+
+			if (curCell->GetCellType() == CellType::BLOCK)
 			{
 				xml_node<> *thisCell = Doc.allocate_node(node_element, "NotAliveCell");
 				graphNode->append_node(thisCell);
@@ -494,6 +580,29 @@ void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 
 				xml_attribute<> *yAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(y).c_str()));
 				thisCell->append_attribute(yAttr);
+			}
+			if (curCell->GetCellType() == CellType::TELEPORTATION)
+			{
+				Cell *LinkdedCell = curCell->OtherCellTypeTeleportation;
+				if (!LinkdedCell)
+					continue;
+
+				sf::Vector2i LinkdedCellCoordinate = graph->GetCellCoordinate(LinkdedCell);
+
+				xml_node<> *thisCell = Doc.allocate_node(node_element, "CellTeleportation");
+				graphNode->append_node(thisCell);
+
+				xml_attribute<> *xAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(x).c_str()));
+				thisCell->append_attribute(xAttr);
+
+				xml_attribute<> *yAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(y).c_str()));
+				thisCell->append_attribute(yAttr);
+
+				xml_attribute<> *LinkedCellXAttr = Doc.allocate_attribute("LinkdedCellX", Doc.allocate_string(std::to_string(LinkdedCellCoordinate.x).c_str()));
+				thisCell->append_attribute(LinkedCellXAttr);
+
+				xml_attribute<> *LinkedCellYAttr = Doc.allocate_attribute("LinkdedCellY", Doc.allocate_string(std::to_string(LinkdedCellCoordinate.y).c_str()));
+				thisCell->append_attribute(LinkedCellYAttr);
 			}
 		}
 	}
@@ -528,7 +637,7 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<> &Doc)
 
 	graph->ResetCells();
 
-	for (xml_node<> *cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling())
+	for (xml_node<> *cellNode = graphNode->first_node("NotAliveCell"); cellNode; cellNode = cellNode->next_sibling("NotAliveCell"))
 	{
 		xml_attribute<> *cellAttr = cellNode->first_attribute("X");
 		std::string strCellX(cellAttr->value());
@@ -542,7 +651,45 @@ bool LevelCustom::loadLevelFromXMLFile(rapidxml::xml_document<> &Doc)
 		int cellY;
 		ssCellY >> cellY;
 
-		graph->Cells[cellX][cellY]->SetIsAlive(false);
+		graph->Cells[cellX][cellY]->SetCellType(CellType::BLOCK);
+	}
+
+	for (xml_node<> *cellNode = graphNode->first_node("CellTeleportation"); cellNode; cellNode = cellNode->next_sibling("CellTeleportation"))
+	{
+		xml_attribute<> *cellAttr = cellNode->first_attribute("X");
+		std::string strCellX(cellAttr->value());
+		std::istringstream ssCellX(strCellX);
+		int cellX;
+		ssCellX >> cellX;
+
+		cellAttr = cellAttr->next_attribute("Y");
+		std::string strCellY(cellAttr->value());
+		std::istringstream ssCellY(strCellY);
+		int cellY;
+		ssCellY >> cellY;
+
+		cellAttr = cellAttr->next_attribute("LinkdedCellX");
+		std::string strLinkdedCellX(cellAttr->value());
+		std::istringstream ssLinkdedCellX(strLinkdedCellX);
+		int LinkdedCellX;
+		ssCellY >> LinkdedCellX;
+
+		cellAttr = cellAttr->next_attribute("LinkdedCellY");
+		std::string strLinkdedCellY(cellAttr->value());
+		std::istringstream ssLinkdedCellY(strLinkdedCellY);
+		int LinkdedCellY;
+		ssCellY >> LinkdedCellY;
+
+		graph->Cells[cellX][cellY]->SetCellType(CellType::TELEPORTATION);
+
+		std::cout << LinkdedCellX << "\n";
+
+		// Cell *LinkedCell = graph->Cells[LinkdedCellX][LinkdedCellY];
+
+		// if (!LinkedCell)
+		// 	continue;
+
+		// graph->Cells[cellX][cellY]->SetOtherCellTypeTeleportation(LinkedCell);
 	}
 
 	graph->ReGenerateWaypoints();

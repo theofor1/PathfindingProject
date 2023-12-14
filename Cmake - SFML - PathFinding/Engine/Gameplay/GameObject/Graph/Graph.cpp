@@ -59,23 +59,25 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 {
 	sf::Vector2i LastNbCells = NbCell;
 	NbCell = Size;
-	std::map<int, std::map<int, Cell*>> LastCells = Cells;
+	std::map<int, std::map<int, Cell *>> LastCells = Cells;
 	Cells.clear();
 	WayPoints.clear();
 	size_t MinNbCellX;
 	size_t MinNbCellY;
 
-	if (NbCell == LastNbCells) {
-		//If it is equal, we are in the first graph construction, all cells are new
+	if (NbCell == LastNbCells)
+	{
+		// If it is equal, we are in the first graph construction, all cells are new
 		MinNbCellX = 0;
 		MinNbCellY = 0;
 	}
-	else {
+	else
+	{
 		MinNbCellX = std::min(NbCell.x, LastNbCells.x);
 		MinNbCellY = std::min(NbCell.y, LastNbCells.y);
 	}
 
-	//Report last cells that are in the new size
+	// Report last cells that are in the new size
 	for (size_t x = 0; x < MinNbCellX; x++)
 	{
 		for (size_t y = 0; y < MinNbCellY; y++)
@@ -90,9 +92,10 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 	{
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
-			//Add if it is a new cell
-			if (x >= MinNbCellX || y >= MinNbCellY) {
-				Cell* NewCell = new Cell("", CurrentPosition, CellSideSize);
+			// Add if it is a new cell
+			if (x >= MinNbCellX || y >= MinNbCellY)
+			{
+				Cell *NewCell = new Cell("", CurrentPosition, CellSideSize);
 				Cells[x][y] = NewCell;
 			}
 			CurrentPosition += sf::Vector2f(CellSideSize, 0);
@@ -100,8 +103,7 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 		CurrentPosition = sf::Vector2f(0, CurrentPosition.y + CellSideSize);
 	}
 
-	WayPoints = GenerateWayPoints();
-	LinkWayPointsToNeighbor();
+	ReGenerateWaypoints();
 }
 
 Cell *Graph::GetCellByPosition(sf::Vector2f Position)
@@ -120,6 +122,26 @@ Cell *Graph::GetCellByPosition(sf::Vector2f Position)
 	return nullptr;
 }
 
+sf::Vector2i Graph::GetCellCoordinate(Cell *CellToFind) const
+{
+	sf::Vector2i Coordinate(0, 0);
+
+	for (const auto &row : Cells)
+	{
+		for (const auto &cellPair : row.second)
+		{
+			Cell *Cell = cellPair.second;
+			if (Cell == CellToFind)
+				return Coordinate;
+			Coordinate.x++;
+			Coordinate.x %= NbCell.y;
+		}
+		Coordinate.y++;
+	}
+
+	return Coordinate;
+}
+
 sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
 {
 	sf::Vector2i Coordinate(0, 0);
@@ -133,8 +155,8 @@ sf::Vector2i Graph::GetCellCoordinateByPosition(sf::Vector2f Position) const
 			{
 				return Coordinate;
 			}
-		Coordinate.x++;
-		Coordinate.x %= NbCell.y;
+			Coordinate.x++;
+			Coordinate.x %= NbCell.y;
 		}
 		Coordinate.y++;
 	}
@@ -149,7 +171,7 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 	if (!CellStart || !CellEnd)
 		return Path;
 
-	if (!CellEnd->GetIsAlive())
+	if (CellEnd->GetCellType() == CellType::BLOCK)
 		return Path;
 
 	// Get Start and Tartget Wp
@@ -166,8 +188,6 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
 			Cell *Cell = Cells[x][y];
-			// if (!Cell->GetIsAlive())
-			// 	continue;
 			WayPoint *Wp = WayPoints[x][y];
 			Wps.push_back(Wp);
 		}
@@ -186,7 +206,8 @@ std::vector<sf::Vector2f> Graph::GetPath(Cell *CellStart, Cell *CellEnd)
 	return Path;
 }
 
-sf::Vector2i Graph::GetNbCell() const {
+sf::Vector2i Graph::GetNbCell() const
+{
 	return NbCell;
 }
 
@@ -194,6 +215,7 @@ void Graph::ReGenerateWaypoints()
 {
 	WayPoints = GenerateWayPoints();
 	LinkWayPointsToNeighbor();
+	LinkWayPointsTeleportation();
 }
 
 void Graph::ResetCells()
@@ -202,7 +224,7 @@ void Graph::ResetCells()
 	{
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
-			Cells[x][y]->SetIsAlive(true);
+			Cells[x][y]->SetCellType(CellType::NORMAL);
 		}
 	}
 }
@@ -263,8 +285,11 @@ std::map<int, std::map<int, WayPoint *>> Graph::GenerateWayPoints()
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
 			Cell *Cell = Cells[x][y];
-			if (!Cell->GetIsAlive())
+
+			if (Cell->GetCellType() == CellType::BLOCK)
+			{
 				continue;
+			}
 			WayPoint *Wp = new WayPoint(Cell->GetPosition().x, Cell->GetPosition().y);
 			WayPoints[x][y] = Wp;
 		}
@@ -290,6 +315,43 @@ void Graph::LinkWayPointsToNeighbor()
 	}
 }
 
+void Graph::LinkWayPointsTeleportation()
+{
+	// Link cells type teleportation
+	for (size_t x = 0; x < NbCell.x; x++)
+	{
+		for (size_t y = 0; y < NbCell.y; y++)
+		{
+			Cell *CurrentCell = Cells[x][y];
+
+			if (CurrentCell->GetCellType() != CellType::TELEPORTATION)
+				continue;
+
+			Cell *CellTeleportationLinked = CurrentCell->OtherCellTypeTeleportation;
+
+			if (!CellTeleportationLinked)
+				continue;
+
+			WayPoint *Wp1 = GetWayPointByCell(CurrentCell);
+
+			if (!Wp1)
+				continue;
+
+			WayPoint *Wp2 = GetWayPointByCell(CellTeleportationLinked);
+
+			if (!Wp2)
+				continue;
+
+			Wp1->LinkWayPoint(Wp2, true);
+		}
+	}
+}
+
+void Graph::LinkWayPointsToAnotherOne(WayPoint *Waypoint, WayPoint *OtherWayPoint, bool NoCost)
+{
+	Waypoint->LinkWayPoint(OtherWayPoint, NoCost);
+}
+
 std::vector<WayPoint *> Graph::GetWayPointArroundWayPoint(const int x, const int y)
 {
 	std::vector<WayPoint *> Wps;
@@ -304,19 +366,9 @@ std::vector<WayPoint *> Graph::GetWayPointArroundWayPoint(const int x, const int
 	WayPoint *WpLeft = GetWayPoint(x + 1, y);
 	WayPoint *WpRight = GetWayPoint(x - 1, y);
 
-	// WayPoint *WpDownLeft = GetWayPoint(x, y + 1);
-	// WayPoint *WpDownRight = GetWayPoint(x, y + 1);
-	// WayPoint *WpUpLeft = GetWayPoint(x + 1, y - 1);
-	// WayPoint *WpUpRight = GetWayPoint(x - 1, y - 1);
-
 	Wps.push_back(WpUp);
 	Wps.push_back(WpLeft);
 	Wps.push_back(WpRight);
-
-	// Wps.push_back(WpDownLeft);
-	// Wps.push_back(WpDownRight);
-	// Wps.push_back(WpUpLeft);
-	// Wps.push_back(WpUpRight);
 
 	return Wps;
 }
@@ -330,9 +382,8 @@ WayPoint *Graph::GetWayPointByCell(Cell *CellToGetWp)
 	{
 		for (size_t y = 0; y < NbCell.y; y++)
 		{
-
 			Cell *CurrentCell = Cells[x][y];
-			if (!CurrentCell->GetIsAlive())
+			if (CurrentCell->GetCellType() == CellType::BLOCK)
 				continue;
 
 			WayPoint *Wp = WayPoints[x][y];
@@ -341,6 +392,7 @@ WayPoint *Graph::GetWayPointByCell(Cell *CellToGetWp)
 				return nullptr;
 
 			sf::Vector2f WpPosition = sf::Vector2f(Wp->X, Wp->Y);
+
 			sf::Vector2f CellPosition = CellToGetWp->GetPosition();
 
 			if (WpPosition == CellPosition)
@@ -349,4 +401,22 @@ WayPoint *Graph::GetWayPointByCell(Cell *CellToGetWp)
 	}
 
 	return nullptr;
+}
+
+std::vector<Cell *> Graph::GetCellsTypeTeleportation()
+{
+	std::vector<Cell *> CellsTypeteleportation;
+
+	for (size_t x = 0; x < NbCell.x; x++)
+	{
+		for (size_t y = 0; y < NbCell.y; y++)
+		{
+			Cell *CurrentCell = Cells[x][y];
+			if (CurrentCell->GetCellType() != CellType::TELEPORTATION)
+				continue;
+			CellsTypeteleportation.push_back(CurrentCell);
+		}
+	}
+
+	return CellsTypeteleportation;
 }

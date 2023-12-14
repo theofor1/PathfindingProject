@@ -26,6 +26,15 @@ void WayPoint::LinkWayPoint(WayPoint *AnotherWayPoint, bool NoCost)
     {
         if (Wp == AnotherWayPoint)
         {
+            if (NoCost)
+            {
+                LinkedWayPointsWithNoCost.erase(std::remove_if(LinkedWayPointsWithNoCost.begin(), LinkedWayPointsWithNoCost.end(),
+                                                               [AnotherWayPoint](const WayPoint *wp)
+                                                               { return wp == AnotherWayPoint; }),
+                                                LinkedWayPointsWithNoCost.end());
+                LinkedWayPointsWithNoCost.push_back(AnotherWayPoint);
+            }
+
             exists = true;
             break;
         }
@@ -35,7 +44,13 @@ void WayPoint::LinkWayPoint(WayPoint *AnotherWayPoint, bool NoCost)
     {
         LinkedWayPoints.push_back(AnotherWayPoint);
         if (NoCost)
+        {
+            LinkedWayPointsWithNoCost.erase(std::remove_if(LinkedWayPointsWithNoCost.begin(), LinkedWayPointsWithNoCost.end(),
+                                                           [AnotherWayPoint](const WayPoint *wp)
+                                                           { return wp == AnotherWayPoint; }),
+                                            LinkedWayPointsWithNoCost.end());
             LinkedWayPointsWithNoCost.push_back(AnotherWayPoint);
+        }
         AnotherWayPoint->LinkWayPoint(this, NoCost);
     }
 }
@@ -89,6 +104,7 @@ float WayPoint::GetCost(WayPoint *WpDest) const
 
 bool WayPoint::IsNoCostWayPoint(WayPoint *WayPointToCheck) const
 {
+    // std::cout << LinkedWayPointsWithNoCost.size() << "\n";
     for (const WayPoint *Wp : LinkedWayPointsWithNoCost)
         if (Wp == WayPointToCheck)
             return true;

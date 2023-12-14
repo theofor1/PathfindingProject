@@ -6,10 +6,19 @@
 #include <GameObject/GameObject.h>
 #include <SFML/Graphics/RectangleShape.hpp>
 
+enum class CellType
+{
+	NORMAL,
+	BLOCK,
+	TELEPORTATION
+};
+
+
 class Cell : public GameObject
 {
 public:
-	Cell(std::string Name = "", sf::Vector2f Position = sf::Vector2f(0, 0), int _SideSize = 100, const bool _IsAlive = true);
+	Cell(std::string Name = "", sf::Vector2f Position = sf::Vector2f(0, 0), int _SideSize = 100, const CellType _CellType = CellType::NORMAL);
+	// Cell(std::string Name = "", sf::Vector2f Position = sf::Vector2f(0, 0), int _SideSize = 100, const bool _IsAlive = true);
 	~Cell();
 
 	virtual void Start() override;
@@ -24,10 +33,18 @@ public:
 	virtual void SetIsAlive(const bool _IsAlive);
 	virtual bool GetIsAlive() const;
 
+	virtual void SetCellType(const CellType NewCellType);
+	virtual CellType GetCellType() const;
+	virtual void SetOtherCellTypeTeleportation(Cell* _OtherCellTypeTeleportation);
+	virtual void UnsetOtherCellTypeTeleportation();
+
 	virtual void SetSize(const int _SideSize);
 	virtual void SetPosition(const sf::Vector2f Position);
+	
+	Cell *OtherCellTypeTeleportation;
 
 private:
+	CellType CurrentCellType;
 	bool IsAlive;
 
 	sf::RectangleShape Rectangle;

@@ -14,8 +14,9 @@ class Cell;
 enum class Mode
 {
 	MOVE_PLAYER,
-	PUT_WALL,
-	REMOVE_WALL
+	PUT_CELL_BLOCK,
+	PUT_CELL_NORMAL,
+	PUT_CELL_TELEPORTATION
 };
 
 class LevelCustom : public IScene
@@ -40,8 +41,9 @@ protected:
 	UIElement* playerSpeedBox;
 
 	Button* btnPlayerMoveMode;
-	Button* btnPutWallMode;
-	Button* btnRemoveWallMode;
+	Button* btnPutCellTypeBlock;
+	Button* btnPutCellTypeNormal;
+	Button* btnPutCellTypeTeleportation;
 
 	Button* btnUpWindowSpeed;
 	Button* btnDownWindowSpeed;
@@ -63,20 +65,23 @@ protected:
 	void OnGraphCellOnClick();
 	void OnButtonsClick();
 
-	void FollowWayPoints(float DeltaTime);
+	void FollowPath(float DeltaTime);
 	void MoveTo(float DeltaTime, const sf::Vector2f TargetPosition);
 
 	void ResetPath();
 	void UpdateDrawDebugLines();
+	void InitButtons();
+
+	void CancelPuttingCurrentCellTeleportation();
 
 	void produceXMLDocForSave(rapidxml::xml_document<>& Doc);
 	bool loadLevelFromXMLFile(rapidxml::xml_document<>& Doc);
 
 private:
 	int CurrentIndexWaypoint;
-	std::vector<sf::Vector2f> WayPoints;
+	std::vector<sf::Vector2f> Path;
 	Cell *CurrentCellDest;
-
+	Cell *CurrentCellTypeTeleportation;
 
 	std::vector<Line> DebugLines;
 	std::vector<Button*> AllButtons;
@@ -85,7 +90,6 @@ private:
 	bool OnPutWallMode;
 
 	Mode Mode;
-
 
 	int GraphHeightNbCells;
 	int GraphWidthNbCells;

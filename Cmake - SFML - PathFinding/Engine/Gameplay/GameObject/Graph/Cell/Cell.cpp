@@ -2,16 +2,15 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <Component/Transform/Transform.h>
 
-Cell::Cell(std::string Name, sf::Vector2f Position, int _SideSize, const bool _IsAlive) : GameObject(Name),
-																						  SideSize(_SideSize),
-																						  IsAlive(_IsAlive)
+Cell::Cell(std::string Name, sf::Vector2f Position, int _SideSize, CellType _CellType) : GameObject(Name),
+																						 SideSize(_SideSize),
+																						 CurrentCellType(_CellType)
 {
 	SetSize(_SideSize);
 	SetPosition(Position);
 
 	UpdateColor();
-
-	IsAlive = _IsAlive;
+	OtherCellTypeTeleportation = nullptr;
 }
 
 Cell::~Cell()
@@ -59,6 +58,35 @@ bool Cell::GetIsAlive() const
 	return IsAlive;
 }
 
+void Cell::SetCellType(const CellType NewCellType)
+{
+	CurrentCellType = NewCellType;
+	UpdateColor();
+}
+
+void Cell::SetOtherCellTypeTeleportation(Cell *_OtherCellTypeTeleportation)
+{
+	if (!_OtherCellTypeTeleportation)
+		return;
+
+	if (!OtherCellTypeTeleportation)
+	{
+		OtherCellTypeTeleportation = _OtherCellTypeTeleportation;
+		_OtherCellTypeTeleportation->SetOtherCellTypeTeleportation(this);
+	}
+}
+
+void Cell::UnsetOtherCellTypeTeleportation()
+{
+	if (OtherCellTypeTeleportation)
+		delete OtherCellTypeTeleportation;
+}
+
+CellType Cell::GetCellType() const
+{
+	return CurrentCellType;
+}
+
 void Cell::SetSize(const int _SideSize)
 {
 	SideSize = _SideSize;
@@ -87,6 +115,27 @@ void Cell::SetPosition(const sf::Vector2f Position)
 
 void Cell::UpdateColor()
 {
-	Rectangle.setOutlineColor(sf::Color::Red);
-	Rectangle.setFillColor(IsAlive ? ColorOnAlive : ColorOnDead);
+	sf::Color BackgroundColor;
+	sf::Color BorderColor;
+
+	BorderColor = sf::Color::Black;
+
+	switch (CurrentCellType)
+	{
+	case CellType::NORMAL:
+		BackgroundColor = sf::Color::Blue;
+		break;
+	case CellType::BLOCK:
+		BackgroundColor = sf::Color(128, 128, 128);
+		break;
+	case CellType::TELEPORTATION:
+		BackgroundColor = sf::Color::Green;
+		break;
+	default:
+		BackgroundColor = sf::Color::Red;
+		break;
+	}
+
+	Rectangle.setOutlineColor(BorderColor);
+	Rectangle.setFillColor(BackgroundColor);
 }

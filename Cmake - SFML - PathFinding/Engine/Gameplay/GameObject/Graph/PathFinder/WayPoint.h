@@ -14,14 +14,13 @@ public:
     std::vector<WayPoint*> GetLinkedWayPoints();
     WayPoint* GetWayPointWithLowestCost();
     bool IsLinkedTo(WayPoint *AnotherWayPoint);
-    
+    virtual bool IsNoCostWayPoint(WayPoint *WayPointToCheck) const;
     virtual float GetCost(WayPoint *WpDest) const;
     
     int X;
     int Y;
 
 protected:
-    virtual bool IsNoCostWayPoint(WayPoint *WayPointToCheck) const;
 
 private:
     std::vector<WayPoint*> LinkedWayPoints;

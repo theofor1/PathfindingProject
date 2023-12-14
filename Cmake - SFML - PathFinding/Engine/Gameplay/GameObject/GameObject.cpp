@@ -47,7 +47,6 @@ void GameObject::Draw(sf::RenderWindow &window) const
 
 sf::Vector2f GameObject::GetPosition() const
 {
-	// return CTransform->GetWorldPosition();
 	return CTransform->GetWorldPosition() + LocalPosition;
 }
 

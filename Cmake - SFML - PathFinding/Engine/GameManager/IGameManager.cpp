@@ -12,15 +12,14 @@ IGameManager *IGameManager::instance = nullptr;
 
 IGameManager::IGameManager()
 {
-    // AddLevel(new LevelCustom());
-    // AddLevel(new LevelGraph());
+    AddLevel(new LevelCustom());
 
-    // InputManager::Instance()->Bind(InputAction::Down, [this]()
+    // InputManager::Instance()->BindOnDown(InputAction::Down, [this]()
     //                                { LoadLevel(1); });
 
-    // InputManager::Instance()->Bind(InputAction::Up, [this]()
+    // InputManager::Instance()->BindOnDown(InputAction::Up, [this]()
     //                                { LoadLevel(0); });
-    AddLevel(new LevelCustom());
+    // AddLevel(new LevelGraph());
 }
 
 void IGameManager::RunGame()
