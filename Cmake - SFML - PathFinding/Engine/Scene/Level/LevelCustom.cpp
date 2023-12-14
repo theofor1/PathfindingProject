@@ -414,7 +414,6 @@ void LevelCustom::InitButtons()
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
 	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	
 	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
 	outerBox->AddChild(btnPlayerMoveMode);
 

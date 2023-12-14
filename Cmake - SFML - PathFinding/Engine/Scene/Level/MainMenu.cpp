@@ -17,7 +17,6 @@ void MainMenu::Start()
 	outerBox = new UIElement(sf::Vector2f(0.25f, 0.25f), sf::Vector2f(0.5f, 0.5f), sf::Color::Cyan, sf::Color::Blue);
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
-
 	title = new Text(sf::Vector2f(0.25f, 0.1f), sf::Vector2f(0.5f, 0.1f), 32, sf::Color::Red, sf::Color::Transparent);
 	title->text.setString("Space seeker");
 	outerBox->AddChild(title);
@@ -36,16 +35,6 @@ void MainMenu::Start()
 
 	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
 										 { OnButtonsClick(); });
-
-	if (!font.loadFromFile("./Ressources/Fonts/OpenSans-Regular.ttf"))
-	{
-		std::cout << "Failed to load font";
-	}
-
-	text.setFont(font);					 // D�finition de la police de caract�res
-	text.setString("Bonjour, SFML !");	 // D�finition du texte
-	text.setCharacterSize(24);			 // Taille des caract�res
-	text.setFillColor(sf::Color::White); // Couleur du texte
 }
 
 void MainMenu::Update(float DeltaTime)
@@ -60,15 +49,13 @@ void MainMenu::Update(float DeltaTime)
 
 void MainMenu::Destroy()
 {
+	delete outerBox;
 	IScene::Destroy();
 }
 
 void MainMenu::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
-	sf::Vector2u windowSize = window.getSize();
-	sf::FloatRect windowRect(0, 0, windowSize.x, windowSize.y);
-	outerBox->UpdateRect(windowRect);
 	outerBox->Draw(window);
 }
 
