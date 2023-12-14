@@ -41,7 +41,6 @@ public:
 
 protected:
 
-
 	std::map<int, std::map<int, WayPoint *>> GenerateWayPoints();
 	virtual void LinkWayPointsToNeighbor();
 	virtual void LinkWayPointsTeleportation();
@@ -50,6 +49,9 @@ protected:
 	virtual std::vector<WayPoint *> GetWayPointArroundWayPoint(const int x, const int y);
 
 	virtual std::vector<Cell *> GetCellsTypeTeleportation();
+
+	virtual void DestroyCells();
+	virtual void DestroyWayPoints();
 
 
 

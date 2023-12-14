@@ -43,6 +43,7 @@ void InputManager::BindOnTriggered(InputAction IA, const Callback &callback)
 
 void InputManager::BindOnDown(InputAction IA, const Callback &callback)
 {
+
 	if (IA == InputAction::MouseL || IA == InputAction::MouseR)
 	{
 		if (!IsBinded(OnDownMouseInputActionCallbacks[IA], callback))
@@ -71,16 +72,30 @@ void InputManager::BindOnUp(InputAction IA, const Callback &callback)
 
 void InputManager::ResetBind()
 {
-	// for (auto &pair : InputActionCallbacks)
-	// {
-	// 	InputAction IA = pair.first;
-	// 	InputActionCallbacks[IA].clear();
-	// }
-	// for (auto &pair : MouseInputActionCallbacks)
-	// {
-	// 	InputAction IA = pair.first;
-	// 	MouseInputActionCallbacks[IA].clear();
-	// }
+	for (auto &pair : OnTringgeredInputActionCallbacks)
+	{
+		pair.second.clear();
+	}
+
+	for (auto &pair : OnDownInputActionCallbacks)
+	{
+		pair.second.clear();
+	}
+
+	for (auto &pair : OnUpInputActionCallbacks)
+	{
+		pair.second.clear();
+	}
+
+	for (auto &pair : OnTriggeredMouseInputActionCallbacks)
+	{
+		pair.second.clear();
+	}
+
+	for (auto &pair : OnDownMouseInputActionCallbacks)
+	{
+		pair.second.clear();
+	}
 }
 
 // Private

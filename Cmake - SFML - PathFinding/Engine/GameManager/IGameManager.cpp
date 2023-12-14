@@ -90,14 +90,7 @@ void IGameManager::StartActiveScene()
         return;
 
     InputManager::Instance()->ResetBind();
-
     Scenes[IndexCurrentScene]->Start();
-
-    // InputManager::Instance()->Bind(InputAction::Down, [this]()
-    //                                { LoadLevel(1); });
-
-    // InputManager::Instance()->Bind(InputAction::Up, [this]()
-    //                                { LoadLevel(0); });
 }
 
 void IGameManager::UpdateActiveScene(float DeltaTime)

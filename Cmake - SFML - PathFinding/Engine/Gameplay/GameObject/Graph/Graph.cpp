@@ -31,15 +31,8 @@ void Graph::Update(float DeltaTime)
 void Graph::Destroy()
 {
 	GameObject::Destroy();
-
-	for (const auto &row : Cells)
-	{
-		for (const auto &cellPair : row.second)
-		{
-			Cell *Cell = cellPair.second;
-			delete Cell;
-		}
-	}
+	DestroyCells();
+	DestroyWayPoints();
 }
 
 void Graph::Draw(sf::RenderWindow &window) const
@@ -60,8 +53,8 @@ void Graph::UpdateSize(const sf::Vector2i Size)
 	sf::Vector2i LastNbCells = NbCell;
 	NbCell = Size;
 	std::map<int, std::map<int, Cell *>> LastCells = Cells;
-	Cells.clear();
-	WayPoints.clear();
+	DestroyCells();
+	DestroyWayPoints();
 	size_t MinNbCellX;
 	size_t MinNbCellY;
 
@@ -422,4 +415,30 @@ std::vector<Cell *> Graph::GetCellsTypeTeleportation()
 	}
 
 	return CellsTypeteleportation;
+}
+
+void Graph::DestroyCells()
+{
+	for (auto &outerPair : Cells)
+	{
+		for (auto &innerPair : outerPair.second)
+		{
+			// if (innerPair.second)
+				// delete innerPair.second;
+		}
+	}
+	Cells.clear();
+}
+
+void Graph::DestroyWayPoints()
+{
+	for (auto &outerPair : WayPoints)
+	{
+		for (auto &innerPair : outerPair.second)
+		{
+			if (innerPair.second)
+				delete innerPair.second;
+		}
+	}
+	WayPoints.clear();
 }
