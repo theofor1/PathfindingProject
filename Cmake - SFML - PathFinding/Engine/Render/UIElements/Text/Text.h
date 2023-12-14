@@ -6,9 +6,13 @@ class Text : public UIElement {
 public:
 
 	Text(
-		const Vec2f& _pos,
-		const Vec2f& _size,
-		sf::Color fillColor = sf::Color::Transparent);
+		const Vec2f& pos,
+		const Vec2f& size,
+		int fontSize = 10,
+		sf::Color color = sf::Color::Black,
+		sf::Color fillColor = sf::Color::White,
+		sf::Color outlineColor = sf::Color::Transparent,
+		int outlineThickness = 0);
 
 	virtual void Start() override;
 	virtual void Draw(sf::RenderWindow& _window);

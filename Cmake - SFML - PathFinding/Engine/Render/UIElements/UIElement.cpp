@@ -2,8 +2,16 @@
 #include <algorithm>
 #include <iostream>
 
-UIElement::UIElement(const Vec2f &_pos, const Vec2f &_size) : Pos(_pos), Size(_size)
+UIElement::UIElement(
+	const Vec2f &pos, 
+	const Vec2f &size,
+	sf::Color fillColor, 
+	sf::Color outlineColor,
+	int outlineThickness) : Pos(pos), Size(size)
 {
+	RenderRectangle.setFillColor(fillColor);
+	RenderRectangle.setOutlineColor(outlineColor);
+	RenderRectangle.setOutlineThickness(outlineThickness);
 }
 
 UIElement::~UIElement()
@@ -44,10 +52,6 @@ UIDirection UIElement::GetDirection() const
 
 void UIElement::Start()
 {
-	// RenderRectangle.setOutlineColor(sf::Color::Red);
-	// RenderRectangle.setOutlineThickness(2);
-	RenderRectangle.setFillColor(sf::Color::Transparent);
-
 	for (UIElement *pElem : Children)
 		pElem->Start();
 }
@@ -152,36 +156,36 @@ void UIElement::UpdateLayoutList()
 	float fStart = 0;
 
 	float fTotalWidth = GetTotalChildrenWidth();
-	;
 	float ftotalHeight = GetTotalChildrenHeight();
+
 	if (Direction == UIDirection::Vertical)
 	{
 		switch (VerticalAlign)
 		{
-		case UIAlignment::Start:
-			fStart = 0;
-			break;
-		case UIAlignment::Center:
-			fStart = 0.5 - ftotalHeight * 0.5;
-			break;
-		case UIAlignment::End:
-			fStart = 1 - ftotalHeight;
-			break;
+			case UIAlignment::Start:
+				fStart = 0;
+				break;
+			case UIAlignment::Center:
+				fStart = 0.5 - ftotalHeight * 0.5;
+				break;
+			case UIAlignment::End:
+				fStart = 1 - ftotalHeight;
+				break;
 		}
 	}
 	else if (Direction == UIDirection::Horizontal)
 	{
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start:
-			fStart = 0;
-			break;
-		case UIAlignment::Center:
-			fStart = 0.5 - fTotalWidth * 0.5;
-			break;
-		case UIAlignment::End:
-			fStart = 1 - fTotalWidth;
-			break;
+			case UIAlignment::Start:
+				fStart = 0;
+				break;
+			case UIAlignment::Center:
+				fStart = 0.5 - fTotalWidth * 0.5;
+				break;
+			case UIAlignment::End:
+				fStart = 1 - fTotalWidth;
+				break;
 		}
 	}
 
@@ -193,55 +197,55 @@ void UIElement::UpdateLayoutList()
 	{
 		switch (VerticalAlign)
 		{
-		case UIAlignment::Start:
-			pElem->SetPosY(0);
-			break;
-		case UIAlignment::End:
-			pElem->SetPosY(1 - pElem->GetSize().y);
-			break;
-		case UIAlignment::Center:
-			pElem->SetPosY(0.5 - pElem->GetSize().y * 0.5);
-			break;
+			case UIAlignment::Start:
+				pElem->SetPosY(0);
+				break;
+			case UIAlignment::End:
+				pElem->SetPosY(1 - pElem->GetSize().y);
+				break;
+			case UIAlignment::Center:
+				pElem->SetPosY(0.5 - pElem->GetSize().y * 0.5);
+				break;
 		}
 
 		switch (HorizontalAlign)
 		{
-		case UIAlignment::Start:
-			pElem->SetPosX(0);
-			break;
-		case UIAlignment::End:
-			pElem->SetPosX(1 - pElem->GetSize().x);
-			break;
-		case UIAlignment::Center:
-			pElem->SetPosX(0.5 - pElem->GetSize().x * 0.5);
-			break;
+			case UIAlignment::Start:
+				pElem->SetPosX(0);
+				break;
+			case UIAlignment::End:
+				pElem->SetPosX(1 - pElem->GetSize().x);
+				break;
+			case UIAlignment::Center:
+				pElem->SetPosX(0.5 - pElem->GetSize().x * 0.5);
+				break;
 		}
 
 		switch (Direction)
 		{
-		case UIDirection::Horizontal:
-		{
-			pElem->SetPosX(fCurrentInDir);
+			case UIDirection::Horizontal:
+			{
+				pElem->SetPosX(fCurrentInDir);
 
-			fCurrentInDir += pElem->GetSize().x;
-			fCurrentLineHeight = std::max(fCurrentLineHeight, pElem->GetPos().y + pElem->GetSize().y);
+				fCurrentInDir += pElem->GetSize().x;
+				fCurrentLineHeight = std::max(fCurrentLineHeight, pElem->GetPos().y + pElem->GetSize().y);
 
-			break;
-		}
-		case UIDirection::Vertical:
-		{
-			pElem->SetPosY(fCurrentInDir);
-			fCurrentInDir += pElem->GetSize().y;
-			fCurrentLineWidth = std::max(fCurrentLineWidth, pElem->GetPos().x + pElem->GetSize().x);
+				break;
+			}
+			case UIDirection::Vertical:
+			{
+				pElem->SetPosY(fCurrentInDir);
+				fCurrentInDir += pElem->GetSize().y;
+				fCurrentLineWidth = std::max(fCurrentLineWidth, pElem->GetPos().x + pElem->GetSize().x);
 
-			break;
-		}
+				break;
+			}
 		}
 	}
 }
 void UIElement::Draw(sf::RenderWindow &_window)
 {
+	_window.draw(RenderRectangle);
 	for (UIElement *pElem : Children)
 		pElem->Draw(_window);
-	_window.draw(RenderRectangle);
 }

@@ -1,20 +1,22 @@
 #include "Text.h"
 #include <iostream>
 
-Text::Text(const Vec2f& _pos, const Vec2f& _size, sf::Color fillColor) : UIElement(_pos,_size)
+Text::Text(const Vec2f& pos, 
+	const Vec2f& size, 
+	int fontSize,
+	sf::Color color,
+	sf::Color fillColor,
+	sf::Color outlineColor,
+	int outlineThickness) : UIElement(pos,size, fillColor, outlineColor, outlineThickness)
 {
-	text.setFillColor(fillColor);
+	text.setColor(color);
+	text.setCharacterSize(fontSize);
+	RenderRectangle.setOutlineThickness(2);
 
 }
 
 void Text::Start()
 {
-	RenderRectangle.setFillColor(sf::Color::White);
-	RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	RenderRectangle.setOutlineThickness(2);
-
-	//text.setColor(sf::Color::Black);
-	text.setCharacterSize(10);
 	if (textFont.loadFromFile("Ressources/Fonts/OpenSans-Regular.ttf"))
 		text.setFont(textFont);
 	else

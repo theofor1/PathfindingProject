@@ -6,11 +6,12 @@ class Button : public UIElement {
 public:
 
 	Button::Button(
-		const Vec2f& _pos,
-		const Vec2f& _size,
-		sf::Color color = sf::Color::White,
+		const Vec2f& pos,
+		const Vec2f& size,
+		int fontSize = 10,
 		sf::Color fillColor = sf::Color::White,
-		sf::Color outlineColor = sf::Color::White);
+		sf::Color outlineColor = sf::Color::Transparent,
+		int outlineThickness = 0);
 
 	bool Clicked(sf::Vector2f _mouseLocation) override;
 
