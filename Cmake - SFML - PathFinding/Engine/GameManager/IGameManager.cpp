@@ -74,7 +74,7 @@ void IGameManager::RunGame()
 
 void IGameManager::LoadLevel(const int LevelIndex)
 {
-    if (LevelIndex >= Scenes.size())
+    if (LevelIndex > Scenes.size())
         return;
 
     IndexCurrentScene = LevelIndex;
@@ -95,7 +95,7 @@ IScene *IGameManager::GetActiveScene()
 
 void IGameManager::StartActiveScene()
 {
-    if (IndexCurrentScene < 0 || IndexCurrentScene >= Scenes.size())
+    if (IndexCurrentScene < 0 || IndexCurrentScene > Scenes.size())
         return;
 
     InputManager::Instance()->ResetBind();

@@ -14,18 +14,19 @@ void MainMenu::Start()
 
 	ColorOnSelected = sf::Color(0, 0, 255);
 
-	outerBox = new UIElement(sf::Vector2f(0.5f, 0.f), sf::Vector2f(0.1f, 0.3f));
+	outerBox = new UIElement(sf::Vector2f(0.25f, 0.25f), sf::Vector2f(0.5f, 0.5f), sf::Color::Cyan, sf::Color::Blue);
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
-	title = new Text(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 0.1f));
+
+	title = new Text(sf::Vector2f(0.25f, 0.1f), sf::Vector2f(0.5f, 0.1f), 32, sf::Color::Red, sf::Color::Transparent);
 	title->text.setString("Space seeker");
 	outerBox->AddChild(title);
 
-	btnPlay = new Button(sf::Vector2f(0.f, 0.0f), sf::Vector2f(0.5f, 0.1f));
+	btnPlay = new Button(sf::Vector2f(0.25f, 0.25f), sf::Vector2f(0.5f, 0.1f), 13, sf::Color::White, sf::Color::Red, 2);
 	btnPlay->TextButton.setString("Play");
 	outerBox->AddChild(btnPlay);
 
-	btnExit = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 0.1f));
+	btnExit = new Button(sf::Vector2f(0.25f, 0.1f), sf::Vector2f(0.5f, 0.1f), 13, sf::Color::White, sf::Color::Red, 2);
 	btnExit->TextButton.setString("Exit");
 	outerBox->AddChild(btnExit);
 

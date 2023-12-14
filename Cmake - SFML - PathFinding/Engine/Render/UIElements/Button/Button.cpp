@@ -2,15 +2,14 @@
 #include <iostream>
 
 Button::Button(
-	const Vec2f& _pos,
-	const Vec2f& _size, 
-	sf::Color color,
+	const Vec2f& pos,
+	const Vec2f& size, 
+	int fontSize,
 	sf::Color fillColor,
-	sf::Color outlineColor) : UIElement(_pos,_size)
+	sf::Color outlineColor,
+	int outlineThickness) : UIElement(pos, size, fillColor, outlineColor, outlineThickness)
 {
-	RenderRectangle.setFillColor(fillColor);
-	RenderRectangle.setOutlineColor(outlineColor);
-	RenderRectangle.setOutlineThickness(2);
+	
 }
 
 bool Button::Clicked(sf::Vector2f _mouseLocation)

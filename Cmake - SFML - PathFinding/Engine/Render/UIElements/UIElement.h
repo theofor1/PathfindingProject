@@ -41,7 +41,12 @@ protected:
 	void UpdateLayoutList();
 public:
 
-	UIElement(const Vec2f& _pos, const Vec2f& _size);
+	UIElement(
+		const Vec2f& pos,
+		const Vec2f& size,
+		sf::Color fillColor = sf::Color::Transparent,
+		sf::Color outlineColor = sf::Color::Transparent,
+		int outlineThickness = 0);
 	virtual ~UIElement();
 
 	const Vec2f GetPos() const;
