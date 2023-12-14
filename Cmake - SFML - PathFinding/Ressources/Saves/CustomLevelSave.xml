@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomLevel>
-	<Player X="6" Y="58"/>
+	<Player X="2" Y="3"/>
 	<Graph Height="11" Width="9">
-		<NotAliveCell X="1" Y="5"/>
-		<NotAliveCell X="2" Y="5"/>
-		<NotAliveCell X="2" Y="7"/>
-		<NotAliveCell X="2" Y="8"/>
-		<NotAliveCell X="3" Y="3"/>
-		<NotAliveCell X="4" Y="2"/>
-		<NotAliveCell X="6" Y="6"/>
-		<NotAliveCell X="7" Y="2"/>
-		<NotAliveCell X="8" Y="7"/>
-		<NotAliveCell X="10" Y="8"/>
+		<NotAliveCell X="0" Y="1"/>
+		<NotAliveCell X="0" Y="3"/>
+		<CellTeleportation X="1" Y="3" LinkedCellX="6" LinkedCellY="5"/>
+		<NotAliveCell X="2" Y="0"/>
+		<NotAliveCell X="2" Y="1"/>
+		<CellTeleportation X="3" Y="1" LinkedCellX="5" LinkedCellY="3"/>
+		<CellTeleportation X="5" Y="3" LinkedCellX="3" LinkedCellY="1"/>
+		<CellTeleportation X="6" Y="5" LinkedCellX="1" LinkedCellY="3"/>
+		<CellTeleportation X="8" Y="3" LinkedCellX="10" LinkedCellY="8"/>
+		<CellTeleportation X="10" Y="8" LinkedCellX="8" LinkedCellY="3"/>
 	</Graph>
 </CustomLevel>
-
