@@ -532,10 +532,10 @@ void LevelCustom::produceXMLDocForSave(xml_document<> &Doc)
 	root->append_node(playerNode);
 	sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
 
-	xml_attribute<> *playerXAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(playerPos.x).c_str()));
+	xml_attribute<> *playerXAttr = Doc.allocate_attribute("X", Doc.allocate_string(std::to_string(playerPos.y).c_str()));
 	playerNode->append_attribute(playerXAttr);
 
-	xml_attribute<> *playerYAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(playerPos.y).c_str()));
+	xml_attribute<> *playerYAttr = Doc.allocate_attribute("Y", Doc.allocate_string(std::to_string(playerPos.x).c_str()));
 	playerNode->append_attribute(playerYAttr);
 
 	// graph size
