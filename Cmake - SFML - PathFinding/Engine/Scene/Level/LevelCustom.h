@@ -36,6 +36,8 @@ protected:
 	UIElement* outerBox;
 	UIElement* graphHeightBox;
 	UIElement* graphWidthBox;
+	UIElement* windowSpeedBox;
+	UIElement* playerSpeedBox;
 
 	Button* btnPlayerMoveMode;
 	Button* btnPutWallMode;

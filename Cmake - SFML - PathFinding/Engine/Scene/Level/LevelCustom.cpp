@@ -52,7 +52,7 @@ void LevelCustom::Start()
 
 	doc.clear();
 
-	outerBox = new UIElement(sf::Vector2f(0.5f, 0.f), sf::Vector2f(0.1f, 0.3f));
+	outerBox = new UIElement(sf::Vector2f(0.8f, 0.f), sf::Vector2f(0.2f, 0.4f));
 	outerBox->SetLayout(UILayout::List, UIDirection::Vertical);
 
 	btnPlayerMoveMode = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
@@ -73,33 +73,41 @@ void LevelCustom::Start()
 	btnRemoveWallMode->TextButton.setString("Remove Wall Mode");
 	outerBox->AddChild(btnRemoveWallMode);
 
-	graphHeightBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
-	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
-	outerBox->AddChild(graphHeightBox);
-
-	btnUpWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnUpWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnUpWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	btnUpWindowSpeed->TextButton.setString("+ Speed Viewport");
-	graphHeightBox->AddChild(btnUpWindowSpeed);
+	windowSpeedBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	windowSpeedBox->SetLayout(UILayout::List, UIDirection::Horizontal);
+	outerBox->AddChild(windowSpeedBox);
 
 	btnDownWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	btnDownWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
 	btnDownWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnDownWindowSpeed->TextButton.setString("- Speed Viewport");
-	graphHeightBox->AddChild(btnDownWindowSpeed);
+	windowSpeedBox->AddChild(btnDownWindowSpeed);
 
-	btnUpPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
-	btnUpPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
-	btnUpPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
-	btnUpPlayerSpeed->TextButton.setString("+ Speed Player");
-	graphHeightBox->AddChild(btnUpPlayerSpeed);
+	btnUpWindowSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnUpWindowSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnUpWindowSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpWindowSpeed->TextButton.setString("+ Speed Viewport");
+	windowSpeedBox->AddChild(btnUpWindowSpeed);
+
+	playerSpeedBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	playerSpeedBox->SetLayout(UILayout::List, UIDirection::Horizontal);
+	outerBox->AddChild(playerSpeedBox);
 
 	btnDownPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	btnDownPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
 	btnDownPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
 	btnDownPlayerSpeed->TextButton.setString("- Speed Player");
-	graphHeightBox->AddChild(btnDownPlayerSpeed);
+	playerSpeedBox->AddChild(btnDownPlayerSpeed);
+
+	btnUpPlayerSpeed = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
+	btnUpPlayerSpeed->RenderRectangle.setFillColor(sf::Color::White);
+	btnUpPlayerSpeed->RenderRectangle.setOutlineColor(sf::Color(239, 239, 240));
+	btnUpPlayerSpeed->TextButton.setString("+ Speed Player");
+	playerSpeedBox->AddChild(btnUpPlayerSpeed);
+
+	graphHeightBox = new UIElement(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f));
+	graphHeightBox->SetLayout(UILayout::List, UIDirection::Horizontal);
+	outerBox->AddChild(graphHeightBox);
 
 	btnRemoveGraphHeight = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.5f, 1.f));
 	btnRemoveGraphHeight->RenderRectangle.setFillColor(sf::Color::White);
