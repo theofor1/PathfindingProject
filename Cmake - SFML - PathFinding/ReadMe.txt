@@ -1,7 +1,8 @@
 - create /build folder and go in it
-- cmake ..
+- cmake ..             Or you can double click the cmake.py
 - Laucnh .sln file
 - compile (in debug or release): CTRL+MAJ+B
-- Go to App/Debug or App/Realease
+- Go to build/App/Debug or buid/App/Realease there you can find the .exe 
 - Move Ressources folder here
 - execute App.exe
+- Enjoy
