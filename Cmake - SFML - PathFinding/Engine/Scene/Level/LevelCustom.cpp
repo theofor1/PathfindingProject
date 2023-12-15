@@ -63,7 +63,8 @@ void LevelCustom::Start()
 	InputManager::Instance()->BindOnTriggered(InputAction::MouseL, [this]()
 											  { OnGraphCellOnClick(); });
 
-	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]() { OnButtonsClick(); });
+	InputManager::Instance()->BindOnDown(InputAction::MouseL, [this]()
+										 { OnButtonsClick(); });
 }
 
 void LevelCustom::Update(float DeltaTime)
@@ -84,7 +85,9 @@ void LevelCustom::Destroy()
 	IScene::Destroy();
 }
 
-void LevelCustom::Draw(sf::RenderWindow &window) const
+
+	void
+	LevelCustom::Draw(sf::RenderWindow &window) const
 {
 	IScene::Draw(window);
 	outerBox->Draw(window);
@@ -236,7 +239,7 @@ void LevelCustom::OnButtonsClick()
 
 		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
 
-		if (GraphHeightNbCells == 1 || playerPos.y == GraphHeightNbCells - 1)
+		if (GraphHeightNbCells == 1 || playerPos.x == GraphHeightNbCells - 1)
 			// Do not reduce graph is player is at max to avoid OOB
 			return;
 		GraphHeightNbCells--;
@@ -260,7 +263,8 @@ void LevelCustom::OnButtonsClick()
 		CancelPuttingCurrentCellTeleportation();
 
 		sf::Vector2i playerPos = graph->GetCellCoordinateByPosition(ship->GetPosition());
-		if (GraphWidthNbCells == 1 || playerPos.x == GraphWidthNbCells - 1)
+		
+		if (GraphWidthNbCells == 1 || playerPos.y == GraphWidthNbCells - 1)
 			return;
 		GraphWidthNbCells--;
 		graph->UpdateSize(sf::Vector2i(GraphHeightNbCells, GraphWidthNbCells));
@@ -428,7 +432,7 @@ void LevelCustom::InitButtons()
 	btnPlayerMoveMode->TextButton.setString("Place Move Mode");
 	outerBox->AddChild(btnPlayerMoveMode);
 
-	btnPutCellTypeNormal = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f),10, sf::Color::White, sf::Color(239, 239, 240),3);
+	btnPutCellTypeNormal = new Button(sf::Vector2f(0.f, 0.f), sf::Vector2f(1.f, 0.1f), 10, sf::Color::White, sf::Color(239, 239, 240), 3);
 	btnPutCellTypeNormal->TextButton.setString("Put Cell Type To Normal");
 	outerBox->AddChild(btnPutCellTypeNormal);
 
