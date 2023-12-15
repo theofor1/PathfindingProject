@@ -1,6 +1,7 @@
-- Go to /build
+- create /build folder and go in it
 - cmake ..
 - Laucnh .sln file
-- compile : CTRL+MAJ+B
-- Go to App/Debug
+- compile (in debug or release): CTRL+MAJ+B
+- Go to App/Debug or App/Realease
+- Move Ressources folder here
 - execute App.exe
